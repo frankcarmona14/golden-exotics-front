@@ -65,9 +65,9 @@ export function FiltersContent({
 }
 
 function FilterSection({ children }: { children: ReactNode }) {
-  return <div className="pb-8 pt-6">{children}</div>
+  return <div className="py-6">{children}</div>
 }
 
 function FilterSeparator() {
-  return <Separator className="bg-black/[0.08]" />
+  return <Separator className="bg-black/[0.08] dark:bg-white/[0.08]" />
 }

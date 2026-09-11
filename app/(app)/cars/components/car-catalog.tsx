@@ -1,4 +1,5 @@
 import { getCars } from "@/db/queries/car-repository"
+import { getRentalAvailability } from "@/lib/medusa/rental"
 
 import { SearchParams } from "@/lib/types"
 import { slugify } from "@/lib/utils"
@@ -13,6 +14,10 @@ interface CarCatalogProps {
     [SearchParams.POWERTRAIN]?: string
     [SearchParams.TRANSMISSION]?: string[]
     [SearchParams.MIN_SEATS]?: string
+    [SearchParams.CHECKIN]?: string
+    [SearchParams.CHECKOUT]?: string
+    [SearchParams.CHECKIN_TIME]?: string
+    [SearchParams.CHECKOUT_TIME]?: string
   }
 }
 
@@ -26,6 +31,10 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
     [SearchParams.POWERTRAIN]: powertrain,
     [SearchParams.TRANSMISSION]: transmissions,
     [SearchParams.MIN_SEATS]: minSeats,
+    [SearchParams.CHECKIN]: checkin,
+    [SearchParams.CHECKOUT]: checkout,
+    [SearchParams.CHECKIN_TIME]: checkinTime,
+    [SearchParams.CHECKOUT_TIME]: checkoutTime,
   } = searchParams
 
   const filteredCars = cars.filter((car) => {
@@ -39,19 +48,49 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
     )
   })
 
-  if (!filteredCars.length)
+  // When the user has picked a date range, drop cars that are affirmatively
+  // unavailable for it. Availability is checked per car against Medusa; cars
+  // without Medusa ids (mock data) can't be checked and are kept as-is. We
+  // fail open when the check itself fails (network error, or the product
+  // isn't configured as rentable) so a backend config issue never silently
+  // hides inventory — only a genuine date conflict removes a car.
+  const hasDateRange = Boolean(checkin && checkout)
+  let availableCars = filteredCars
+  if (hasDateRange) {
+    const checks = await Promise.all(
+      filteredCars.map(async (car) => {
+        if (!car.medusaProductId || !car.medusaVariantId) return true
+        const result = await getRentalAvailability({
+          productId: car.medusaProductId,
+          variantId: car.medusaVariantId,
+          startDate: checkin as string,
+          endDate: checkout as string,
+          startTime: checkinTime || "10:00",
+          endTime: checkoutTime || "10:00",
+          currencyCode: car.currency,
+        })
+        if (result.checkFailed) return true
+        return result.available !== false
+      })
+    )
+    availableCars = filteredCars.filter((_, i) => checks[i])
+  }
+
+  if (!availableCars.length)
     return (
       <div className="col-span-full text-balance">
         <h1 className="text-xl font-semibold">No exact matches</h1>
-        <p className="mt-3 text-slate-700">
-          Try changing or removing some of your filters.
+        <p className="mt-3 text-slate-700 dark:text-neutral-400">
+          {hasDateRange
+            ? "No cars are available for the selected dates. Try different dates or adjust your filters."
+            : "Try changing or removing some of your filters."}
         </p>
       </div>
     )
 
   return (
     <>
-      {filteredCars.map((car) => (
+      {availableCars.map((car) => (
         <CarCard key={car.id} car={car} />
       ))}
     </>

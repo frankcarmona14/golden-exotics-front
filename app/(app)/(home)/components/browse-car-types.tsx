@@ -1,9 +1,13 @@
-import Image from "next/image"
-import Link from "next/link"
-import { carTypes } from "@/data/car-types"
+"use client"
 
-import { SearchParams } from "@/lib/types"
-import { Button } from "@/components/ui/button"
+import Link from "next/link"
+import { carBrands } from "@/data/car-brands"
+
+import {
+  FadeUp,
+  StaggerContainer,
+  StaggerItem,
+} from "@/components/motion"
 import {
   Carousel,
   CarouselContent,
@@ -11,25 +15,42 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel"
+import { Button } from "@/components/ui/button"
 
 export function BrowseCarTypes() {
   return (
     <section>
       <div className="mx-auto w-full max-w-none px-5 sm:max-w-[90%] sm:px-0 2xl:max-w-8xl">
-        <h2 className="text-balance text-[19px] font-bold sm:text-[21px] lg:text-[23px]">
-          Pick Your Perfect Match
-        </h2>
-        <div className="pt-6">
+        <FadeUp>
+          <div className="flex items-end justify-between">
+            <div>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent sm:text-xs">
+                Explore Brands
+              </p>
+              <h2 className="text-balance text-[21px] font-bold tracking-tight sm:text-[24px] lg:text-[28px]">
+                Drive the Legends
+              </h2>
+            </div>
+            <Link
+              href="/cars"
+              className="hidden text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white sm:block"
+            >
+              View all brands →
+            </Link>
+          </div>
+        </FadeUp>
+
+        <div className="pt-7">
           <div className="relative">
-            <div className="before:pointer-events-none before:absolute before:-left-1 before:top-0 before:z-10 before:h-full before:w-[7%] before:bg-gradient-to-r before:from-white before:content-[''] lg:before:-left-10"></div>
-            <div className="after:pointer-events-none after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-[7%] after:bg-gradient-to-l after:from-white after:content-[''] lg:after:-right-5"></div>
+            <div className="before:pointer-events-none before:absolute before:-left-1 before:top-0 before:z-10 before:h-full before:w-[7%] before:bg-gradient-to-r before:from-white before:content-[''] dark:before:from-neutral-950 lg:before:-left-10" />
+            <div className="after:pointer-events-none after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-[7%] after:bg-gradient-to-l after:from-white after:content-[''] dark:after:from-neutral-950 lg:after:-right-5" />
             <Carousel>
-              <CarouselContent className="m-0 space-x-3 sm:space-x-4">
-                {carTypes.map(({ id, slug, name, imageUrl }) => {
+              <CarouselContent className="m-0 space-x-4 sm:space-x-5">
+                {carBrands.map(({ id, slug, name, tagline, gradientFrom, gradientTo, logoColor }, index) => {
                   return (
                     <CarouselItem
                       key={id}
-                      className="relative basis-1/2 p-0 sm:basis-1/3 md:basis-1/4 xl:basis-1/5"
+                      className="relative basis-[72%] p-0 sm:basis-[45%] md:basis-[36%] lg:basis-[28%] xl:basis-[23%]"
                     >
                       <Button
                         variant={"link"}
@@ -39,25 +60,72 @@ export function BrowseCarTypes() {
                         <Link
                           href={{
                             pathname: "/cars",
-                            query: {
-                              [SearchParams.BODY_STYLE]: slug,
-                            },
                           }}
-                          className="absolute inset-0 z-20 size-full rounded-xl"
+                          className="absolute inset-0 z-20 size-full rounded-2xl"
                         />
                       </Button>
-                      <div className="relative aspect-video">
-                        <span className="absolute left-2 top-2 z-10 inline-flex items-center justify-center rounded-2xl border border-neutral-200 bg-white px-2 py-1 text-[12px] font-semibold leading-none tracking-wide sm:px-3 sm:py-1.5 sm:text-[13px] md:left-2.5 md:top-2.5 md:tracking-normal lg:py-2 lg:text-[14px]">
-                          {name}
-                        </span>
-                        <Image
-                          src={imageUrl}
-                          alt={name}
-                          priority
-                          fill
-                          sizes="(max-width: 550px) 50vw, (max-width: 950px) 33vw, (max-width: 1280px) 25vw, 20vw"
-                          className="rounded-xl object-cover"
-                          placeholder="blur"
+                      <div
+                        className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/[0.06] transition-transform duration-500 ease-out hover:scale-[1.02]"
+                        style={{
+                          background: `linear-gradient(145deg, ${gradientFrom}, ${gradientTo})`,
+                        }}
+                      >
+                        {/* Decorative elements */}
+                        <div
+                          className="absolute -right-8 -top-8 size-32 rounded-full opacity-[0.07] blur-2xl"
+                          style={{ background: logoColor }}
+                        />
+                        <div
+                          className="absolute -bottom-12 -left-12 size-40 rounded-full opacity-5 blur-3xl"
+                          style={{ background: logoColor }}
+                        />
+
+                        {/* Content */}
+                        <div className="relative flex h-full flex-col justify-between p-6">
+                          {/* Brand badge */}
+                          <div>
+                            <div
+                              className="mb-3 inline-flex items-center rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em]"
+                              style={{
+                                borderColor: `${logoColor}30`,
+                                color: logoColor,
+                                background: `${logoColor}10`,
+                              }}
+                            >
+                              Premium
+                            </div>
+                          </div>
+
+                          {/* Brand info */}
+                          <div>
+                            <h3 className="text-[22px] font-bold leading-tight tracking-tight text-white sm:text-[24px]">
+                              {name}
+                            </h3>
+                            <p className="mt-1.5 text-[13px] font-medium italic text-white/40">
+                              &ldquo;{tagline}&rdquo;
+                            </p>
+
+                            {/* CTA */}
+                            <div className="mt-5 flex items-center gap-2">
+                              <span
+                                className="inline-flex items-center rounded-full px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition-all duration-300"
+                                style={{
+                                  background: `${logoColor}20`,
+                                  borderColor: `${logoColor}30`,
+                                }}
+                              >
+                                Explore →
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Bottom accent line */}
+                        <div
+                          className="absolute bottom-0 left-0 h-[2px] w-full opacity-60"
+                          style={{
+                            background: `linear-gradient(90deg, transparent, ${logoColor}, transparent)`,
+                          }}
                         />
                       </div>
                     </CarouselItem>

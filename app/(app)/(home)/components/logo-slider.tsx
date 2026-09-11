@@ -86,17 +86,17 @@ export function LogoSlider() {
   }, [])
 
   return (
-    <div ref={logosListRef} className="animate-slider">
+    <div ref={logosListRef} className="animate-slider motion-reduce:animate-none">
       <div
         className={cn(
-          "flex w-[var(--slider-total-logo-width)] items-center grayscale transition-opacity duration-300",
+          "flex w-[var(--slider-total-logo-width)] items-center grayscale transition-opacity duration-300 dark:invert",
           isVisible ? "opacity-100" : "opacity-0"
         )}
       >
         {initialLogos.concat(clonedLogos).map(({ id, icon }) => (
           <div
             key={id}
-            className="mx-5 inline-flex w-[var(--slider-logo-width)] items-center justify-center"
+            className="mx-5 inline-flex w-[var(--slider-logo-width)] items-center justify-center text-neutral-600"
           >
             {icon}
           </div>

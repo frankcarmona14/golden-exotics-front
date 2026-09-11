@@ -1,14 +1,9 @@
-import { SignUp } from "@clerk/nextjs"
-
-import { LoadingDots } from "@/components/loading-dots"
+import { RegisterForm } from "./register-form"
 
 export default function SignUpPage() {
   return (
-    <div className="relative flex h-dvh w-dvw items-center justify-center">
-      <div className="absolute inset-0 flex h-dvh w-dvw items-center justify-center">
-        <LoadingDots />
-      </div>
-      <SignUp />
+    <div className="flex min-h-dvh w-dvw items-center justify-center bg-neutral-50 p-4 dark:bg-neutral-900">
+      <RegisterForm />
     </div>
   )
 }

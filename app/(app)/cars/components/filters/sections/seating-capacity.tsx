@@ -42,13 +42,13 @@ export function SeatingCapacityFilters({
   return (
     <section>
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold">Seats</h3>
+        <h3 className="text-[15px] font-semibold">Seats</h3>
         <div className="flex flex-row items-center justify-center gap-x-4">
           <Button
             onClick={handleMinusClick}
             variant={"outline"}
             size={"icon"}
-            className="size-9 shrink-0 border-neutral-400 text-neutral-600 hover:border-black hover:bg-neutral-50 disabled:border-black/20 disabled:text-neutral-400"
+            className="size-9 shrink-0 border-neutral-400 text-neutral-600 hover:border-black hover:bg-neutral-50 disabled:border-black/20 disabled:text-neutral-400 dark:border-neutral-600 dark:text-neutral-300 dark:hover:border-neutral-400 dark:hover:bg-neutral-800 dark:disabled:border-white/15 dark:disabled:text-neutral-600"
             disabled={counter <= 0}
           >
             <MinusIcon className="inline size-4 shrink-0" />
@@ -66,7 +66,7 @@ export function SeatingCapacityFilters({
             onClick={handlePlusClick}
             variant={"outline"}
             size={"icon"}
-            className="size-9 shrink-0 border-neutral-400 text-neutral-600 hover:border-black hover:bg-neutral-50 disabled:border-black/20 disabled:text-neutral-400"
+            className="size-9 shrink-0 border-neutral-400 text-neutral-600 hover:border-black hover:bg-neutral-50 disabled:border-black/20 disabled:text-neutral-400 dark:border-neutral-600 dark:text-neutral-300 dark:hover:border-neutral-400 dark:hover:bg-neutral-800 dark:disabled:border-white/15 dark:disabled:text-neutral-600"
             disabled={counter >= 7}
           >
             <PlusIcon className="inline size-4 shrink-0" />

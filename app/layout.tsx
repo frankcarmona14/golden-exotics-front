@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next"
-import { ClerkProvider } from "@clerk/nextjs"
 
+import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 
 import "../styles/globals.css"
@@ -49,8 +49,6 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "white",
-  colorScheme: "light",
   width: "device-width",
   initialScale: 1,
 }
@@ -61,13 +59,18 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={fontSans.variable}>
-        <body className="flex min-h-screen flex-col">
+    <html lang="en" className={fontSans.variable} suppressHydrationWarning>
+      <body className="flex min-h-screen flex-col bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
           {children}
           <Toaster />
-        </body>
-      </html>
-    </ClerkProvider>
+        </ThemeProvider>
+      </body>
+    </html>
   )
 }

@@ -26,6 +26,10 @@
     touch-action: manipulation;
   }
 
+  html.dark {
+    color-scheme: dark;
+  }
+
   html,
   body {
     background-color: white;
@@ -42,6 +46,13 @@
     user-select: text;
     overflow-x: clip;
   }
+
+  html.dark,
+  html.dark body {
+    background-color: #0a0a0a;
+    color: #fafafa;
+  }
+
   body {
     overscroll-behavior-y: contain;
     margin: 0;
@@ -53,9 +64,10 @@
 
   a {
     transition-delay: 0s;
-    transition-duration: 0.2s;
-    transition-property: all;
-    transition-timing-function: ease;
+    transition-duration: 0.15s;
+    transition-property: color, background-color, border-color, opacity,
+      box-shadow;
+    transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   strong {
@@ -63,8 +75,45 @@
     color: theme("colors.neutral.900");
   }
 
+  html.dark strong {
+    color: theme("colors.neutral.100");
+  }
+
+  /* Selection color */
+  ::selection {
+    background-color: #f8e33f40;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #d4d4d4;
+    border-radius: 3px;
+    transition: background 0.15s ease-out;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #a3a3a3;
+  }
+
+  html.dark ::-webkit-scrollbar-thumb {
+    background: #404040;
+  }
+
+  html.dark ::-webkit-scrollbar-thumb:hover {
+    background: #525252;
+  }
+
   /* https://bugs.webkit.org/show_bug.cgi?id=243601
-  https://nextjs.org/docs/pages/api-reference/components/image#known-browser-bugs 
+  https://nextjs.org/docs/pages/api-reference/components/image#known-browser-bugs
   Safari 15 and 16 display a gray border while loading */
   @supports (font: -apple-system-body) and (-webkit-appearance: none) {
     img[loading="lazy"] {

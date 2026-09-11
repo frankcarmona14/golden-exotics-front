@@ -1,5 +1,5 @@
-import { db } from ".."
+import { mockLocations } from "@/data/mock-data"
 
 export async function getLocations() {
-  return db.query.locationsTable.findMany()
+  return mockLocations
 }

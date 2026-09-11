@@ -56,21 +56,19 @@ export function BodyStyleFilters({
 
   return (
     <section>
-      <h3 className="text-lg font-semibold">Body Style</h3>
-      <div className="pt-6">
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-3.5">
+      <h3 className="text-[15px] font-semibold">Body Style</h3>
+      <div className="pt-4">
+        <div className="flex flex-wrap items-center gap-2.5">
           {bodyStyles.map(({ slug, name, icon: Icon }) => (
             <Toggle
               key={slug}
               variant={"outline"}
-              className="h-[50px] rounded-full px-4"
+              className="h-11 gap-2 rounded-full px-4"
               pressed={selectedFilters.bodyStyles.includes(slug)}
               onPressedChange={() => handleBodyStyleToggle(slug)}
             >
-              <Icon className="mr-2.5 size-7" />
-              <span className="text-sm font-normal text-neutral-950">
-                {name}
-              </span>
+              <Icon className="size-[22px]" />
+              <span className="text-[13px] font-medium">{name}</span>
             </Toggle>
           ))}
         </div>

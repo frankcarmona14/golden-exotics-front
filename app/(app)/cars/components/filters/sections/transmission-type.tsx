@@ -44,21 +44,19 @@ export function TransmissionTypeFilters({
 
   return (
     <section>
-      <h3 className="text-lg font-semibold">Transmission</h3>
-      <div className="pt-6">
-        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-3">
+      <h3 className="text-[15px] font-semibold">Transmission</h3>
+      <div className="pt-4">
+        <div className="flex flex-wrap items-center gap-2.5">
           {transmissions.map(({ slug, name, icon: Icon }) => (
             <Toggle
               key={slug}
               variant={"outline"}
-              className="h-[50px] rounded-full px-4"
+              className="h-11 gap-2 rounded-full px-4"
               pressed={selectedFilters.transmissions.includes(slug)}
               onPressedChange={() => handleTransmissionToggle(slug)}
             >
-              <Icon className="mr-2.5 size-7 [stroke-width:1.5]" />
-              <span className="text-sm font-normal text-neutral-950">
-                {name}
-              </span>
+              <Icon className="size-[22px] [stroke-width:1.5]" />
+              <span className="text-[13px] font-medium">{name}</span>
             </Toggle>
           ))}
         </div>

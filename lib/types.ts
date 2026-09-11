@@ -5,6 +5,8 @@ export enum SearchParams {
   LNG = "lng",
   CHECKIN = "checkin",
   CHECKOUT = "checkout",
+  CHECKIN_TIME = "checkin_time",
+  CHECKOUT_TIME = "checkout_time",
   MIN_PRICE = "min-price",
   MAX_PRICE = "max-price",
   BODY_STYLE = "body-style",

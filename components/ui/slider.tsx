@@ -22,12 +22,12 @@ const Slider = React.forwardRef<
       )}
       {...props}
     >
-      <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-neutral-100">
-        <SliderPrimitive.Range className="absolute h-full bg-neutral-900" />
+      <SliderPrimitive.Track className="relative h-2 w-full grow overflow-hidden rounded-full bg-neutral-100 dark:bg-neutral-800">
+        <SliderPrimitive.Range className="absolute h-full bg-neutral-900 dark:bg-neutral-100" />
       </SliderPrimitive.Track>
       {initialValue.map((value, index) => (
         <React.Fragment key={index}>
-          <SliderPrimitive.Thumb className="block size-8 rounded-full border border-neutral-200 bg-white shadow-lg ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50" />
+          <SliderPrimitive.Thumb className="block size-8 rounded-full border border-neutral-200 bg-white shadow-lg ring-offset-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 dark:border-neutral-700 dark:bg-neutral-100 dark:ring-offset-neutral-950 dark:focus-visible:ring-accent" />
         </React.Fragment>
       ))}
     </SliderPrimitive.Root>

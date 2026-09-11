@@ -8,9 +8,6 @@ export function CarCatalogSkeleton() {
       <CarCardSkeleton />
       <CarCardSkeleton />
       <CarCardSkeleton />
-      <CarCardSkeleton />
-      <CarCardSkeleton />
-      <CarCardSkeleton />
     </>
   )
 }

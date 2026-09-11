@@ -17,6 +17,17 @@ const nextConfig = {
         protocol: "https",
         hostname: "res.cloudinary.com",
       },
+      {
+        // Medusa backend local
+        protocol: "http",
+        hostname: "localhost",
+        port: "9000",
+      },
+      {
+        // Medusa file storage / S3 / cualquier dominio con imágenes de productos
+        protocol: "https",
+        hostname: "**",
+      },
     ],
   },
 }

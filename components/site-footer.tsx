@@ -1,103 +1,140 @@
+import Link from "next/link"
+
 import { siteConfig } from "@/config/site"
 
 import { LogoLink } from "./logoLink"
 import { Button } from "./ui/button"
 
-const footerLinks = [
+type FooterLink = {
+  label: string
+  href: string
+  external?: boolean
+}
+
+type FooterSection = {
+  title: string
+  links: FooterLink[]
+}
+
+const footerLinks: FooterSection[] = [
   {
     title: "Services",
     links: [
-      "Car Rentals",
-      "Insurance Options",
-      "Corporate Rentals",
-      "Special Offers",
-      "FAQs",
+      { label: "Browse cars", href: "/cars" },
+      { label: "Driver requirements", href: "/driver-requirements" },
+      { label: "Insurance options", href: "/driver-requirements#insurance" },
+      { label: "Corporate rentals", href: "/" },
+      { label: "FAQs", href: "/" },
     ],
   },
   {
     title: "Resources",
     links: [
-      "Help Center",
-      "Privacy Policy",
-      "Terms of Service",
-      "Accessibility",
-      "Vehicle Guides",
-      "Customer Testimonials",
+      { label: "Help center", href: "/" },
+      { label: "Privacy policy", href: "/privacy" },
+      { label: "Terms of service", href: "/terms" },
+      { label: "Cancellation policy", href: "/cancellation-policy" },
+      { label: "Accessibility", href: "/" },
     ],
   },
   {
     title: "Company",
     links: [
-      "About",
-      "Contact Us",
-      "Blog",
-      "Partners",
-      "Customers",
-      "Careers",
-      "Press",
+      { label: "About", href: "/" },
+      { label: "Contact us", href: "mailto:support@carhive.com", external: true },
+      { label: "Blog", href: "/" },
+      { label: "Careers", href: "/" },
+      { label: "Press", href: "/" },
     ],
   },
   {
     title: "Social",
-    links: ["Youtube", "Twitter", "Instagram", "Facebook"],
+    links: [
+      { label: "Youtube", href: "https://youtube.com", external: true },
+      { label: "Twitter", href: "https://twitter.com", external: true },
+      { label: "Instagram", href: "https://instagram.com", external: true },
+      { label: "Facebook", href: "https://facebook.com", external: true },
+    ],
   },
 ]
 
 export function SiteFooter() {
-  const githubUrl = siteConfig.links.github
-
   return (
-    <footer className="border-t border-black/[0.06] py-12">
+    <footer className="border-t border-neutral-100 py-14 dark:border-neutral-800/60">
       <div className="mx-auto w-full max-w-none px-5 text-sm sm:max-w-[90%] sm:px-0 xl:max-w-5xl">
-        <div className="grid grid-cols-12 items-start justify-center gap-y-11">
+        <div className="grid grid-cols-12 items-start justify-center gap-y-12">
           <div className="col-span-full md:col-span-3">
             <LogoLink />
+            <p className="mt-4 max-w-[220px] text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+              Premium car rental service based in Miami, FL — for unforgettable
+              journeys.
+            </p>
           </div>
           <nav className="col-span-full grid grid-cols-12 gap-x-6 gap-y-11 md:col-span-9">
             {footerLinks.map((section) => (
               <ul
                 key={section.title}
-                className="col-span-6 flex flex-col gap-3 md:col-span-3 lg:gap-3"
+                className="col-span-6 flex flex-col gap-3 md:col-span-3 lg:gap-3.5"
               >
                 <div className="pb-1.5">
-                  <h2 className="whitespace-nowrap text-balance font-semibold leading-none text-neutral-950">
+                  <h2 className="whitespace-nowrap text-balance text-[13px] font-bold uppercase tracking-wider text-neutral-950 dark:text-neutral-50">
                     {section.title}
                   </h2>
                 </div>
                 {section.links.map((link) => (
-                  <li key={link} className="text-neutral-600">
+                  <li
+                    key={`${section.title}-${link.label}`}
+                    className="text-neutral-500 dark:text-neutral-400"
+                  >
                     <Button
                       variant={"link"}
-                      className="h-auto text-balance rounded-none p-0 text-[13px] font-normal leading-none sm:text-sm"
+                      className="h-auto text-balance rounded-none p-0 text-[13px] font-normal leading-none transition-colors hover:text-neutral-950 dark:hover:text-white sm:text-sm"
                       asChild
                     >
-                      <a href={githubUrl} target="_blank" rel="noreferrer">
-                        {link}
-                      </a>
+                      {link.external ? (
+                        <a
+                          href={link.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          {link.label}
+                        </a>
+                      ) : (
+                        <Link href={link.href}>{link.label}</Link>
+                      )}
                     </Button>
                   </li>
                 ))}
               </ul>
             ))}
           </nav>
-          <div className="col-span-full">
-            <p className="text-[13px] leading-6 text-neutral-600 sm:text-sm">
-              Built by{" "}
-              <Button
-                variant={"link"}
-                className="h-auto rounded-none p-0 text-[13px] font-normal leading-none sm:text-sm"
-                asChild
-              >
-                <a
-                  href={siteConfig.author.url}
-                  target="_blank"
-                  rel="noreferrer"
+          <div className="col-span-full border-t border-neutral-100 pt-8 dark:border-neutral-800/60">
+            <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+              <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+                &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
+                reserved. &middot; Miami, FL
+              </p>
+              <div className="flex items-center gap-4 text-[13px] text-neutral-500 dark:text-neutral-400">
+                <Link
+                  href="/terms"
+                  className="transition-colors hover:text-neutral-950 dark:hover:text-white"
                 >
-                  <strong>eduamdev</strong>
-                </a>
-              </Button>
-              .
-            </p>
+                  Terms
+                </Link>
+                <Link
+                  href="/privacy"
+                  className="transition-colors hover:text-neutral-950 dark:hover:text-white"
+                >
+                  Privacy
+                </Link>
+                <Link
+                  href="/cancellation-policy"
+                  className="transition-colors hover:text-neutral-950 dark:hover:text-white"
+                >
+                  Cancellation
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

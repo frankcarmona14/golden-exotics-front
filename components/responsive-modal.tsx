@@ -47,7 +47,7 @@ export function ResponsiveModal({
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
         <DialogContent className="max-w-[568px] gap-0 !rounded-xl p-0">
-          <DialogHeader className="flex items-center justify-center border-b border-black/10 px-6 py-5">
+          <DialogHeader className="flex items-center justify-center border-b border-black/10 px-6 py-5 dark:border-neutral-800">
             <DialogTitle className="text-center text-base tracking-normal">
               {title}
             </DialogTitle>
@@ -57,7 +57,7 @@ export function ResponsiveModal({
           </DialogHeader>
           <div className="h-full max-h-[73dvh] overflow-y-auto">{children}</div>
           {footer && (
-            <DialogFooter className="border-t border-black/10 py-[18px]">
+            <DialogFooter className="border-t border-black/10 py-[18px] dark:border-neutral-800">
               {footer}
             </DialogFooter>
           )}
@@ -76,7 +76,7 @@ export function ResponsiveModal({
             {description}
           </DrawerDescription>
         </DrawerHeader>
-        <div className="h-full max-h-[80dvh] overflow-y-auto border-y">
+        <div className="h-full max-h-[80dvh] overflow-y-auto border-y dark:border-neutral-800">
           {children}
         </div>
         {footer && <DrawerFooter className="px-0">{footer}</DrawerFooter>}

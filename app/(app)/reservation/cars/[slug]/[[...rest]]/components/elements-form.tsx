@@ -28,15 +28,17 @@ function CheckoutForm({
   amount,
   currency,
 }: {
-  userEmail: string
+  userEmail?: string
   amount: number
   currency: string
 }) {
   const [isElementsReady, setIsElementsReady] = React.useState(false)
   const [input, setInput] = React.useState<{
     cardholderName: string
+    email: string
   }>({
     cardholderName: "",
+    email: userEmail ?? "",
   })
   const [paymentType, setPaymentType] = React.useState<string>("")
   const [payment, setPayment] = React.useState<{
@@ -104,7 +106,7 @@ function CheckoutForm({
           payment_method_data: {
             billing_details: {
               name: input.cardholderName,
-              email: userEmail,
+              email: userEmail ?? input.email,
             },
           },
         },
@@ -138,10 +140,26 @@ function CheckoutForm({
       </div>
       <div className={isElementsReady ? "block" : "hidden"}>
         <div>
+          {!userEmail ? (
+            <div className="pt-6">
+              <Label htmlFor="email" className="mb-2 block">
+                Email
+              </Label>
+              <Input
+                placeholder="you@email.com"
+                type="email"
+                id="email"
+                name="email"
+                onChange={handleInputChange}
+                className="h-12 text-base"
+                required
+              />
+            </div>
+          ) : null}
           {paymentType === "card" ? (
             <div className="pt-6">
               <Label htmlFor="cardholderName" className="mb-2 block">
-                Carholder name
+                Cardholder name
               </Label>
               <Input
                 placeholder="John Doe"
@@ -190,7 +208,7 @@ export default function ElementsForm({
   amount,
   currency,
 }: {
-  userEmail: string
+  userEmail?: string
   amount: number
   currency: string
 }): JSX.Element {

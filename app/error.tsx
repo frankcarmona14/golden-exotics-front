@@ -2,8 +2,8 @@
 
 import { useEffect } from "react"
 
+import { AppChromeHeader } from "@/components/app-chrome-header"
 import { Button } from "@/components/ui/button"
-import { SiteHeader } from "@/components/site-header"
 
 export default function Error({
   error,
@@ -18,18 +18,14 @@ export default function Error({
   }, [error])
 
   return (
-    <>
-      <div className="sticky top-0 z-30 bg-[hsla(0,0%,100%,.8)] shadow-[inset_0_-1px_0_0_#eaeaea] backdrop-blur-[5px] backdrop-saturate-[1.8]">
-        <div className="mx-auto h-[var(--site-header-height)] w-full max-w-none px-5 sm:max-w-[90%] sm:px-0 2xl:max-w-8xl">
-          <SiteHeader />
-        </div>
-      </div>
+    <div className="[--site-header-height:60px]">
+      <AppChromeHeader />
       <div className="mx-auto w-full max-w-none px-5 sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
         <main className="flex w-full flex-col items-center justify-center gap-4 py-52">
           <h2 className="text-center text-2xl font-bold">
             Something went wrong!
           </h2>
-          <p className="mb-4 max-w-prose text-center text-neutral-600">
+          <p className="mb-4 max-w-prose text-center text-neutral-600 dark:text-neutral-400">
             It seems like there&apos;s a hiccup on our end. Our team is working
             hard to fix the issue. We appreciate your patience and
             understanding.
@@ -55,6 +51,6 @@ export default function Error({
           </Button>
         </main>
       </div>
-    </>
+    </div>
   )
 }

@@ -55,15 +55,15 @@ export const convertImageUrlToDataUrl = async (
 export const formatAmountForDisplay = (
   amount: number,
   currency: string,
-  removeCents: boolean = false
 ): string => {
   if (isNaN(amount)) return ""
-  let numberFormat = new Intl.NumberFormat(["en-US"], {
+  const hasCents = amount % 1 !== 0
+  const numberFormat = new Intl.NumberFormat(["en-US"], {
     style: "currency",
     currency: currency,
     currencyDisplay: "symbol",
-    minimumFractionDigits: removeCents ? 0 : 2,
-    maximumFractionDigits: removeCents ? 0 : 2,
+    minimumFractionDigits: hasCents ? 2 : 0,
+    maximumFractionDigits: hasCents ? 2 : 0,
   })
   return numberFormat.format(amount)
 }

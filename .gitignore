@@ -34,3 +34,12 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Ficheros temporales de herramientas locales
+_tmp_*
+
+# Ajustes de Claude Code por desarrollador
+.claude/settings.local.json
+
+# Skills vendorizadas: se reinstalan desde skills-lock.json
+.agents/
+.claude/skills/

@@ -1,12 +1,6 @@
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignUpButton,
-  UserButton,
-} from "@clerk/nextjs"
+import Link from "next/link"
 
-import { siteConfig } from "@/config/site"
+import { getCustomer } from "@/lib/medusa/customer"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,70 +10,71 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
+import { SignInMenuLink, SignUpMenuLink } from "./auth-menu-links"
+import { LogoutButton } from "./logout-button"
 import { MenuIcon } from "./icons/menu"
 import { UserCircleIcon } from "./icons/user-circle"
 import { Button } from "./ui/button"
 
-export function UserMenuButton() {
-  const githubUrl = siteConfig.links.github
+export async function UserMenuButton() {
+  const customer = await getCustomer()
 
   return (
-    <>
-      <SignedIn>
-        <UserButton />
-      </SignedIn>
-      <SignedOut>
-        <DropdownMenu modal={false}>
-          <DropdownMenuTrigger asChild>
-            <Button variant="link" className="p-1">
-              <div className="flex items-center justify-center text-neutral-800">
-                <MenuIcon className="mr-1.5 size-4 shrink-0" />
-                <UserCircleIcon className="size-6 shrink-0 md:size-7 xl:size-[30px]" />
-              </div>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent
-            className="w-40 sm:w-48 lg:w-52"
-            collisionPadding={20}
-          >
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button variant="link" className="p-1">
+          <div className="flex items-center justify-center text-neutral-800 dark:text-neutral-200">
+            <MenuIcon className="mr-1.5 size-4 shrink-0" />
+            <UserCircleIcon className="size-6 shrink-0 md:size-7 xl:size-[30px]" />
+          </div>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        className="w-40 sm:w-48 lg:w-52"
+        collisionPadding={20}
+      >
+        {customer ? (
+          <>
+            <div className="px-2 py-1.5">
+              <p className="truncate text-sm font-medium">
+                {customer.first_name} {customer.last_name}
+              </p>
+              <p className="truncate text-xs text-neutral-500">
+                {customer.email}
+              </p>
+            </div>
+            <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="p-0">
-                <span className="w-full [&_button]:w-full [&_button]:px-2 [&_button]:py-[6px] [&_button]:text-left">
-                  <SignUpButton />
-                </span>
+              <DropdownMenuItem asChild>
+                <Link href="/account">Dashboard</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem className="p-0">
-                <span className="w-full [&_button]:w-full [&_button]:px-2 [&_button]:py-[6px] [&_button]:text-left">
-                  <SignInButton />
-                </span>
+              <DropdownMenuItem asChild>
+                <Link href="/account/reservations">My reservations</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/account/profile">Profile</Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem className="p-0">
-                <a
-                  href={githubUrl}
-                  className="w-full px-2 py-[6px]"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Gift Cards
-                </a>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="p-0">
-                <a
-                  href={githubUrl}
-                  className="w-full px-2 py-[6px]"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Help Center
-                </a>
+              <DropdownMenuItem asChild>
+                <LogoutButton />
               </DropdownMenuItem>
             </DropdownMenuGroup>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </SignedOut>
-    </>
+          </>
+        ) : (
+          <>
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <SignUpMenuLink>Sign up</SignUpMenuLink>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <SignInMenuLink>Log in</SignInMenuLink>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+          </>
+        )}
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }

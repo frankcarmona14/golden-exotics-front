@@ -110,7 +110,7 @@ export function FiltersButton({
         variant="outline"
         className={cn(
           "relative flex h-[46px] items-center justify-center gap-x-2.5 rounded-[10px] px-4 text-[13px] transition-shadow",
-          totalSelectedFilters > 0 && "ring-2 ring-black "
+          totalSelectedFilters > 0 && "ring-2 ring-accent"
         )}
       >
         <FiltersIcon className="size-5" />

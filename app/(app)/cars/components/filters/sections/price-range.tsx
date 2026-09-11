@@ -102,13 +102,13 @@ export function PriceRangeFilters({
 
   return (
     <section>
-      <h3 className="text-lg font-semibold">Price range</h3>
+      <h3 className="text-[15px] font-semibold">Price range</h3>
       <div className="pt-0.5">
-        <p className="text-[15px] text-neutral-700">
+        <p className="text-[15px] text-neutral-700 dark:text-neutral-300">
           Daily prices before fees and taxes
         </p>
       </div>
-      <div className="pt-10">
+      <div className="pt-8">
         <Slider
           defaultValue={[MIN_PRICE, MAX_PRICE]}
           value={[tempMinPrice, tempMaxPrice]}
@@ -121,7 +121,10 @@ export function PriceRangeFilters({
         <div className="pt-7">
           <div className="flex items-center justify-between">
             <div className="flex flex-col items-center gap-2.5">
-              <Label htmlFor="price_filter_min" className="text-neutral-600">
+              <Label
+                htmlFor="price_filter_min"
+                className="text-neutral-600 dark:text-neutral-400"
+              >
                 Minimum
               </Label>
               <Input
@@ -134,7 +137,10 @@ export function PriceRangeFilters({
               />
             </div>
             <div className="flex flex-col items-center gap-2.5">
-              <Label htmlFor="price_filter_max" className="text-neutral-600">
+              <Label
+                htmlFor="price_filter_max"
+                className="text-neutral-600 dark:text-neutral-400"
+              >
                 Maximum
               </Label>
               <Input

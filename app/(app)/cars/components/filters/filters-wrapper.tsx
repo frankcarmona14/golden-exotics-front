@@ -2,12 +2,18 @@ import { ReactNode } from "react"
 import { getCars } from "@/db/queries/car-repository"
 
 import { FiltersButton } from "./filters-button"
+import { FiltersSidebar } from "./filters-sidebar"
 
 interface FiltersProps {
   trigger?: ReactNode
+  /** "modal" (default) renders the trigger + modal; "sidebar" renders an inline rail. */
+  variant?: "modal" | "sidebar"
 }
 
-export default async function Filters({ trigger }: FiltersProps) {
+export default async function Filters({
+  trigger,
+  variant = "modal",
+}: FiltersProps) {
   const cars = await getCars()
 
   const { MIN_PRICE, MAX_PRICE } = cars.reduce(
@@ -18,6 +24,15 @@ export default async function Filters({ trigger }: FiltersProps) {
     },
     { MIN_PRICE: Infinity, MAX_PRICE: -Infinity }
   )
+
+  if (variant === "sidebar") {
+    return (
+      <FiltersSidebar
+        initialMinPrice={Math.round(MIN_PRICE)}
+        initialMaxPrice={Math.round(MAX_PRICE)}
+      />
+    )
+  }
 
   return (
     <FiltersButton

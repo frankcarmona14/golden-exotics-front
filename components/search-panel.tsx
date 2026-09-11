@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import { SelectLocation } from "@/db/schema"
-import { addDays, format, isBefore } from "date-fns"
+import type { SelectLocation } from "@/lib/schema-types"
+import { format, isBefore } from "date-fns"
 
 import { SearchParams } from "@/lib/types"
 import { Button } from "@/components/ui/button"
@@ -102,7 +102,7 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
 
   return (
     <form onSubmit={submitForm} className="w-full">
-      <div className="whitespace-nowrap rounded-full border border-black/10 bg-white text-black shadow-lg shadow-neutral-900/5 transition-shadow hover:shadow hover:shadow-neutral-900/5">
+      <div className="whitespace-nowrap rounded-full border border-black/10 bg-white text-black shadow-lg shadow-neutral-900/5 transition-shadow hover:shadow hover:shadow-neutral-900/5 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50 dark:shadow-none">
         <div className="relative grid h-[var(--search-panel-height)] w-full grid-cols-1 items-center">
           <div className="grid h-full grid-cols-[33.333333%_33.333333%_33.333333%] items-center justify-center">
             <div className="relative h-full">
@@ -125,14 +125,14 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
                             Pick-up / Drop-off
                           </div>
                           {location ? (
-                            <p className="truncate font-semibold text-neutral-800">
+                            <p className="truncate font-semibold text-neutral-800 dark:text-neutral-200">
                               {
                                 locations.find((loc) => loc.slug === location)
                                   ?.name
                               }
                             </p>
                           ) : (
-                            <div className="text-neutral-500">
+                            <div className="text-neutral-500 dark:text-neutral-400">
                               Select location
                             </div>
                           )}
@@ -191,11 +191,11 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
                       <div className="flex size-full flex-col items-start justify-center truncate">
                         <div className="text-[13px] font-bold">Check in</div>
                         {checkInDate ? (
-                          <div className="font-semibold text-neutral-800">
+                          <div className="font-semibold text-neutral-800 dark:text-neutral-200">
                             {format(checkInDate, "LLL dd, y")}
                           </div>
                         ) : (
-                          <div className="truncate text-neutral-500">
+                          <div className="truncate text-neutral-500 dark:text-neutral-400">
                             Pick a date
                           </div>
                         )}
@@ -208,7 +208,11 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
                       selected={checkInDate}
                       onSelect={setCheckInDate}
                       initialFocus
-                      disabled={(date) => date <= addDays(new Date(), 1)}
+                      disabled={(date) => {
+                        const today = new Date()
+                        today.setHours(0, 0, 0, 0)
+                        return date < today
+                      }}
                     />
                   </PopoverContent>
                 </Popover>
@@ -225,11 +229,11 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
                       <div className="flex size-full flex-col items-start justify-center truncate">
                         <div className="text-[13px] font-bold">Check out</div>
                         {checkOutDate ? (
-                          <div className="font-semibold text-neutral-800">
+                          <div className="font-semibold text-neutral-800 dark:text-neutral-200">
                             {format(checkOutDate, "LLL dd, y")}
                           </div>
                         ) : (
-                          <div className="truncate text-neutral-500">
+                          <div className="truncate text-neutral-500 dark:text-neutral-400">
                             Pick a date
                           </div>
                         )}
@@ -242,7 +246,11 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
                       selected={checkOutDate}
                       onSelect={setCheckOutDate}
                       initialFocus
-                      disabled={(date) => date <= addDays(new Date(), 1)}
+                      disabled={(date) => {
+                        const today = new Date()
+                        today.setHours(0, 0, 0, 0)
+                        return date < today
+                      }}
                     />
                   </PopoverContent>
                 </Popover>
@@ -252,7 +260,7 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
           <div className="absolute right-2 z-20">
             <Button
               type="submit"
-              className="flex size-[calc(var(--search-panel-height)_-_1.25rem)] shrink-0 items-center justify-center rounded-full bg-black text-white"
+              className="flex size-[calc(var(--search-panel-height)_-_1.25rem)] shrink-0 items-center justify-center rounded-full bg-black text-white dark:bg-accent dark:text-accent-foreground"
             >
               <span className="sr-only">Search</span>
               <SearchIcon className="size-[calc((var(--search-panel-height)_-_1.25rem)/2.66)] shrink-0 [stroke-width:3px]" />
