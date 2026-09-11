@@ -344,6 +344,13 @@ export function StripePayment({
     <Elements
       stripe={stripePromise}
       options={{
+        /**
+         * Sin esto, Stripe usa el idioma del navegador y el formulario sale en
+         * castellano dentro de una tienda en inglés: "Número de tarjeta" debajo
+         * de "Card details". El día que la tienda hable varios idiomas, esto
+         * pasa a salir del idioma de la página, no de una constante.
+         */
+        locale: "en",
         appearance: {
           theme: "stripe",
           variables: {
