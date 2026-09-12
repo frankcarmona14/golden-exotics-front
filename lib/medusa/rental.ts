@@ -13,6 +13,17 @@ import type { RentalAvailabilityResponse } from "@/lib/types/rental"
 const MEDUSA_BACKEND_URL =
   process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
 
+/**
+ * State the cars are picked up from, as the ISO province code Medusa matches
+ * tax regions on.
+ *
+ * A car rental is taxed where the car is handed over, not where the renter
+ * lives, and there is a single pickup location (see "Decisiones cerradas" in
+ * the backlog) -- so this is a property of the business, not of the customer.
+ * The day a second pickup point opens, this stops being one value.
+ */
+const PICKUP_PROVINCE = (process.env.PICKUP_PROVINCE || "fl").toLowerCase()
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -303,9 +314,9 @@ function buildCreateCartBody({
   // optional, so we attach the name/phone we have and rely on the region's
   // default country.
   //
-  // NOTE: no `province` is sent, so only country-level tax regions match. A
-  // state-level rate (e.g. Florida) needs one, and deciding whose state it is
-  // -- the renter's or the pickup location's -- is open in P0-1.
+  // `province` is what makes a state-level tax region match (Medusa looks up
+  // regions by country_code + province_code). It is the pickup state, not the
+  // renter's -- only meaningful in the US, so it is left off anywhere else.
   if (countryCode) {
     const contact: CartContact = guest ?? customer ?? {}
     const address = {
@@ -313,6 +324,7 @@ function buildCreateCartBody({
       ...(contact.last_name ? { last_name: contact.last_name } : {}),
       ...(contact.phone ? { phone: contact.phone } : {}),
       country_code: countryCode,
+      ...(countryCode === "us" ? { province: PICKUP_PROVINCE } : {}),
     }
     body.billing_address = address
     body.shipping_address = address
