@@ -249,48 +249,69 @@ export interface GuestInfo {
   phone?: string
 }
 
+/** Name and phone of whoever is renting, guest or logged-in customer alike. */
+type CartContact = {
+  first_name?: string | null
+  last_name?: string | null
+  phone?: string | null
+}
+
 /**
  * Build the body for `POST /store/carts` for either a logged-in customer or
- * a guest. For guest checkouts we also attach `billing_address` and
- * `shipping_address` so Medusa can persist the name/phone on the order (the
- * auto-created guest customer only receives the email; the address fields
- * are what show up under the order details in admin).
+ * a guest.
+ *
+ * The address goes on **every** cart, not just guest ones. Two reasons:
+ *
+ * 1. Medusa resolves tax from `shipping_address.country_code`
+ *    (`getItemTaxLinesStep` returns no tax lines at all without it) and it
+ *    fails silently -- the order just comes out with zero tax. A logged-in
+ *    customer used to hit exactly that.
+ * 2. The address fields are what show up under the order details in admin.
+ *    A guest customer is auto-created with the email only, and a logged-in
+ *    customer's profile name never reached the order either.
  */
 function buildCreateCartBody({
   regionId,
   countryCode,
   email,
   guest,
+  customer,
 }: {
   regionId: string
   countryCode: string | null
   email: string
+  /** Set only when there is NO logged-in customer. */
   guest?: GuestInfo
-  /** true when there is NO logged-in customer and we should attach guest details */
+  customer?: CartContact | null
 }): Record<string, unknown> {
   const body: Record<string, unknown> = {
     region_id: regionId,
     email,
   }
 
-  if (!guest) return body
-
-  // Keep a copy in metadata for any backend subscriber/workflow that wants
-  // to propagate the name/phone onto the auto-created guest customer record.
-  body.metadata = {
-    guest_first_name: guest.first_name,
-    guest_last_name: guest.last_name,
-    ...(guest.phone ? { guest_phone: guest.phone } : {}),
+  if (guest) {
+    // Keep a copy in metadata for any backend subscriber/workflow that wants
+    // to propagate the name/phone onto the auto-created guest customer record.
+    body.metadata = {
+      guest_first_name: guest.first_name,
+      guest_last_name: guest.last_name,
+      ...(guest.phone ? { guest_phone: guest.phone } : {}),
+    }
   }
 
-  // Medusa v2 requires country_code on an address; other fields are
-  // optional. We only have name/phone for now, so we attach what we have
-  // and rely on the region's default country.
+  // Medusa v2 requires country_code on an address; every other field is
+  // optional, so we attach the name/phone we have and rely on the region's
+  // default country.
+  //
+  // NOTE: no `province` is sent, so only country-level tax regions match. A
+  // state-level rate (e.g. Florida) needs one, and deciding whose state it is
+  // -- the renter's or the pickup location's -- is open in P0-1.
   if (countryCode) {
+    const contact: CartContact = guest ?? customer ?? {}
     const address = {
-      first_name: guest.first_name,
-      last_name: guest.last_name,
-      ...(guest.phone ? { phone: guest.phone } : {}),
+      ...(contact.first_name ? { first_name: contact.first_name } : {}),
+      ...(contact.last_name ? { last_name: contact.last_name } : {}),
+      ...(contact.phone ? { phone: contact.phone } : {}),
       country_code: countryCode,
     }
     body.billing_address = address
@@ -396,6 +417,7 @@ export async function createRental(
           countryCode: region.country_code,
           email,
           guest: guest && !customer ? guest : undefined,
+          customer,
         }),
       }
     )
@@ -686,6 +708,7 @@ export async function prepareRentalCheckout(
         countryCode: region.country_code,
         email,
         guest: guest && !customer ? guest : undefined,
+        customer,
       }),
     })
     if (!cartRes.ok) {
