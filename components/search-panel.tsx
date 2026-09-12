@@ -102,7 +102,7 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
 
   return (
     <form onSubmit={submitForm} className="w-full">
-      <div className="whitespace-nowrap rounded-full border border-black/10 bg-white text-black shadow-lg shadow-neutral-900/5 transition-shadow hover:shadow hover:shadow-neutral-900/5 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50 dark:shadow-none">
+      <div className="whitespace-nowrap rounded-full border border-black/10 bg-white text-black shadow-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50">
         <div className="relative grid h-[var(--search-panel-height)] w-full grid-cols-1 items-center">
           <div className="grid h-full grid-cols-[33.333333%_33.333333%_33.333333%] items-center justify-center">
             <div className="relative h-full">
@@ -260,7 +260,7 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
           <div className="absolute right-2 z-20">
             <Button
               type="submit"
-              className="flex size-[calc(var(--search-panel-height)_-_1.25rem)] shrink-0 items-center justify-center rounded-full bg-black text-white dark:bg-accent dark:text-accent-foreground"
+              className="flex size-[calc(var(--search-panel-height)_-_1.25rem)] shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary-hover"
             >
               <span className="sr-only">Search</span>
               <SearchIcon className="size-[calc((var(--search-panel-height)_-_1.25rem)/2.66)] shrink-0 [stroke-width:3px]" />

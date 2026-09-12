@@ -18,7 +18,7 @@ export function CallToAction() {
             <div className="relative flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
               <div>
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent sm:text-xs">
-                  Start Now
+                  Start now
                 </p>
                 <h2 className="text-balance text-[24px] font-bold leading-tight tracking-tight text-white sm:text-[28px] md:text-[32px]">
                   Ready to Hit the Road?
@@ -30,7 +30,7 @@ export function CallToAction() {
               </div>
               <div className="shrink-0">
                 <Button
-                  className="rounded-full bg-accent px-7 py-6 text-[14px] font-bold text-accent-foreground shadow-[0_0_30px_rgba(248,227,63,0.3)] transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_0_40px_rgba(248,227,63,0.4)]"
+                  className="rounded-full bg-accent px-7 py-6 text-[14px] font-bold text-accent-foreground shadow-none transition-colors duration-300 hover:bg-accent-hover dark:shadow-[0_0_30px_rgba(248,227,63,0.3)] dark:hover:shadow-[0_0_40px_rgba(248,227,63,0.4)]"
                   asChild
                 >
                   <Link href="/cars">Explore Our Cars</Link>

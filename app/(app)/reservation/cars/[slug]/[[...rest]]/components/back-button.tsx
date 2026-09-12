@@ -33,6 +33,7 @@ export function BackButton({
       type="button"
       onClick={handleRedirect}
       className={className}
+      aria-label="Back to car"
     >
       {children}
     </Button>

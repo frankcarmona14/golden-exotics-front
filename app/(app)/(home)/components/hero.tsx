@@ -3,24 +3,18 @@ import { Suspense } from "react"
 import { SearchPanelWrapper } from "@/components/search-panel-wrapper"
 import { SearchPanelSkeleton } from "@/components/skeletons/search-panel"
 
+import { HeroVideo } from "./hero-video"
+
 export async function Hero() {
   return (
     <section className="relative">
       {/* Video background */}
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-neutral-900 sm:aspect-video lg:aspect-[21/9]">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 size-full scale-105 object-cover"
-        >
-          <source src="/assets/videos/header.mp4" type="video/mp4" />
-        </video>
+        <HeroVideo />
 
         {/* Multi-layer gradient overlays for cinematic feel */}
-        <div className="absolute inset-0 bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
+        <div className="absolute inset-0 bg-black/40 dark:bg-black/50" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent dark:to-black/70" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
 
         {/* Content overlay */}
@@ -33,7 +27,7 @@ export async function Hero() {
             Premium Car Rental
           </p> */}
 
-          <h1 className="text-center text-3xl font-bold tracking-tight text-white drop-shadow-2xl sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="text-center text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
             Your Road Trip
             <span className="block bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
               Starts Here
@@ -53,8 +47,8 @@ export async function Hero() {
           </div>
         </div>
 
-        {/* Bottom fade to page background */}
-        <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-white from-5% via-white/80 to-transparent dark:from-neutral-950 dark:via-neutral-950/80 sm:h-44" />
+        {/* Soft join into the page — dark only. In light it reads as a haze. */}
+        <div className="absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-neutral-950 from-5% via-neutral-950/80 to-transparent dark:block sm:h-44" />
       </div>
     </section>
   )

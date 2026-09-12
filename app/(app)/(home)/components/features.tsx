@@ -43,7 +43,7 @@ export function Features() {
       <div className="mx-auto max-w-none px-5 sm:max-w-[90%] sm:px-0 2xl:max-w-7xl">
         <FadeUp>
           <div className="text-center">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent sm:text-xs">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text sm:text-xs">
               Why Choose Us
             </p>
             <h2 className="text-balance text-[21px] font-bold tracking-tight sm:text-[24px] lg:text-[28px]">
@@ -58,7 +58,7 @@ export function Features() {
           >
             {features.map(({ icon: Icon, title, description, accent }, index) => (
               <StaggerItem key={index}>
-                <div className="group relative overflow-hidden rounded-2xl border border-neutral-100 bg-white p-7 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] dark:border-neutral-800 dark:bg-neutral-900 dark:hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)]">
+                <div className="group relative overflow-hidden rounded-2xl border border-neutral-100 bg-white p-7 transition-[transform,border-color] duration-300 hover:-translate-y-1 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)]">
                   {/* Accent glow on hover */}
                   <div
                     className="absolute -right-6 -top-6 size-24 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-20"

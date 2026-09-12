@@ -3,13 +3,23 @@
 import { useRef } from "react"
 import {
   motion,
+  MotionConfig,
   useInView,
+  useReducedMotion,
   useScroll,
   useTransform,
   type Variants,
 } from "framer-motion"
 
-// Fade up animation for sections
+export function MotionProvider({ children }: { children: React.ReactNode }) {
+  return <MotionConfig reducedMotion="user">{children}</MotionConfig>
+}
+
+function useRevealState() {
+  const reduceMotion = useReducedMotion()
+  return Boolean(reduceMotion)
+}
+
 export function FadeUp({
   children,
   delay = 0,
@@ -23,13 +33,16 @@ export function FadeUp({
 }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-60px" })
+  const reduceMotion = useRevealState()
+  const hidden = reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration, delay, ease: [0.25, 0.4, 0.25, 1] }}
+      data-motion=""
+      initial={hidden}
+      animate={isInView || reduceMotion ? { opacity: 1, y: 0 } : hidden}
+      transition={{ duration: reduceMotion ? 0 : duration, delay, ease: [0.25, 0.4, 0.25, 1] }}
       className={className}
     >
       {children}
@@ -37,7 +50,6 @@ export function FadeUp({
   )
 }
 
-// Staggered children animation
 export function StaggerContainer({
   children,
   className,
@@ -51,13 +63,14 @@ export function StaggerContainer({
 }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-60px" })
+  const reduceMotion = useRevealState()
 
   const containerVariants: Variants = {
     hidden: {},
     visible: {
       transition: {
-        staggerChildren: staggerDelay,
-        delayChildren: initialDelay,
+        staggerChildren: reduceMotion ? 0 : staggerDelay,
+        delayChildren: reduceMotion ? 0 : initialDelay,
       },
     },
   }
@@ -65,9 +78,10 @@ export function StaggerContainer({
   return (
     <motion.div
       ref={ref}
+      data-motion=""
       variants={containerVariants}
       initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
+      animate={isInView || reduceMotion ? "visible" : "hidden"}
       className={className}
     >
       {children}
@@ -82,23 +96,26 @@ export function StaggerItem({
   children: React.ReactNode
   className?: string
 }) {
+  const reduceMotion = useRevealState()
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 24 },
+    hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 24 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5, ease: [0.25, 0.4, 0.25, 1] },
+      transition: {
+        duration: reduceMotion ? 0 : 0.5,
+        ease: [0.25, 0.4, 0.25, 1],
+      },
     },
   }
 
   return (
-    <motion.div variants={itemVariants} className={className}>
+    <motion.div data-motion="" variants={itemVariants} className={className}>
       {children}
     </motion.div>
   )
 }
 
-// Scale in animation
 export function ScaleIn({
   children,
   delay = 0,
@@ -110,15 +127,22 @@ export function ScaleIn({
 }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-60px" })
+  const reduceMotion = useRevealState()
+  const hidden = reduceMotion
+    ? { opacity: 1, scale: 1 }
+    : { opacity: 0, scale: 0.92 }
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, scale: 0.92 }}
-      animate={
-        isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.92 }
-      }
-      transition={{ duration: 0.5, delay, ease: [0.25, 0.4, 0.25, 1] }}
+      data-motion=""
+      initial={hidden}
+      animate={isInView || reduceMotion ? { opacity: 1, scale: 1 } : hidden}
+      transition={{
+        duration: reduceMotion ? 0 : 0.5,
+        delay,
+        ease: [0.25, 0.4, 0.25, 1],
+      }}
       className={className}
     >
       {children}
@@ -126,7 +150,6 @@ export function ScaleIn({
   )
 }
 
-// Parallax scroll effect
 export function ParallaxSection({
   children,
   className,
@@ -137,11 +160,16 @@ export function ParallaxSection({
   speed?: number
 }) {
   const ref = useRef(null)
+  const reduceMotion = useRevealState()
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start end", "end start"],
   })
-  const y = useTransform(scrollYProgress, [0, 1], [0, speed * -100])
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduceMotion ? [0, 0] : [0, speed * -100]
+  )
 
   return (
     <motion.div ref={ref} style={{ y }} className={className}>
@@ -150,7 +178,6 @@ export function ParallaxSection({
   )
 }
 
-// Slide in from left/right
 export function SlideIn({
   children,
   direction = "left",
@@ -164,14 +191,21 @@ export function SlideIn({
 }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-60px" })
+  const reduceMotion = useRevealState()
   const x = direction === "left" ? -40 : 40
+  const hidden = reduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x }
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, x }}
-      animate={isInView ? { opacity: 1, x: 0 } : { opacity: 0, x }}
-      transition={{ duration: 0.6, delay, ease: [0.25, 0.4, 0.25, 1] }}
+      data-motion=""
+      initial={hidden}
+      animate={isInView || reduceMotion ? { opacity: 1, x: 0 } : hidden}
+      transition={{
+        duration: reduceMotion ? 0 : 0.6,
+        delay,
+        ease: [0.25, 0.4, 0.25, 1],
+      }}
       className={className}
     >
       {children}
@@ -179,7 +213,6 @@ export function SlideIn({
   )
 }
 
-// Counter animation for numbers
 export function AnimatedCounter({
   value,
   suffix = "",
@@ -193,17 +226,12 @@ export function AnimatedCounter({
 }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true })
-  const count = useTransform(
-    useScroll({ target: ref }).scrollYProgress,
-    [0, 0.5],
-    [0, value]
-  )
 
   return (
     <motion.span
       ref={ref}
-      initial={{ opacity: 0 }}
-      animate={isInView ? { opacity: 1 } : { opacity: 0 }}
+      data-motion=""
+      initial={{ opacity: 1 }}
       className={className}
     >
       {prefix}

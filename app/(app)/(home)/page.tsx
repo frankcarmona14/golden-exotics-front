@@ -6,7 +6,7 @@ import { Testimonials } from "./components/testimonials"
 export default function HomePage() {
   return (
     <>
-      <main>
+      <main id="main-content">
         <Hero />
         <div className="pt-14 lg:pt-16">
           <BrowseCarTypes />

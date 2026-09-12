@@ -52,6 +52,17 @@ export const convertImageUrlToDataUrl = async (
   }
 }
 
+export const formatTimeForDisplay = (time: string): string => {
+  const [hours = 0, minutes = 0] = time.split(":").map(Number)
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return time
+  const date = new Date()
+  date.setHours(hours, minutes, 0, 0)
+  return new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(date)
+}
+
 export const formatAmountForDisplay = (
   amount: number,
   currency: string,

@@ -20,7 +20,7 @@ export function PopularDestinations() {
         <FadeUp>
           <div className="flex items-end justify-between">
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent sm:text-xs">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text sm:text-xs">
                 Top Destinations
               </p>
               <h2 className="text-balance text-[21px] font-bold tracking-tight sm:text-[24px] lg:text-[28px]">
@@ -83,7 +83,7 @@ export function PopularDestinations() {
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
                       {/* Price badge */}
-                      <div className="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-neutral-900 shadow-lg backdrop-blur-sm dark:bg-black/70 dark:text-white">
+                      <div className="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-neutral-900 backdrop-blur-sm dark:bg-black/70 dark:text-white dark:shadow-lg">
                         from {formatAmountForDisplay(startingPrice, "usd")}
                       </div>
                     </div>

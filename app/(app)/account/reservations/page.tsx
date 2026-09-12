@@ -13,7 +13,7 @@ export default async function ReservationsPage() {
   return (
     <AccountShell>
       <header className="mb-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text">
           Bookings
         </p>
         <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">

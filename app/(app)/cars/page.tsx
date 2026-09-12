@@ -42,6 +42,7 @@ export default async function CarsPage({
                       variant="outline"
                       size="icon"
                       className="rounded-full"
+                      aria-label="Open filters"
                     >
                       <FiltersIcon className="size-5 shrink-0" />
                     </Button>
@@ -69,7 +70,7 @@ export default async function CarsPage({
           </div>
         </div>
       </header>
-      <main>
+      <main id="main-content">
         <div className="mx-auto flex max-w-7xl gap-6 px-5 pb-12 pt-8 sm:px-6 lg:gap-8">
           {/* Filters rail — desktop only (≥ md). Mobile uses the modal above. */}
           <aside className="hidden w-[300px] shrink-0 md:block">

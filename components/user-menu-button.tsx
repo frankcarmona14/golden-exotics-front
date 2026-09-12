@@ -22,7 +22,11 @@ export async function UserMenuButton() {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="link" className="p-1">
+        <Button
+          variant="link"
+          className="h-11 min-w-11 p-1"
+          aria-label="Open account menu"
+        >
           <div className="flex items-center justify-center text-neutral-800 dark:text-neutral-200">
             <MenuIcon className="mr-1.5 size-4 shrink-0" />
             <UserCircleIcon className="size-6 shrink-0 md:size-7 xl:size-[30px]" />
@@ -64,6 +68,15 @@ export async function UserMenuButton() {
           </>
         ) : (
           <>
+            <DropdownMenuGroup>
+              <DropdownMenuItem asChild>
+                <Link href="/cars">Cars</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
+                <Link href="/driver-requirements">Requirements</Link>
+              </DropdownMenuItem>
+            </DropdownMenuGroup>
+            <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <SignUpMenuLink>Sign up</SignUpMenuLink>

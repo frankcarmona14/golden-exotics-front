@@ -1,12 +1,14 @@
 export const dynamic = "force-dynamic"
 
 import { Metadata } from "next"
+import Link from "next/link"
 import { getCarBySlug } from "@/db/queries/car-repository"
 import { getCustomer } from "@/lib/medusa/customer"
 import { getRentalAvailability } from "@/lib/medusa/rental"
 import { differenceInDays, isValid } from "date-fns"
 
 import { SearchParams } from "@/lib/types"
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
 
@@ -68,8 +70,26 @@ export default async function CarReservationPage({
     throw new Error("Car is missing")
   }
 
-  if (!isValid(new Date(checkin)) || !isValid(new Date(checkout))) {
-    throw new Error("Invalid dates")
+  if (
+    !checkin ||
+    !checkout ||
+    !isValid(new Date(checkin)) ||
+    !isValid(new Date(checkout))
+  ) {
+    return (
+      <main id="main-content" className="mx-auto w-full max-w-2xl px-5 py-20">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Choose your dates
+        </h1>
+        <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+          This reservation is missing a check-in or check-out date. Pick your
+          trip dates on the car page to continue.
+        </p>
+        <Button className="mt-8" asChild>
+          <Link href={`/cars/${params.slug}`}>Back to {car.name}</Link>
+        </Button>
+      </main>
+    )
   }
 
   const checkinDate = new Date(checkin)
@@ -88,14 +108,25 @@ export default async function CarReservationPage({
     : differenceInDays(checkoutDate, checkinDate)
 
   if (days <= 0) {
-    throw new Error("Invalid date range selected")
+    return (
+      <main id="main-content" className="mx-auto w-full max-w-2xl px-5 py-20">
+        <h1 className="text-2xl font-semibold tracking-tight">
+          Invalid date range
+        </h1>
+        <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+          Check-out must be after check-in. Pick a new date range to continue.
+        </p>
+        <Button className="mt-8" asChild>
+          <Link href={`/cars/${params.slug}`}>Back to {car.name}</Link>
+        </Button>
+      </main>
+    )
   }
 
   const isRentable = car.rentalConfiguration?.status === "active"
   const customer = await getCustomer()
   const isLoggedIn = !!customer
 
-  // Build current URL for redirect after login
   const checkoutParams = new URLSearchParams({
     checkin,
     checkout,
@@ -135,85 +166,91 @@ export default async function CarReservationPage({
   const taxes =
     Number.isFinite(taxRate) && taxRate >= 0 ? subtotal * taxRate : 0
   const currency = car.currency
+  const customerName = customer?.first_name
+    ? `${customer.first_name} ${customer.last_name ?? ""}`.trim()
+    : null
 
   return (
     <GuestProvider>
-      {/* Phone and Tablets */}
-      <div className="md:hidden">
-        <div className="flex size-full flex-col">
-          <header className="sticky top-[var(--site-header-height)] z-40 border-b border-black/10 bg-white dark:border-neutral-800 dark:bg-neutral-950">
-            <div className="px-5">
-              <div className="relative flex h-[var(--site-header-height)] items-center">
-                <BackButton className="z-40 -ml-2">
+      <main id="main-content">
+        <div className="px-5 pb-16 md:py-16">
+          <div className="mx-auto max-w-none sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
+            <header className="sticky top-[var(--site-header-height)] z-40 -mx-5 mb-2 border-b border-black/10 bg-white px-5 dark:border-neutral-800 dark:bg-neutral-950 md:static md:z-auto md:mx-0 md:mb-12 md:border-0 md:bg-transparent md:px-0 md:dark:bg-transparent">
+              <div className="relative flex h-[var(--site-header-height)] items-center md:h-auto">
+                <BackButton className="z-40 -ml-2 md:-ml-12 md:mr-2">
                   <ChevronLeftIcon className="size-5 shrink-0" />
                 </BackButton>
-                <div className="absolute inset-0 flex items-center justify-center self-center">
-                  <h1 className="text-center text-base font-semibold">
-                    Confirm and pay
-                  </h1>
+                <h1 className="absolute inset-0 flex items-center justify-center text-base font-semibold md:static md:justify-start md:text-3xl">
+                  Confirm and pay
+                </h1>
+              </div>
+            </header>
+
+            <div className="grid grid-cols-1 md:grid-cols-[minmax(0,560px)_minmax(260px,465px)] md:items-start md:justify-between md:gap-x-14">
+              <aside className="md:sticky md:top-[calc(var(--site-header-height)+1.5rem)] md:col-start-2 md:row-span-2 md:rounded-xl md:border md:border-border">
+                <div className="py-3 md:p-6">
+                  <CarDetails
+                    car={car}
+                    checkinDate={checkinDate}
+                    checkoutDate={checkoutDate}
+                    checkinTime={checkinTime}
+                    checkoutTime={checkoutTime}
+                  />
+                  <Separator className="my-6 md:my-7" />
+                  <PriceDetails
+                    days={days}
+                    currency={currency}
+                    subtotal={subtotal}
+                    taxes={taxes}
+                    deposit={depositAmount}
+                  />
+                  {rentalAvailable && (
+                    <div
+                      role="status"
+                      className="mt-5 hidden rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-950/20 dark:text-green-400 md:block"
+                    >
+                      Available for your dates
+                    </div>
+                  )}
                 </div>
-              </div>
-            </div>
-          </header>
-          <main>
-            <div className="pb-10 pt-2">
-              <div className="px-5 py-3">
-                <CarDetails
-                  car={car}
-                  checkinDate={checkinDate}
-                  checkoutDate={checkoutDate}
-                  checkinTime={checkinTime}
-                  checkoutTime={checkoutTime}
-                />
-              </div>
-              <Separator className="my-3 h-[6px]" />
-              <div className="px-5 py-3">
+              </aside>
+
+              <Separator className="md:hidden" />
+
+              <section className="py-3 md:col-start-1 md:row-start-1 md:py-0">
                 <BookDetails
                   checkinDate={checkinDate}
                   checkoutDate={checkoutDate}
                   checkinTime={checkinTime}
                   checkoutTime={checkoutTime}
                 />
-              </div>
-              <Separator className="my-3 h-[6px]" />
-              <div className="px-5 py-3">
-                <PriceDetails
-                  days={days}
-                  currency={currency}
-                  subtotal={subtotal}
-                  taxes={taxes}
-                  deposit={depositAmount}
-                />
-              </div>
+              </section>
 
-              {!rentalAvailable && (
-                <>
-                  <Separator className="my-3 h-[6px]" />
-                  <div className="px-5 py-3">
-                    <div className="rounded-lg border border-red-500/50 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300">
-                      <p className="font-medium">Not available</p>
-                      <p className="mt-1">
-                        This car is not available for the selected dates. Please
-                        go back and choose different dates.
-                      </p>
-                    </div>
+              <section className="md:col-start-1 md:row-start-2">
+                <Separator className="my-3 md:my-7" />
+
+                {!rentalAvailable && (
+                  <div
+                    role="alert"
+                    className="rounded-lg border border-red-500/50 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300"
+                  >
+                    <p className="font-medium">Not available</p>
+                    <p className="mt-1">
+                      This car is not available for the selected dates. Please
+                      go back and choose different dates.
+                    </p>
                   </div>
-                </>
-              )}
+                )}
 
-              {rentalAvailable && (
-                <>
-                  <Separator className="my-3 h-[6px]" />
-                  <div className="px-5 py-3">
+                {rentalAvailable && (
+                  <>
                     <AuthSection
                       isLoggedIn={isLoggedIn}
-                      customerName={customer?.first_name ? `${customer.first_name} ${customer.last_name ?? ""}`.trim() : null}
+                      customerName={customerName}
                       customerEmail={customer?.email}
                       redirectTo={redirectTo}
                     />
-                  </div>
-                  <Separator className="my-3 h-[6px]" />
-                  <div className="px-5 py-3">
+                    <Separator className="my-7" />
                     {car.medusaProductId && car.medusaVariantId ? (
                       <ConfirmRental
                         productId={car.medusaProductId}
@@ -225,11 +262,7 @@ export default async function CarReservationPage({
                         rentalDays={days}
                         isLoggedIn={isLoggedIn}
                         customerEmail={customer?.email}
-                        customerName={
-                          customer?.first_name
-                            ? `${customer.first_name} ${customer.last_name ?? ""}`.trim()
-                            : null
-                        }
+                        customerName={customerName}
                         deposit={depositAmount}
                         currency={currency}
                       />
@@ -238,119 +271,13 @@ export default async function CarReservationPage({
                         This car cannot be reserved online (mock data).
                       </p>
                     )}
-                  </div>
-                </>
-              )}
-            </div>
-          </main>
-        </div>
-      </div>
-
-      {/* Desktop */}
-      <div className="hidden md:block">
-        <main>
-          <div className="px-5 py-16">
-            <div className="mx-auto sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
-              <div className="flex items-center">
-                <BackButton className="-ml-12 mr-2">
-                  <ChevronLeftIcon className="size-5 shrink-0" />
-                </BackButton>
-                <h1 className="text-balance text-3xl font-semibold">
-                  Confirm and pay
-                </h1>
-              </div>
-              <div className="py-12">
-                <div className="grid grid-cols-[minmax(400px,560px)_minmax(285px,465px)] items-start justify-between gap-x-14">
-                  <div>
-                    <BookDetails
-                      checkinDate={checkinDate}
-                      checkoutDate={checkoutDate}
-                      checkinTime={checkinTime}
-                      checkoutTime={checkoutTime}
-                    />
-                    <Separator className="my-7" />
-
-                    {!rentalAvailable && (
-                      <>
-                        <div className="rounded-lg border border-red-500/50 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300">
-                          <p className="font-medium">Not available</p>
-                          <p className="mt-1">
-                            This car is not available for the selected dates.
-                            Please go back and choose different dates.
-                          </p>
-                        </div>
-                        <Separator className="my-7" />
-                      </>
-                    )}
-
-                    {rentalAvailable && (
-                      <>
-                        <AuthSection
-                          isLoggedIn={isLoggedIn}
-                          customerName={customer?.first_name ? `${customer.first_name} ${customer.last_name ?? ""}`.trim() : null}
-                          customerEmail={customer?.email}
-                          redirectTo={redirectTo}
-                        />
-                        <Separator className="my-7" />
-                        {car.medusaProductId && car.medusaVariantId ? (
-                          <ConfirmRental
-                            productId={car.medusaProductId}
-                            variantId={car.medusaVariantId}
-                            startDate={checkin}
-                            endDate={checkout}
-                            startTime={checkinTime}
-                            endTime={checkoutTime}
-                            rentalDays={days}
-                            isLoggedIn={isLoggedIn}
-                            customerEmail={customer?.email}
-                            customerName={
-                              customer?.first_name
-                                ? `${customer.first_name} ${customer.last_name ?? ""}`.trim()
-                                : null
-                            }
-                            deposit={depositAmount}
-                            currency={currency}
-                          />
-                        ) : (
-                          <p className="text-sm text-neutral-500">
-                            This car cannot be reserved online (mock data).
-                          </p>
-                        )}
-                      </>
-                    )}
-                  </div>
-                  <aside className="sticky top-[var(--site-header-height)] rounded-xl border dark:border-neutral-800">
-                    <div className="p-6">
-                      <CarDetails
-                        car={car}
-                        checkinDate={checkinDate}
-                        checkoutDate={checkoutDate}
-                        checkinTime={checkinTime}
-                        checkoutTime={checkoutTime}
-                      />
-                      <Separator className="my-7" />
-                      <div className="hidden md:block">
-                        <PriceDetails
-                          days={days}
-                          currency={currency}
-                          subtotal={subtotal}
-                          taxes={taxes}
-                          deposit={depositAmount}
-                        />
-                      </div>
-                      {rentalAvailable && (
-                        <div className="mt-5 rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-950/20 dark:text-green-400">
-                          Available for your dates
-                        </div>
-                      )}
-                    </div>
-                  </aside>
-                </div>
-              </div>
+                  </>
+                )}
+              </section>
             </div>
           </div>
-        </main>
-      </div>
+        </div>
+      </main>
     </GuestProvider>
   )
 }

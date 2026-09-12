@@ -11,6 +11,7 @@ import { FilledStarIcon } from "@/components/icons/filled-star"
 
 interface CarCardProps {
   car: SelectCar
+  priority?: boolean
 }
 
 function CheckIcon({ className }: { className?: string }) {
@@ -37,7 +38,7 @@ function ArrowIcon({ className }: { className?: string }) {
   )
 }
 
-export function CarCard({ car }: CarCardProps) {
+export function CarCard({ car, priority = false }: CarCardProps) {
   const searchParams = useSearchParams()
 
   if (!car) return null
@@ -58,16 +59,16 @@ export function CarCard({ car }: CarCardProps) {
 
   return (
     <Link href={href} className="group block outline-none">
-      <article className="relative flex gap-4 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-4 transition-[box-shadow,border-color,transform] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:border-neutral-300 group-hover:shadow-[0_16px_40px_-18px_rgba(0,0,0,0.18)] group-focus-visible:ring-2 group-focus-visible:ring-accent dark:border-neutral-800 dark:bg-neutral-900 dark:group-hover:border-neutral-700 dark:group-hover:shadow-[0_16px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-6 sm:p-5">
+      <article className="relative flex items-start gap-4 overflow-hidden rounded-2xl border border-border bg-card p-4 transition-[border-color,transform] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:border-neutral-300 group-focus-visible:ring-2 group-focus-visible:ring-ring dark:group-hover:border-neutral-700 dark:group-hover:shadow-[0_16px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-5 sm:p-5">
         {/* Image */}
-        <div className="relative aspect-[4/3] w-32 shrink-0 self-stretch overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800 sm:w-48 lg:w-56">
+        <div className="relative aspect-[4/3] w-32 shrink-0 overflow-hidden rounded-xl bg-muted sm:w-40">
           <CldImage
             src={car.imageUrl}
             alt={car.name}
             fill
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-105 group-hover:will-change-transform"
-            sizes="(max-width: 640px) 128px, (max-width: 1128px) 192px, 224px"
-            priority
+            sizes="(max-width: 640px) 128px, 160px"
+            priority={priority}
           />
           {isRentable && (
             <span className="absolute left-2 top-2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
@@ -95,7 +96,7 @@ export function CarCard({ car }: CarCardProps) {
             )}
           </div>
 
-          <p className="mt-1 truncate text-[13px] capitalize text-neutral-500 dark:text-neutral-400 sm:text-sm">
+          <p className="mt-1 text-[13px] capitalize text-muted-foreground sm:text-sm">
             {specs.join(" · ")}
           </p>
 
@@ -107,7 +108,7 @@ export function CarCard({ car }: CarCardProps) {
           )}
 
           {/* Footer: price + CTA */}
-          <div className="mt-auto flex items-end justify-between gap-3 pt-3">
+          <div className="mt-3 flex items-end justify-between gap-3">
             <div className="flex items-baseline gap-1">
               <span className="text-[21px] font-bold tabular-nums leading-none tracking-tight sm:text-[24px]">
                 {formatAmountForDisplay(Number(car.pricePerDay), car.currency)}

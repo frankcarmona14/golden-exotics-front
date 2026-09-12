@@ -224,7 +224,7 @@ const mobileCalendarClassNames = {
   day: "h-full w-full rounded-md p-0 font-normal hover:bg-neutral-100 dark:hover:bg-neutral-800 aria-selected:opacity-100",
   day_range_end: "day-range-end",
   day_selected:
-    "bg-neutral-900 text-neutral-50 hover:bg-neutral-900 hover:text-neutral-50 focus:bg-neutral-900 focus:text-neutral-50 dark:bg-accent dark:text-accent-foreground dark:hover:bg-accent dark:hover:text-accent-foreground dark:focus:bg-accent dark:focus:text-accent-foreground",
+    "bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
   day_today:
     "bg-neutral-100 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-50",
   day_outside:
@@ -612,7 +612,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
         className={cn(
           "rounded-full px-2.5 py-1 text-[12px] font-semibold transition-colors",
           dateStep === "checkin"
-            ? "bg-neutral-900 text-white dark:bg-accent dark:text-accent-foreground"
+            ? "bg-primary text-primary-foreground"
             : "text-neutral-400 dark:text-neutral-500"
         )}
       >
@@ -633,7 +633,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
         className={cn(
           "rounded-full px-2.5 py-1 text-[12px] font-semibold transition-colors",
           dateStep === "checkout"
-            ? "bg-neutral-900 text-white dark:bg-accent dark:text-accent-foreground"
+            ? "bg-primary text-primary-foreground"
             : "text-neutral-400 dark:text-neutral-500"
         )}
       >

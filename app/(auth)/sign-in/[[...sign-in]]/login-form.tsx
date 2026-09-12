@@ -5,11 +5,13 @@ import { useFormState, useFormStatus } from "react-dom"
 import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 
+import { siteConfig } from "@/config/site"
 import { login } from "@/lib/medusa/customer"
 import { LoadingDots } from "@/components/loading-dots"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Separator } from "@/components/ui/separator"
 import { CarhiveLogoNew } from "@/components/icons/carhive-logo-new"
 
@@ -51,7 +53,7 @@ export function LoginForm() {
   return (
     <div className="w-full max-w-[440px]">
       {/* Card container */}
-      <div className="rounded-2xl border border-neutral-200 bg-white px-8 pb-8 pt-10 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
+      <div className="rounded-2xl border border-neutral-200 bg-white px-8 pb-8 pt-10 shadow-none dark:border-neutral-800 dark:bg-neutral-950">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
           <Link href="/" aria-label="Back to home">
@@ -72,7 +74,10 @@ export function LoginForm() {
         {/* Form */}
         <form action={formAction} className="space-y-4">
           {state.error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400">
+            <div
+              role="alert"
+              className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400"
+            >
               {state.error}
             </div>
           )}
@@ -88,18 +93,26 @@ export function LoginForm() {
               placeholder="you@email.com"
               required
               autoComplete="email"
+              spellCheck={false}
               className="h-11"
             />
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-[13px]">
-              Password
-            </Label>
-            <Input
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password" className="text-[13px]">
+                Password
+              </Label>
+              <a
+                href={`mailto:${siteConfig.contact.email}?subject=Password%20reset`}
+                className="text-[12px] font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+              >
+                Forgot password?
+              </a>
+            </div>
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               placeholder="••••••••"
               required
               autoComplete="current-password"

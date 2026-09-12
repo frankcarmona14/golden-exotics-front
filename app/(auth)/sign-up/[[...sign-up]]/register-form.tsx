@@ -10,6 +10,7 @@ import { LoadingDots } from "@/components/loading-dots"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { PasswordInput } from "@/components/ui/password-input"
 import { PhoneInput } from "@/components/ui/phone-input"
 import { Separator } from "@/components/ui/separator"
 import { CarhiveLogoNew } from "@/components/icons/carhive-logo-new"
@@ -52,7 +53,7 @@ export function RegisterForm() {
   return (
     <div className="w-full max-w-[440px]">
       {/* Card container */}
-      <div className="rounded-2xl border border-neutral-200 bg-white px-8 pb-8 pt-10 shadow-sm dark:border-neutral-800 dark:bg-neutral-950">
+      <div className="rounded-2xl border border-neutral-200 bg-white px-8 pb-8 pt-10 shadow-none dark:border-neutral-800 dark:bg-neutral-950">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
           <Link href="/" aria-label="Back to home">
@@ -73,7 +74,10 @@ export function RegisterForm() {
         {/* Form */}
         <form action={formAction} className="space-y-4">
           {state.error && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400">
+            <div
+              role="alert"
+              className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400"
+            >
               {state.error}
             </div>
           )}
@@ -120,6 +124,7 @@ export function RegisterForm() {
               placeholder="you@email.com"
               required
               autoComplete="email"
+              spellCheck={false}
               className="h-11"
             />
           </div>
@@ -141,10 +146,9 @@ export function RegisterForm() {
             <Label htmlFor="password" className="text-[13px]">
               Password
             </Label>
-            <Input
+            <PasswordInput
               id="password"
               name="password"
-              type="password"
               placeholder="••••••••"
               required
               autoComplete="new-password"

@@ -150,6 +150,8 @@ function CheckoutForm({
                 type="email"
                 id="email"
                 name="email"
+                autoComplete="email"
+                spellCheck={false}
                 onChange={handleInputChange}
                 className="h-12 text-base"
                 required

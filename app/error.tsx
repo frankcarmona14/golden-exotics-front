@@ -21,7 +21,10 @@ export default function Error({
     <div className="[--site-header-height:60px]">
       <AppChromeHeader />
       <div className="mx-auto w-full max-w-none px-5 sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
-        <main className="flex w-full flex-col items-center justify-center gap-4 py-52">
+        <main
+          id="main-content"
+          className="flex w-full flex-col items-center justify-center gap-4 py-52"
+        >
           <h2 className="text-center text-2xl font-bold">
             Something went wrong!
           </h2>

@@ -34,7 +34,7 @@ export function LegalPage({
 
       {/* Header */}
       <header className="mb-10 border-b border-neutral-200 pb-8 dark:border-neutral-800">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-accent-foreground/50 dark:text-neutral-500">
+        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-accent-text">
           Legal
         </p>
         <h1 className="text-balance text-3xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 sm:text-4xl lg:text-5xl">

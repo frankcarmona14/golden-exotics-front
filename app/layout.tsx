@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next"
 
+import { MotionProvider } from "@/components/motion"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
 
@@ -51,6 +52,10 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
 }
 
 interface RootLayoutProps {
@@ -60,15 +65,30 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en" className={fontSans.variable} suppressHydrationWarning>
-      <body className="flex min-h-screen flex-col bg-white text-neutral-950 dark:bg-neutral-950 dark:text-neutral-50">
+      <head>
+        {/* Scroll-reveal wrappers ship with opacity:0 and are revealed by JS.
+            Without JS they would never appear. */}
+        <noscript>
+          <style>{`[data-motion]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+      </head>
+      <body className="flex min-h-screen flex-col bg-background text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          {children}
-          <Toaster />
+          <MotionProvider>
+            <a
+              href="#main-content"
+              className="sr-only rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[200] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              Skip to main content
+            </a>
+            {children}
+            <Toaster />
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>

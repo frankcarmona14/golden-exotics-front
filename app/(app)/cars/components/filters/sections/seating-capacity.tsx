@@ -48,8 +48,9 @@ export function SeatingCapacityFilters({
             onClick={handleMinusClick}
             variant={"outline"}
             size={"icon"}
-            className="size-9 shrink-0 border-neutral-400 text-neutral-600 hover:border-black hover:bg-neutral-50 disabled:border-black/20 disabled:text-neutral-400 dark:border-neutral-600 dark:text-neutral-300 dark:hover:border-neutral-400 dark:hover:bg-neutral-800 dark:disabled:border-white/15 dark:disabled:text-neutral-600"
+            className="size-11 shrink-0 border-neutral-400 text-neutral-600 hover:border-black hover:bg-neutral-50 disabled:border-black/20 disabled:text-neutral-400 dark:border-neutral-600 dark:text-neutral-300 dark:hover:border-neutral-400 dark:hover:bg-neutral-800 dark:disabled:border-white/15 dark:disabled:text-neutral-600"
             disabled={counter <= 0}
+            aria-label="Decrease seats"
           >
             <MinusIcon className="inline size-4 shrink-0" />
           </Button>
@@ -66,8 +67,9 @@ export function SeatingCapacityFilters({
             onClick={handlePlusClick}
             variant={"outline"}
             size={"icon"}
-            className="size-9 shrink-0 border-neutral-400 text-neutral-600 hover:border-black hover:bg-neutral-50 disabled:border-black/20 disabled:text-neutral-400 dark:border-neutral-600 dark:text-neutral-300 dark:hover:border-neutral-400 dark:hover:bg-neutral-800 dark:disabled:border-white/15 dark:disabled:text-neutral-600"
+            className="size-11 shrink-0 border-neutral-400 text-neutral-600 hover:border-black hover:bg-neutral-50 disabled:border-black/20 disabled:text-neutral-400 dark:border-neutral-600 dark:text-neutral-300 dark:hover:border-neutral-400 dark:hover:bg-neutral-800 dark:disabled:border-white/15 dark:disabled:text-neutral-600"
             disabled={counter >= 7}
+            aria-label="Increase seats"
           >
             <PlusIcon className="inline size-4 shrink-0" />
           </Button>

@@ -24,7 +24,7 @@ export function BrowseCarTypes() {
         <FadeUp>
           <div className="flex items-end justify-between">
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent sm:text-xs">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text sm:text-xs">
                 Explore Brands
               </p>
               <h2 className="text-balance text-[21px] font-bold tracking-tight sm:text-[24px] lg:text-[28px]">
@@ -42,11 +42,9 @@ export function BrowseCarTypes() {
 
         <div className="pt-7">
           <div className="relative">
-            <div className="before:pointer-events-none before:absolute before:-left-1 before:top-0 before:z-10 before:h-full before:w-[7%] before:bg-gradient-to-r before:from-white before:content-[''] dark:before:from-neutral-950 lg:before:-left-10" />
-            <div className="after:pointer-events-none after:absolute after:right-0 after:top-0 after:z-10 after:h-full after:w-[7%] after:bg-gradient-to-l after:from-white after:content-[''] dark:after:from-neutral-950 lg:after:-right-5" />
             <Carousel>
               <CarouselContent className="m-0 space-x-4 sm:space-x-5">
-                {carBrands.map(({ id, slug, name, tagline, gradientFrom, gradientTo, logoColor }, index) => {
+                {carBrands.map(({ id, name, tagline, gradientFrom, gradientTo, logoColor }) => {
                   return (
                     <CarouselItem
                       key={id}
@@ -58,11 +56,11 @@ export function BrowseCarTypes() {
                         asChild
                       >
                         <Link
-                          href={{
-                            pathname: "/cars",
-                          }}
+                          href="/cars"
                           className="absolute inset-0 z-20 size-full rounded-2xl"
-                        />
+                        >
+                          <span className="sr-only">Browse {name} cars</span>
+                        </Link>
                       </Button>
                       <div
                         className="relative aspect-[3/4] overflow-hidden rounded-2xl border border-white/[0.06] transition-transform duration-500 ease-out hover:scale-[1.02]"
@@ -87,9 +85,9 @@ export function BrowseCarTypes() {
                             <div
                               className="mb-3 inline-flex items-center rounded-full border px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.2em]"
                               style={{
-                                borderColor: `${logoColor}30`,
-                                color: logoColor,
-                                background: `${logoColor}10`,
+                                borderColor: "rgba(255,255,255,0.28)",
+                                color: "#fafafa",
+                                background: "rgba(0,0,0,0.28)",
                               }}
                             >
                               Premium
@@ -107,13 +105,7 @@ export function BrowseCarTypes() {
 
                             {/* CTA */}
                             <div className="mt-5 flex items-center gap-2">
-                              <span
-                                className="inline-flex items-center rounded-full px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider text-white transition-all duration-300"
-                                style={{
-                                  background: `${logoColor}20`,
-                                  borderColor: `${logoColor}30`,
-                                }}
-                              >
+                              <span className="inline-flex items-center rounded-full bg-white px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider text-neutral-950 transition-[transform,background-color] duration-300">
                                 Explore →
                               </span>
                             </div>

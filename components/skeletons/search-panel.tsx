@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function SearchPanelSkeleton() {
   return (
-    <div className="w-full whitespace-nowrap rounded-full border border-black/10 bg-white shadow-lg shadow-neutral-900/5">
+    <div className="w-full whitespace-nowrap rounded-full border border-black/10 bg-white shadow-none dark:border-neutral-800 dark:bg-neutral-900">
       <div className="relative grid h-[var(--search-panel-height)] w-full grid-cols-1 items-center">
         <div className="grid h-full grid-cols-[33.333333%_33.333333%_33.333333%] items-center justify-center">
           <div className="relative h-full">

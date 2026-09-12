@@ -16,10 +16,12 @@ export function CarhiveLogoNew({
   return (
     <Image
       src="/logo.svg"
-      alt="CarHive"
+      alt="Golden Exotics"
       width={width}
       height={height}
-      className={className}
+      className={["brightness-0 dark:brightness-100", className]
+        .filter(Boolean)
+        .join(" ")}
       priority={priority}
     />
   );

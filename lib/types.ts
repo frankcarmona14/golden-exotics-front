@@ -13,4 +13,5 @@ export enum SearchParams {
   POWERTRAIN = "powertrain",
   MIN_SEATS = "min-seats",
   TRANSMISSION = "transmission",
+  SORT = "sort",
 }

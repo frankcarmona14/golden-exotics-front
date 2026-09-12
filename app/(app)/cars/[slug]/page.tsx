@@ -51,6 +51,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
 
   return (
     <main
+      id="main-content"
       className="[--content-padding-y:32px] [--reserve-card-width:370px] md:[--content-padding-y:56px]"
       style={
         {
@@ -60,7 +61,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
       }
     >
       <div className="mx-auto w-full max-w-none p-0 md:max-w-[90%] xl:max-w-6xl">
-        <div className="hidden md:block md:pt-8">
+        <div className="px-5 pt-6 md:px-0 md:pt-8">
           <h1 className="text-balance text-2xl font-semibold">{car.name}</h1>
         </div>
         <div className="md:pt-4">
@@ -138,8 +139,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
         <div className="mx-auto w-full max-w-none px-5 sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
           <div className="grid w-full grid-cols-1 gap-24 md:grid-cols-[1fr_auto]">
             <div className="text-balance">
-              <h1 className="text-2xl font-semibold md:hidden">{car.name}</h1>
-              <div className="flex flex-wrap items-center gap-1 text-[13px] capitalize text-neutral-800 lg:text-[15px]">
+              <div className="flex flex-wrap items-center gap-1 text-[13px] capitalize text-neutral-800 dark:text-neutral-200 lg:text-[15px]">
                 <span>{car.seats} seats</span>
                 <span className="text-xl">·</span>
                 <span>{car.powertrain}</span>
@@ -152,20 +152,24 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                   </>
                 )}
               </div>
-              <div className="pt-1">
-                <div className="flex items-center gap-1 text-[15px] font-medium lg:text-[16px]">
-                  <div className="flex items-center gap-1 ">
-                    <FilledStarIcon className="inline-flex size-[15px] shrink-0" />
-                    <span className=" tabular-nums">{car.rating}</span>
+              {Number(car.rating) > 0 && (
+                <div className="pt-1">
+                  <div className="flex items-center gap-1 text-[15px] font-medium lg:text-[16px]">
+                    <div className="flex items-center gap-1">
+                      <FilledStarIcon className="inline-flex size-[15px] shrink-0" />
+                      <span className="tabular-nums">{car.rating}</span>
+                    </div>
+                    {Number(car.reviewCount) > 0 && (
+                      <>
+                        <span className="text-xl">·</span>
+                        <span className="text-neutral-800 dark:text-neutral-200">
+                          {car.reviewCount} reviews
+                        </span>
+                      </>
+                    )}
                   </div>
-                  <span className="text-xl">·</span>
-                  {Number(car.reviewCount) > 0 && (
-                    <span className="text-neutral-800">
-                      {car.reviewCount} reviews
-                    </span>
-                  )}
                 </div>
-              </div>
+              )}
 
               {/* Mobile: inline reserve card */}
               <div className="mt-6 md:hidden">
@@ -179,7 +183,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                   <NavigationIcon className="size-6 shrink-0" />
                   <div className="flex flex-col">
                     <p className="font-semibold">Onboard Navigation System</p>
-                    <p className="mt-0.5 text-[14px] leading-5 text-neutral-600">
+                    <p className="mt-0.5 text-[14px] leading-5 text-muted-foreground">
                       A car equipped with a GPS navigation system to help you
                       find your way with ease.
                     </p>
@@ -189,7 +193,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                   <HeadsetIcon className="size-6 shrink-0" />
                   <div className="flex flex-col">
                     <p className="font-semibold">24/7 Roadside Assistance</p>
-                    <p className="mt-0.5 text-[14px] leading-5 text-neutral-600">
+                    <p className="mt-0.5 text-[14px] leading-5 text-muted-foreground">
                       Access to round-the-clock roadside support for any
                       emergencies or breakdowns.
                     </p>
@@ -199,7 +203,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                   <WifiIcon className="size-6 shrink-0" />
                   <div className="flex flex-col">
                     <p className="font-semibold">Free Wi-Fi in the Car</p>
-                    <p className="mt-0.5 text-[14px] leading-5 text-neutral-600">
+                    <p className="mt-0.5 text-[14px] leading-5 text-muted-foreground">
                       Enjoy complimentary Wi-Fi access during your drive to stay
                       connected on the go.
                     </p>
@@ -211,7 +215,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                     <p className="font-semibold">
                       Child Safety Seats Available
                     </p>
-                    <p className="mt-0.5 text-[14px] leading-5 text-neutral-600">
+                    <p className="mt-0.5 text-[14px] leading-5 text-muted-foreground">
                       Optional child safety seats are available to ensure the
                       safety of your little ones.
                     </p>
@@ -222,7 +226,9 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
               <Separator className="my-10" />
 
               <div className="mt-10 space-y-6">
-                <p className="text-neutral-800">{car.description}</p>
+                <p className="text-neutral-800 dark:text-neutral-200">
+                  {car.description}
+                </p>
               </div>
 
               <Separator className="my-12" />
@@ -238,7 +244,9 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                       className="flex flex-row items-center gap-4"
                     >
                       <CheckIcon className="size-4 shrink-0 [stroke-width:2.5px]" />
-                      <p className="text-neutral-700">{feature}</p>
+                      <p className="text-neutral-700 dark:text-neutral-300">
+                        {feature}
+                      </p>
                     </div>
                   ))}
                 </div>

@@ -5,6 +5,7 @@ import { SearchParams } from "@/lib/types"
 import { slugify } from "@/lib/utils"
 
 import { CarCard } from "./car-card"
+import { CatalogSort } from "./catalog-sort"
 
 interface CarCatalogProps {
   searchParams: {
@@ -18,6 +19,7 @@ interface CarCatalogProps {
     [SearchParams.CHECKOUT]?: string
     [SearchParams.CHECKIN_TIME]?: string
     [SearchParams.CHECKOUT_TIME]?: string
+    [SearchParams.SORT]?: string
   }
 }
 
@@ -35,6 +37,7 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
     [SearchParams.CHECKOUT]: checkout,
     [SearchParams.CHECKIN_TIME]: checkinTime,
     [SearchParams.CHECKOUT_TIME]: checkoutTime,
+    [SearchParams.SORT]: sort,
   } = searchParams
 
   const filteredCars = cars.filter((car) => {
@@ -76,11 +79,18 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
     availableCars = filteredCars.filter((_, i) => checks[i])
   }
 
-  if (!availableCars.length)
+  const sortedCars = [...availableCars].sort((a, b) => {
+    if (sort === "price-asc") return Number(a.pricePerDay) - Number(b.pricePerDay)
+    if (sort === "price-desc") return Number(b.pricePerDay) - Number(a.pricePerDay)
+    if (sort === "name") return a.name.localeCompare(b.name)
+    return 0
+  })
+
+  if (!sortedCars.length)
     return (
       <div className="col-span-full text-balance">
         <h1 className="text-xl font-semibold">No exact matches</h1>
-        <p className="mt-3 text-slate-700 dark:text-neutral-400">
+        <p className="mt-3 text-muted-foreground">
           {hasDateRange
             ? "No cars are available for the selected dates. Try different dates or adjust your filters."
             : "Try changing or removing some of your filters."}
@@ -88,11 +98,25 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
       </div>
     )
 
+  const countLabel =
+    sortedCars.length === 1 ? "1 car" : `${sortedCars.length} cars`
+
   return (
     <>
-      {availableCars.map((car) => (
-        <CarCard key={car.id} car={car} />
-      ))}
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            Available cars
+          </h1>
+          <p className="mt-1 text-[14px] text-muted-foreground">{countLabel}</p>
+        </div>
+        <CatalogSort />
+      </div>
+      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+        {sortedCars.map((car, index) => (
+          <CarCard key={car.id} car={car} priority={index < 2} />
+        ))}
+      </div>
     </>
   )
 }
