@@ -489,7 +489,10 @@ export function ReserveCard({ car }: ReserveCardProps) {
     params.set(SearchParams.CHECKIN_TIME, checkinTime)
     params.set(SearchParams.CHECKOUT_TIME, checkoutTime)
 
-    router.push(`/reservation/cars/${car.slug}?${params.toString()}`)
+    // Al paso de extras, no directo al pago. Si este coche no tiene extras, esa
+    // pantalla redirige sola al checkout: quien sabe si los hay es el servidor,
+    // y esta tarjeta no debería tener que averiguarlo.
+    router.push(`/reservation/cars/${car.slug}/extras?${params.toString()}`)
   }
 
   /* ---- date range flow ---- */

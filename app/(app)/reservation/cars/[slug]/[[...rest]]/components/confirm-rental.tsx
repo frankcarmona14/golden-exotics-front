@@ -11,7 +11,6 @@ import { CancellationPolicy } from "./cancellation-policy"
 import { LegalNotice } from "./legal-notice"
 import { LicenseConfirmation } from "./license-confirmation"
 import { StripePayment } from "./stripe-payment"
-import { useAddons } from "./addons-context"
 import { useGuest } from "./guest-context"
 
 interface ConfirmRentalProps {
@@ -27,6 +26,14 @@ interface ConfirmRentalProps {
   customerName?: string | null
   deposit?: number | null
   currency?: string
+  /**
+   * Extras ya elegidos, cerrados en el paso anterior.
+   *
+   * Solo códigos y cantidades: el precio lo resuelve el backend contra su base
+   * de datos. Aquí no se pueden cambiar — cambiarlos obligaría a rehacer el
+   * carrito, y rehacerlo suelta el hold del coche que se está pagando.
+   */
+  addons?: { code: string; quantity?: number }[]
 }
 
 export function ConfirmRental({
@@ -42,10 +49,10 @@ export function ConfirmRental({
   customerName,
   deposit,
   currency,
+  addons,
 }: ConfirmRentalProps) {
   const router = useRouter()
   const { guest } = useGuest()
-  const { selection } = useAddons()
   const [error, setError] = useState<string | null>(null)
   const [isCompleting, setIsCompleting] = useState(false)
   const [acceptedDriverLicense, setAcceptedDriverLicense] = useState(false)
@@ -76,12 +83,7 @@ export function ConfirmRental({
     // partial content before the prepare() effect kicks in).
     status: isLoggedIn ? "loading" : "idle",
   }))
-  /**
-   * Con qué selección de extras se preparó el carrito actual.
-   *
-   * `null` = todavía no se ha preparado ninguno.
-   */
-  const preparedForRef = useRef<string | null>(null)
+  const preparedRef = useRef(false)
 
   const rentalInput = {
     product_id: productId,
@@ -92,18 +94,17 @@ export function ConfirmRental({
     ...(rentalDays != null && rentalDays > 0 && { rental_days: rentalDays }),
     // Solo códigos y cantidades. El precio lo resuelve el backend contra su
     // base de datos; desde aquí no viaja ninguno.
-    ...(selection.length ? { addons: selection } : {}),
+    ...(addons?.length ? { addons } : {}),
   }
 
   /**
-   * Huella de los extras elegidos.
+   * Huella de la selección, para las dependencias de `prepare`.
    *
-   * El carrito se prepara una sola vez, así que si el cliente cambia de extras
-   * después habría que cobrar un carrito que ya no corresponde a lo que ve en
-   * pantalla. Comparar la huella permite rehacerlo cuando cambia de verdad, sin
-   * rehacerlo en cada render.
+   * `addons` es un array: su identidad cambia en cada render, así que meterlo
+   * en las deps recrearía `prepare` continuamente. La huella es una cadena
+   * estable que solo cambia cuando cambia la selección de verdad.
    */
-  const selectionKey = selection
+  const selectionKey = (addons ?? [])
     .map((addon) => `${addon.code}:${addon.quantity ?? 1}`)
     .sort()
     .join(",")
@@ -131,9 +132,8 @@ export function ConfirmRental({
         disclosure: result.cardWillBeSaved ? result.disclosure : null,
       })
     })
-  // `selectionKey` es obligatorio aquí: sin él, `prepare` queda capturado con el
-  // `rentalInput` del render anterior y al cambiar de extras se prepararía el
-  // carrito con la selección vieja.
+  // `selectionKey` va aquí porque `rentalInput` lo captura: sin él, `prepare`
+  // se quedaría con la selección del primer render.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     productId,
@@ -149,20 +149,19 @@ export function ConfirmRental({
 
   useEffect(() => {
     if (!isIdentified) {
-      preparedForRef.current = null
+      preparedRef.current = false
       setCheckoutState((prev) =>
         prev.status === "idle" ? prev : { status: "idle" }
       )
       return
     }
-    // Se rehace el carrito cuando cambian los extras: si no, se cobraría uno
-    // que ya no coincide con el desglose que el cliente tiene delante.
-    // `prepareRentalCheckout` abandona el carrito anterior antes de crear el
-    // nuevo, así que el coche no se queda retenido dos veces.
-    if (preparedForRef.current === selectionKey) return
-    preparedForRef.current = selectionKey
+    // Una sola vez. Los extras ya vienen cerrados del paso anterior, así que no
+    // hay nada que pueda obligar a rehacer el carrito — y rehacerlo suelta el
+    // hold del coche que se está pagando.
+    if (preparedRef.current) return
+    preparedRef.current = true
     prepare()
-  }, [isIdentified, prepare, selectionKey])
+  }, [isIdentified, prepare])
 
   const handleConfirmWithoutStripe = async () => {
     if (!checkoutState.cartId) return
@@ -248,7 +247,7 @@ export function ConfirmRental({
             size="sm"
             className="mt-3"
             onClick={() => {
-              preparedForRef.current = selectionKey
+              preparedRef.current = true
               prepare()
             }}
           >

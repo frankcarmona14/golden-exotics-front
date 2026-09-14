@@ -6,6 +6,7 @@ import {
   getRentalCartId,
   setRentalCartId,
 } from "./rental-cart"
+import { serializeAddonSelection } from "./addons"
 import { translateRentalError } from "./rental-errors"
 import { getMedusaDefaultRegion } from "./store"
 import type {
@@ -138,18 +139,6 @@ export async function getRentalAddons(
   return data.rental_addons ?? []
 }
 
-/** `[{ code: "wifi", quantity: 2 }]` -> `"wifi:2"`, el formato que espera la API. */
-function serializeAddons(addons: RentalAddonSelection[] | undefined): string {
-  return (addons ?? [])
-    .filter((addon) => (addon.quantity ?? 1) > 0)
-    .map((addon) =>
-      addon.quantity && addon.quantity !== 1
-        ? `${addon.code}:${addon.quantity}`
-        : addon.code
-    )
-    .join(",")
-}
-
 // ---------------------------------------------------------------------------
 // Rental availability
 // ---------------------------------------------------------------------------
@@ -186,7 +175,7 @@ export async function getRentalAvailability({
   })
   if (currencyCode) params.set("currency_code", currencyCode)
 
-  const addonsParam = serializeAddons(addons)
+  const addonsParam = serializeAddonSelection(addons)
   if (addonsParam) params.set("addons", addonsParam)
 
   // Sin esto, el cliente que ya tiene el coche retenido se ve a sí mismo como

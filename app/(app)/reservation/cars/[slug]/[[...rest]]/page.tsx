@@ -4,7 +4,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { getCarBySlug } from "@/db/queries/car-repository"
 import { getCustomer } from "@/lib/medusa/customer"
-import { getRentalAddons, getRentalAvailability } from "@/lib/medusa/rental"
+import { getRentalAvailability } from "@/lib/medusa/rental"
 import { differenceInDays, isValid } from "date-fns"
 
 import { SearchParams } from "@/lib/types"
@@ -12,10 +12,9 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
 
-import type { RentalAddon, RentalPriceBreakdown } from "@/lib/types/rental"
+import { parseAddonSelection } from "@/lib/medusa/addons"
+import type { RentalPriceBreakdown } from "@/lib/types/rental"
 
-import { AddonsProvider } from "./components/addons-context"
-import { AddonsSection } from "./components/addons-section"
 import { AuthSection } from "./components/auth-section"
 import { BackButton } from "./components/back-button"
 import { BookDetails } from "./components/book-details"
@@ -55,6 +54,8 @@ interface CarReservationPageProps {
     [SearchParams.CHECKOUT]: string
     [SearchParams.CHECKIN_TIME]?: string
     [SearchParams.CHECKOUT_TIME]?: string
+    /** Extras elegidos en el paso anterior, como `codigo:cantidad` por comas. */
+    addons?: string
   }
 }
 
@@ -67,6 +68,7 @@ export default async function CarReservationPage({
     checkout,
     checkin_time: checkinTimeParam,
     checkout_time: checkoutTimeParam,
+    addons: addonsParam,
   } = searchParams
   const car = await getCarBySlug(params.slug)
 
@@ -139,30 +141,33 @@ export default async function CarReservationPage({
   })
   const redirectTo = `/reservation/cars/${params.slug}?${checkoutParams}`
 
+  /**
+   * Extras ya elegidos en el paso anterior.
+   *
+   * Aquí la selección está **cerrada**: se cotiza y se cobra con ella, pero no
+   * se puede cambiar. Cambiarla en esta pantalla obligaría a rehacer el carrito,
+   * y rehacer el carrito suelta el hold del coche que se está pagando.
+   */
+  const selectedAddons = parseAddonSelection(addonsParam)
+
   let rentalAvailable = true
   let rentalTotalFromApi: number | null = null
   let depositAmount: number | null = null
   let breakdown: RentalPriceBreakdown | null = null
-  let addons: RentalAddon[] = []
 
   if (isRentable && car.medusaProductId && car.medusaVariantId) {
-    // La cotización y el catálogo de extras son independientes: van en paralelo
-    // para no encadenar dos viajes al backend antes del primer pintado.
-    const [availability, availableAddons] = await Promise.all([
-      getRentalAvailability({
-        productId: car.medusaProductId,
-        variantId: car.medusaVariantId,
-        startDate: checkin,
-        endDate: checkout,
-        startTime: checkinTime,
-        endTime: checkoutTime,
-        currencyCode: car.currency,
-      }),
-      getRentalAddons(car.medusaProductId),
-    ])
+    const availability = await getRentalAvailability({
+      productId: car.medusaProductId,
+      variantId: car.medusaVariantId,
+      startDate: checkin,
+      endDate: checkout,
+      startTime: checkinTime,
+      endTime: checkoutTime,
+      currencyCode: car.currency,
+      addons: selectedAddons,
+    })
 
     rentalAvailable = availability.available
-    addons = availableAddons
     breakdown = availability.breakdown ?? null
     if (availability.price?.amount && availability.price.amount > 0) {
       rentalTotalFromApi = availability.price.amount
@@ -192,20 +197,6 @@ export default async function CarReservationPage({
 
   return (
     <GuestProvider>
-      <AddonsProvider
-        available={addons}
-        initialBreakdown={breakdown}
-        initialDeposit={depositAmount}
-        quoteArgs={{
-          productId: car.medusaProductId ?? "",
-          variantId: car.medusaVariantId ?? "",
-          startDate: checkin,
-          endDate: checkout,
-          startTime: checkinTime,
-          endTime: checkoutTime,
-          currencyCode: car.currency,
-        }}
-      >
       <main id="main-content">
         <div className="px-5 pb-16 md:py-16">
           <div className="mx-auto max-w-none sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
@@ -234,6 +225,8 @@ export default async function CarReservationPage({
                   <PriceDetails
                     days={days}
                     currency={currency}
+                    breakdown={breakdown}
+                    deposit={depositAmount}
                     fallbackSubtotal={fallbackSubtotal}
                   />
                   {rentalAvailable && (
@@ -276,7 +269,6 @@ export default async function CarReservationPage({
 
                 {rentalAvailable && (
                   <>
-                    <AddonsSection currency={currency} />
                     <AuthSection
                       isLoggedIn={isLoggedIn}
                       customerName={customerName}
@@ -298,6 +290,7 @@ export default async function CarReservationPage({
                         customerName={customerName}
                         deposit={depositAmount}
                         currency={currency}
+                        addons={selectedAddons}
                       />
                     ) : (
                       <p className="text-sm text-neutral-500">
@@ -311,7 +304,6 @@ export default async function CarReservationPage({
           </div>
         </div>
       </main>
-      </AddonsProvider>
     </GuestProvider>
   )
 }

@@ -1,9 +1,6 @@
-"use client"
-
 import { formatAmountForDisplay } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
-
-import { useAddons } from "./addons-context"
+import type { RentalPriceBreakdown } from "@/lib/types/rental"
 
 /**
  * Desglose del precio.
@@ -13,19 +10,28 @@ import { useAddons } from "./addons-context"
  * `NEXT_PUBLIC_TAX_RATE`, una segunda fuente de verdad para un número que el
  * backend ya conoce: el importe que se enseñaba y el que se cobraba podían no
  * ser el mismo.
+ *
+ * Sin estado propio: recibe el desglose. Así sirve igual al checkout, que lo
+ * trae ya cotizado del servidor, y a la pantalla de extras, donde cambia con
+ * cada clic.
  */
 export function PriceDetails({
   days,
   currency,
+  breakdown,
+  deposit,
   fallbackSubtotal,
+  isQuoting = false,
 }: {
   days: number
   currency: string
+  breakdown: RentalPriceBreakdown | null
+  deposit: number | null
   /** Precio del coche cuando la cotización no llegó. Ver la página. */
   fallbackSubtotal: number
+  /** Recotizando: lo que hay en pantalla es el precio anterior. */
+  isQuoting?: boolean
 }) {
-  const { breakdown, deposit, isQuoting } = useAddons()
-
   const lines = breakdown?.lines ?? []
   const subtotal = breakdown?.subtotal ?? fallbackSubtotal
   const taxes = breakdown?.tax_total ?? 0
