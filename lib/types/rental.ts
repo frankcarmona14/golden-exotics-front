@@ -8,6 +8,67 @@ export interface RentalConfiguration {
   status: "active" | "inactive"
 }
 
+/** Cómo se cobra un add-on: una vez por reserva, o por cada día. */
+export type RentalAddonChargeType = "once" | "per_day"
+
+/**
+ * Extra contratable, tal y como lo expone la tienda.
+ *
+ * No trae `stock`: el backend no lo valida todavía contra fechas, así que
+ * enseñar ese número invitaría a confiar en él.
+ */
+export interface RentalAddon {
+  code: string
+  name: string
+  description: string | null
+  price: number
+  charge_type: RentalAddonChargeType
+}
+
+/** Lo único que el cliente elige. El precio lo pone el servidor. */
+export interface RentalAddonSelection {
+  code: string
+  quantity?: number
+}
+
+/** Una línea del desglose que devuelve el motor de precios. */
+export interface RentalPriceLine {
+  type: "base" | "addon" | "mileage" | "delivery" | "state_fee" | "adjustment"
+  code: string
+  label: string
+  quantity: number
+  unit_amount: number
+  amount: number
+  /** Impuesto de esta línea. Ausente cuando no le aplica ninguno. */
+  tax_amount?: number
+}
+
+/**
+ * Desglose del precio, calculado por el motor del backend.
+ *
+ * Es la única fuente de verdad del precio: la storefront lo pinta, no lo
+ * recalcula. Cualquier cuenta que se hiciera aquí podría divergir de lo que se
+ * cobra, que es justo el problema que el motor existe para evitar.
+ */
+export interface RentalPriceBreakdown {
+  rental_days: number
+  lines: RentalPriceLine[]
+  subtotal: number
+  tax_total: number
+  total: number
+  /** Todo lo que no es alquiler base: extras e impuestos. */
+  charges: number
+  /**
+   * A cobrar al reservar: pago a cuenta **más los cargos**.
+   *
+   * No es solo el depósito. Es la cifra que hay que enseñar como "due now",
+   * porque es la que va a cobrar Stripe.
+   */
+  upfront: number
+  /** Lo que queda para la recogida. Siempre `total - upfront`. */
+  balance_due: number
+}
+
 export interface RentalAvailabilityResponse {
   available: boolean
   /**
@@ -26,4 +87,5 @@ export interface RentalAvailabilityResponse {
     amount: number
     currency_code: string | null
   } | null
+  breakdown?: RentalPriceBreakdown
 }

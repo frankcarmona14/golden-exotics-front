@@ -8,7 +8,11 @@ import {
 } from "./rental-cart"
 import { translateRentalError } from "./rental-errors"
 import { getMedusaDefaultRegion } from "./store"
-import type { RentalAvailabilityResponse } from "@/lib/types/rental"
+import type {
+  RentalAddon,
+  RentalAddonSelection,
+  RentalAvailabilityResponse,
+} from "@/lib/types/rental"
 
 const MEDUSA_BACKEND_URL =
   process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || "http://localhost:9000"
@@ -110,6 +114,43 @@ async function abandonPreviousRentalCart(): Promise<void> {
 }
 
 // ---------------------------------------------------------------------------
+// Rental add-ons
+// ---------------------------------------------------------------------------
+
+/**
+ * Extras que se pueden contratar con este coche.
+ *
+ * Devuelve lista vacía si falla: un extra que no se puede ofrecer no debe
+ * impedir reservar el coche, que es lo que el cliente vino a hacer.
+ */
+export async function getRentalAddons(
+  productId: string
+): Promise<RentalAddon[]> {
+  const { ok, data } = await medusaFetch<{ rental_addons: RentalAddon[] }>(
+    `/store/products/${productId}/rental-addons`
+  )
+
+  if (!ok) {
+    console.warn("[Rental] Could not load add-ons for", productId)
+    return []
+  }
+
+  return data.rental_addons ?? []
+}
+
+/** `[{ code: "wifi", quantity: 2 }]` -> `"wifi:2"`, el formato que espera la API. */
+function serializeAddons(addons: RentalAddonSelection[] | undefined): string {
+  return (addons ?? [])
+    .filter((addon) => (addon.quantity ?? 1) > 0)
+    .map((addon) =>
+      addon.quantity && addon.quantity !== 1
+        ? `${addon.code}:${addon.quantity}`
+        : addon.code
+    )
+    .join(",")
+}
+
+// ---------------------------------------------------------------------------
 // Rental availability
 // ---------------------------------------------------------------------------
 
@@ -122,6 +163,7 @@ export async function getRentalAvailability({
   endTime,
   currencyCode,
   cartId,
+  addons,
 }: {
   productId: string
   variantId: string
@@ -132,6 +174,8 @@ export async function getRentalAvailability({
   currencyCode?: string
   /** Por defecto, el carrito de alquiler en curso. Ver `rental-cart.ts`. */
   cartId?: string
+  /** Solo códigos y cantidades: el precio lo resuelve el servidor. */
+  addons?: RentalAddonSelection[]
 }): Promise<RentalAvailabilityResponse> {
   const params = new URLSearchParams({
     variant_id: variantId,
@@ -141,6 +185,9 @@ export async function getRentalAvailability({
     end_time: endTime,
   })
   if (currencyCode) params.set("currency_code", currencyCode)
+
+  const addonsParam = serializeAddons(addons)
+  if (addonsParam) params.set("addons", addonsParam)
 
   // Sin esto, el cliente que ya tiene el coche retenido se ve a sí mismo como
   // "no disponible" en cuanto recotiza (F0-10).
@@ -251,6 +298,13 @@ export interface CreateRentalInput {
   rental_days?: number
   start_time?: string
   end_time?: string
+  /**
+   * Extras elegidos, solo código y cantidad.
+   *
+   * El precio NUNCA viaja desde aquí: lo resuelve el backend contra su base de
+   * datos. Si lo mandásemos, cualquiera podría ponerse una sillita a 0 $.
+   */
+  addons?: RentalAddonSelection[]
 }
 
 export interface GuestInfo {
@@ -457,6 +511,7 @@ export async function createRental(
             rental_end_date: `${input.end_date}T${input.end_time || "10:00"}:00`,
             rental_days: rentalDays,
           },
+          ...(input.addons?.length ? { addons: input.addons } : {}),
         },
       }
     )
@@ -745,6 +800,7 @@ export async function prepareRentalCheckout(
             rental_end_date: `${input.end_date}T${input.end_time || "10:00"}:00`,
             rental_days: rentalDays,
           },
+          ...(input.addons?.length ? { addons: input.addons } : {}),
         },
       }
     )

@@ -4,7 +4,7 @@ import { Metadata } from "next"
 import Link from "next/link"
 import { getCarBySlug } from "@/db/queries/car-repository"
 import { getCustomer } from "@/lib/medusa/customer"
-import { getRentalAvailability } from "@/lib/medusa/rental"
+import { getRentalAddons, getRentalAvailability } from "@/lib/medusa/rental"
 import { differenceInDays, isValid } from "date-fns"
 
 import { SearchParams } from "@/lib/types"
@@ -12,6 +12,10 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
 
+import type { RentalAddon, RentalPriceBreakdown } from "@/lib/types/rental"
+
+import { AddonsProvider } from "./components/addons-context"
+import { AddonsSection } from "./components/addons-section"
 import { AuthSection } from "./components/auth-section"
 import { BackButton } from "./components/back-button"
 import { BookDetails } from "./components/book-details"
@@ -138,18 +142,28 @@ export default async function CarReservationPage({
   let rentalAvailable = true
   let rentalTotalFromApi: number | null = null
   let depositAmount: number | null = null
+  let breakdown: RentalPriceBreakdown | null = null
+  let addons: RentalAddon[] = []
 
   if (isRentable && car.medusaProductId && car.medusaVariantId) {
-    const availability = await getRentalAvailability({
-      productId: car.medusaProductId,
-      variantId: car.medusaVariantId,
-      startDate: checkin,
-      endDate: checkout,
-      startTime: checkinTime,
-      endTime: checkoutTime,
-      currencyCode: car.currency,
-    })
+    // La cotización y el catálogo de extras son independientes: van en paralelo
+    // para no encadenar dos viajes al backend antes del primer pintado.
+    const [availability, availableAddons] = await Promise.all([
+      getRentalAvailability({
+        productId: car.medusaProductId,
+        variantId: car.medusaVariantId,
+        startDate: checkin,
+        endDate: checkout,
+        startTime: checkinTime,
+        endTime: checkoutTime,
+        currencyCode: car.currency,
+      }),
+      getRentalAddons(car.medusaProductId),
+    ])
+
     rentalAvailable = availability.available
+    addons = availableAddons
+    breakdown = availability.breakdown ?? null
     if (availability.price?.amount && availability.price.amount > 0) {
       rentalTotalFromApi = availability.price.amount
     }
@@ -158,13 +172,19 @@ export default async function CarReservationPage({
     }
   }
 
-  const subtotal =
+  /**
+   * Precio de reserva por si la cotización no llegó (coche sin configurar,
+   * backend caído). No es el precio bueno: el bueno lo calcula el motor del
+   * backend y viaja en `breakdown`.
+   *
+   * Los impuestos ya NO se calculan aquí. Antes salían de
+   * `NEXT_PUBLIC_TAX_RATE`, una segunda fuente de verdad para un número que el
+   * backend ya conoce — y que además se sumaba sobre un total que ya lo incluía.
+   */
+  const fallbackSubtotal =
     rentalTotalFromApi != null && rentalTotalFromApi > 0
       ? rentalTotalFromApi
       : Number(car.pricePerDay) * days
-  const taxRate = Number(process.env.NEXT_PUBLIC_TAX_RATE)
-  const taxes =
-    Number.isFinite(taxRate) && taxRate >= 0 ? subtotal * taxRate : 0
   const currency = car.currency
   const customerName = customer?.first_name
     ? `${customer.first_name} ${customer.last_name ?? ""}`.trim()
@@ -172,6 +192,20 @@ export default async function CarReservationPage({
 
   return (
     <GuestProvider>
+      <AddonsProvider
+        available={addons}
+        initialBreakdown={breakdown}
+        initialDeposit={depositAmount}
+        quoteArgs={{
+          productId: car.medusaProductId ?? "",
+          variantId: car.medusaVariantId ?? "",
+          startDate: checkin,
+          endDate: checkout,
+          startTime: checkinTime,
+          endTime: checkoutTime,
+          currencyCode: car.currency,
+        }}
+      >
       <main id="main-content">
         <div className="px-5 pb-16 md:py-16">
           <div className="mx-auto max-w-none sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
@@ -200,9 +234,7 @@ export default async function CarReservationPage({
                   <PriceDetails
                     days={days}
                     currency={currency}
-                    subtotal={subtotal}
-                    taxes={taxes}
-                    deposit={depositAmount}
+                    fallbackSubtotal={fallbackSubtotal}
                   />
                   {rentalAvailable && (
                     <div
@@ -244,6 +276,7 @@ export default async function CarReservationPage({
 
                 {rentalAvailable && (
                   <>
+                    <AddonsSection currency={currency} />
                     <AuthSection
                       isLoggedIn={isLoggedIn}
                       customerName={customerName}
@@ -278,6 +311,7 @@ export default async function CarReservationPage({
           </div>
         </div>
       </main>
+      </AddonsProvider>
     </GuestProvider>
   )
 }
