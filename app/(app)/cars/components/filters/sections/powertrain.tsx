@@ -53,7 +53,7 @@ export function PowertrainFilters({
             <ToggleGroupItem
               key={slug}
               value={slug}
-              className="group relative m-0 size-full rounded-none p-0 text-neutral-900 first:rounded-l-xl last:rounded-r-xl hover:bg-none dark:text-neutral-100 [&>span]:data-[state=off]:border-transparent [&>span]:data-[state=off]:bg-transparent [&>span]:data-[state=on]:border-accent [&>span]:data-[state=on]:bg-accent [&>span]:data-[state=on]:text-accent-foreground"
+              className="group relative m-0 size-full rounded-none p-0 text-neutral-900 first:rounded-l-xl last:rounded-r-xl hover:bg-none dark:text-neutral-100 [&>span]:data-[state=off]:border-transparent [&>span]:data-[state=on]:border-accent [&>span]:data-[state=off]:bg-transparent [&>span]:data-[state=on]:bg-accent [&>span]:data-[state=on]:text-accent-foreground"
             >
               <span className="flex size-full items-center justify-center rounded-xl border-2 border-transparent text-[14px] font-medium transition-colors">
                 {name}
