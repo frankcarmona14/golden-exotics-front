@@ -110,8 +110,8 @@ export function PriceDetails({
                 <span>{formatAmountForDisplay(balance, currency)}</span>
               </div>
               <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
-                Your deposit, extras and taxes are charged when you book. The
-                rest is charged at vehicle pickup.
+                Your deposit, extras, fees and taxes are charged when you book.
+                The rest is charged at vehicle pickup.
               </p>
             </>
           ) : (
