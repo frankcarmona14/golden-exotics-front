@@ -124,6 +124,7 @@ export default async function ResultPage({
   const startDate = rental?.rental_start_date ?? null
   const endDate = rental?.rental_end_date ?? null
   const rentalDays = rental?.rental_days ?? null
+  const delivery = rental?.delivery ?? null
 
   // Pre-filled WhatsApp message guests use to send their documents. We
   // always include the reservation id when we have one so the support team
@@ -196,7 +197,7 @@ export default async function ResultPage({
                           <div className="flex items-center gap-1.5">
                             <CalendarIcon className="size-3 text-neutral-400 dark:text-neutral-500" />
                             <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-                              Pick-up
+                              {delivery ? "Delivery" : "Pick-up"}
                             </p>
                           </div>
                           <p className="mt-1 text-[14px] font-medium text-neutral-900 dark:text-neutral-100">
@@ -214,6 +215,22 @@ export default async function ResultPage({
                             {formatDate(endDate)}
                           </p>
                         </div>
+                      </div>
+                    )}
+
+                    {/* Delivery (P0-3). La dirección solo llega al dueño con sesión. */}
+                    {delivery && (
+                      <div className="border-t border-neutral-100 px-4 py-3.5 text-left dark:border-neutral-800">
+                        <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                          Delivery{delivery.zone_label ? ` · ${delivery.zone_label}` : ""}
+                        </p>
+                        <p className="mt-1 text-[14px] font-medium text-neutral-900 dark:text-neutral-100">
+                          {delivery.address
+                            ? `${[delivery.address.address_1, delivery.address.address_2]
+                                .filter(Boolean)
+                                .join(", ")}, ${delivery.address.city} ${delivery.address.postal_code}`
+                            : "We'll bring the car to the address you gave us."}
+                        </p>
                       </div>
                     )}
 
@@ -239,7 +256,9 @@ export default async function ResultPage({
                           </p>
                         </div>
                         <p className="mt-1 text-[12px] text-neutral-400 dark:text-neutral-500">
-                          Remaining balance due at vehicle pickup
+                          {delivery
+                            ? "Remaining balance due when we deliver the car"
+                            : "Remaining balance due at vehicle pickup"}
                         </p>
                       </div>
                     )}

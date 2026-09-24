@@ -238,6 +238,17 @@ export interface OrderRentalDetails {
   rental_end_date: string
   rental_days: number
   status: string
+  /**
+   * Entrega (P0-3), o `null` si se recoge en la oficina.
+   *
+   * `address` solo llega al cliente dueño del pedido con sesión iniciada: la
+   * ruta es pública y el id del pedido viaja en enlaces. A un invitado le llega
+   * `null` y se le enseña solo la zona.
+   */
+  delivery: {
+    zone_label: string | null
+    address: DeliveryAddress | null
+  } | null
   product_variant?: {
     id: string
     title: string

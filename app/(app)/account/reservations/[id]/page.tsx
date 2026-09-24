@@ -65,6 +65,25 @@ export default async function ReservationDetailPage({
             <span className="text-neutral-500"> · {r.rental_days} day(s)</span>
           )}
         </p>
+        {r.delivery ? (
+          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
+            Delivery{r.delivery.zone_label ? ` (${r.delivery.zone_label})` : ""}
+            {r.delivery.address && (
+              <span className="text-neutral-500">
+                {" "}
+                ·{" "}
+                {[r.delivery.address.address_1, r.delivery.address.address_2]
+                  .filter(Boolean)
+                  .join(", ")}
+                , {r.delivery.address.city} {r.delivery.address.postal_code}
+              </span>
+            )}
+          </p>
+        ) : (
+          <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
+            Pickup at our location
+          </p>
+        )}
         {r.status && (
           <p className="mt-2 text-xs font-medium uppercase tracking-wide text-neutral-500">
             Status: {r.status.replace(/_/g, " ")}
