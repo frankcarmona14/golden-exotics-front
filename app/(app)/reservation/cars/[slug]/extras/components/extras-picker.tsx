@@ -29,6 +29,10 @@ export interface ExtrasPickerProps {
   available: RentalAddon[]
   /** Zonas de entrega del coche (P0-3). Vacía = solo recogida en la oficina. */
   deliveryZones: RentalDeliveryZone[]
+  /** Selección con la que se vuelve del pago. Ver la página. */
+  initialAddons?: { code: string; quantity?: number }[]
+  initialZone?: string | null
+  initialAddress?: DeliveryAddress | null
   quoteArgs: {
     productId: string
     variantId: string
@@ -64,13 +68,22 @@ export function ExtrasPicker({
   initialDeposit,
   available,
   deliveryZones,
+  initialAddons = [],
+  initialZone = null,
+  initialAddress = null,
   quoteArgs,
 }: ExtrasPickerProps) {
   const router = useRouter()
-  const [quantities, setQuantities] = useState<Record<string, number>>({})
+  const [quantities, setQuantities] = useState<Record<string, number>>(() =>
+    Object.fromEntries(
+      initialAddons.map((addon) => [addon.code, addon.quantity ?? 1])
+    )
+  )
   /** Zona elegida, o `null` para recoger en la oficina (lo de por defecto). */
-  const [zoneCode, setZoneCode] = useState<string | null>(null)
-  const [address, setAddress] = useState<Partial<DeliveryAddress>>({})
+  const [zoneCode, setZoneCode] = useState<string | null>(initialZone)
+  const [address, setAddress] = useState<Partial<DeliveryAddress>>(
+    initialAddress ?? {}
+  )
   const [addressError, setAddressError] = useState<string | null>(null)
   const [breakdown, setBreakdown] = useState(initialBreakdown)
   const [deposit, setDeposit] = useState(initialDeposit)
@@ -80,6 +93,7 @@ export function ExtrasPicker({
   /** Recotiza con la selección completa: extras y entrega van en la misma cuenta. */
   const requote = useCallback(
     (nextQuantities: Record<string, number>, nextZone: string | null) => {
+      rememberSelection(nextQuantities, nextZone)
       startQuoting(async () => {
         const quote = await getRentalAvailability({
           ...quoteArgs,
@@ -282,6 +296,32 @@ export function ExtrasPicker({
       </aside>
     </div>
   )
+}
+
+/**
+ * Deja la selección en la URL del paso, sin navegar.
+ *
+ * Así el botón atrás del pago —o el del navegador— vuelve a esta pantalla con
+ * lo que el cliente había elegido, en vez de en blanco. Solo la zona y los
+ * extras: la dirección es un dato personal y no va en la URL.
+ *
+ * `history.replaceState` y no `router.replace`: este último vuelve a pedir la
+ * página al servidor, que recotizaría en cada clic por segunda vez.
+ */
+function rememberSelection(
+  quantities: Record<string, number>,
+  zoneCode: string | null
+) {
+  const url = new URL(window.location.href)
+  const encoded = serializeAddonSelection(toSelection(quantities))
+
+  if (encoded) url.searchParams.set("addons", encoded)
+  else url.searchParams.delete("addons")
+
+  if (zoneCode) url.searchParams.set("delivery", zoneCode)
+  else url.searchParams.delete("delivery")
+
+  window.history.replaceState(null, "", url)
 }
 
 function toSelection(quantities: Record<string, number>) {

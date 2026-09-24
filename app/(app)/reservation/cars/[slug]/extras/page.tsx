@@ -1,22 +1,24 @@
-export const dynamic = "force-dynamic"
-
 import { Metadata } from "next"
 import Link from "next/link"
 import { redirect } from "next/navigation"
+import { getCarBySlug } from "@/db/queries/car-repository"
 import { isValid } from "date-fns"
 
-import { getCarBySlug } from "@/db/queries/car-repository"
+import { parseAddonSelection } from "@/lib/medusa/addons"
 import {
   getDeliveryZones,
   getRentalAddons,
   getRentalAvailability,
 } from "@/lib/medusa/rental"
+import { getDeliveryAddress } from "@/lib/medusa/rental-delivery"
 import { SearchParams } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
 
 import { BackButton } from "../[[...rest]]/components/back-button"
 import { ExtrasPicker } from "./components/extras-picker"
+
+export const dynamic = "force-dynamic"
 
 export const metadata: Metadata = {
   title: "Add extras",
@@ -36,7 +38,8 @@ function rentalDaysFromDateTimes(
   }
 
   const ms =
-    build(checkout, checkoutTime).getTime() - build(checkin, checkinTime).getTime()
+    build(checkout, checkoutTime).getTime() -
+    build(checkin, checkinTime).getTime()
 
   return ms <= 0 ? 0 : Math.ceil(ms / (24 * 60 * 60 * 1000))
 }
@@ -48,6 +51,12 @@ interface ExtrasPageProps {
     [SearchParams.CHECKOUT]: string
     [SearchParams.CHECKIN_TIME]?: string
     [SearchParams.CHECKOUT_TIME]?: string
+    /**
+     * Selección previa, al volver del pago (botón atrás o dirección caducada).
+     * El selector la lleva siempre en la URL para que volver no la borre.
+     */
+    addons?: string
+    delivery?: string
   }
 }
 
@@ -77,6 +86,8 @@ export default async function CarExtrasPage({
     checkout,
     checkin_time: checkinTimeParam,
     checkout_time: checkoutTimeParam,
+    addons: addonsParam,
+    delivery: deliveryParam,
   } = searchParams
 
   const car = await getCarBySlug(params.slug)
@@ -115,23 +126,44 @@ export default async function CarExtrasPage({
 
   const isRentable = car.rentalConfiguration?.status === "active"
 
-  if (!isRentable || !car.medusaProductId || !car.medusaVariantId || days <= 0) {
+  if (
+    !isRentable ||
+    !car.medusaProductId ||
+    !car.medusaVariantId ||
+    days <= 0
+  ) {
     redirect(checkoutHref)
   }
 
-  const [availability, addons, deliveryZones] = await Promise.all([
-    getRentalAvailability({
-      productId: car.medusaProductId,
-      variantId: car.medusaVariantId,
-      startDate: checkin,
-      endDate: checkout,
-      startTime: checkinTime,
-      endTime: checkoutTime,
-      currencyCode: car.currency,
-    }),
+  const [addons, deliveryZones] = await Promise.all([
     getRentalAddons(car.medusaProductId),
     getDeliveryZones(car.medusaProductId),
   ])
+
+  /**
+   * Lo que el cliente ya había elegido, filtrado contra lo que existe hoy: un
+   * extra o una zona que se desactivó mientras tanto se cae de la selección en
+   * vez de hacer fallar la cotización.
+   */
+  const initialAddons = parseAddonSelection(addonsParam).filter((selected) =>
+    addons.some((addon) => addon.code === selected.code)
+  )
+  const initialZone = deliveryZones.some((zone) => zone.code === deliveryParam)
+    ? deliveryParam!
+    : null
+  const initialAddress = initialZone ? await getDeliveryAddress() : null
+
+  const availability = await getRentalAvailability({
+    productId: car.medusaProductId,
+    variantId: car.medusaVariantId,
+    startDate: checkin,
+    endDate: checkout,
+    startTime: checkinTime,
+    endTime: checkoutTime,
+    currencyCode: car.currency,
+    addons: initialAddons,
+    deliveryZone: initialZone,
+  })
 
   // Nada que elegir, ninguna pantalla que enseñar.
   if ((!addons.length && !deliveryZones.length) || !availability.available) {
@@ -161,6 +193,9 @@ export default async function CarExtrasPage({
             initialDeposit={availability.deposit?.amount ?? null}
             available={addons}
             deliveryZones={deliveryZones}
+            initialAddons={initialAddons}
+            initialZone={initialZone}
+            initialAddress={initialAddress}
             quoteArgs={{
               productId: car.medusaProductId,
               variantId: car.medusaVariantId,
@@ -174,7 +209,10 @@ export default async function CarExtrasPage({
 
           <p className="mt-10 text-[13px] text-neutral-500 dark:text-neutral-400">
             Changed your mind about the dates?{" "}
-            <Link href={`/cars/${params.slug}`} className="underline underline-offset-4">
+            <Link
+              href={`/cars/${params.slug}`}
+              className="underline underline-offset-4"
+            >
               Back to {car.name}
             </Link>
           </p>

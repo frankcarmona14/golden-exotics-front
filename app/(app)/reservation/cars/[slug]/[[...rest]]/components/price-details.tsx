@@ -1,6 +1,6 @@
+import type { RentalPriceBreakdown } from "@/lib/types/rental"
 import { formatAmountForDisplay } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
-import type { RentalPriceBreakdown } from "@/lib/types/rental"
 
 /**
  * Desglose del precio.
@@ -44,6 +44,11 @@ export function PriceDetails({
   const dueNow = breakdown?.upfront ?? deposit ?? 0
   const balance = breakdown?.balance_due ?? 0
   const splitsPayment = balance > 0
+  /**
+   * Con entrega, el resto no se cobra "en la recogida": el cliente no pasa por
+   * la oficina. Se cobra al entregarle el coche (P0-3).
+   */
+  const isDelivered = lines.some((line) => line.type === "delivery")
 
   return (
     <>
@@ -106,13 +111,15 @@ export function PriceDetails({
                 <strong>{formatAmountForDisplay(dueNow, currency)}</strong>
               </div>
               <div className="flex flex-row items-center justify-between text-[15px]">
-                <span>Due at pickup</span>
+                <span>{isDelivered ? "Due at delivery" : "Due at pickup"}</span>
                 <span>{formatAmountForDisplay(balance, currency)}</span>
               </div>
               <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
                 Your deposit, extras, delivery, fees and taxes are charged when
-                you book.
-                The rest is charged at vehicle pickup.
+                you book.{" "}
+                {isDelivered
+                  ? "The rest is charged when we deliver the car."
+                  : "The rest is charged at vehicle pickup."}
               </p>
             </>
           ) : (
