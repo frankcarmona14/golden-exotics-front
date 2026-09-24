@@ -6,7 +6,11 @@ import { redirect } from "next/navigation"
 import { isValid } from "date-fns"
 
 import { getCarBySlug } from "@/db/queries/car-repository"
-import { getRentalAddons, getRentalAvailability } from "@/lib/medusa/rental"
+import {
+  getDeliveryZones,
+  getRentalAddons,
+  getRentalAvailability,
+} from "@/lib/medusa/rental"
 import { SearchParams } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
@@ -56,7 +60,11 @@ interface ExtrasPageProps {
  * todavía no hay carrito, así que la selección se cierra antes de que exista
  * nada que soltar.
  *
- * Si el coche no tiene extras, esta pantalla no aparece: redirige al checkout.
+ * Aquí se elige también la entrega (P0-3): cambia el precio igual que un extra,
+ * así que tiene que estar cerrada antes de que exista el carrito.
+ *
+ * Si el coche no tiene extras **ni** zonas de entrega, esta pantalla no
+ * aparece: redirige al checkout.
  * La decisión se toma en el servidor, que es donde están los datos — la ficha
  * del coche no sabe si hay extras y no debería tener que averiguarlo.
  */
@@ -111,7 +119,7 @@ export default async function CarExtrasPage({
     redirect(checkoutHref)
   }
 
-  const [availability, addons] = await Promise.all([
+  const [availability, addons, deliveryZones] = await Promise.all([
     getRentalAvailability({
       productId: car.medusaProductId,
       variantId: car.medusaVariantId,
@@ -122,10 +130,11 @@ export default async function CarExtrasPage({
       currencyCode: car.currency,
     }),
     getRentalAddons(car.medusaProductId),
+    getDeliveryZones(car.medusaProductId),
   ])
 
   // Nada que elegir, ninguna pantalla que enseñar.
-  if (!addons.length || !availability.available) {
+  if ((!addons.length && !deliveryZones.length) || !availability.available) {
     redirect(checkoutHref)
   }
 
@@ -139,7 +148,7 @@ export default async function CarExtrasPage({
                 <ChevronLeftIcon className="size-5 shrink-0" />
               </BackButton>
               <h1 className="absolute inset-0 flex items-center justify-center text-base font-semibold md:static md:justify-start md:text-3xl">
-                Add extras
+                {addons.length ? "Add extras" : "Delivery or pickup"}
               </h1>
             </div>
           </header>
@@ -151,6 +160,7 @@ export default async function CarExtrasPage({
             initialBreakdown={availability.breakdown ?? null}
             initialDeposit={availability.deposit?.amount ?? null}
             available={addons}
+            deliveryZones={deliveryZones}
             quoteArgs={{
               productId: car.medusaProductId,
               variantId: car.medusaVariantId,

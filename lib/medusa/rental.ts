@@ -7,12 +7,15 @@ import {
   setRentalCartId,
 } from "./rental-cart"
 import { serializeAddonSelection } from "./addons"
+import { clearDeliveryAddress, getDeliveryAddress } from "./rental-delivery"
 import { translateRentalError } from "./rental-errors"
 import { getMedusaDefaultRegion } from "./store"
 import type {
+  DeliveryAddress,
   RentalAddon,
   RentalAddonSelection,
   RentalAvailabilityResponse,
+  RentalDeliveryZone,
 } from "@/lib/types/rental"
 
 const MEDUSA_BACKEND_URL =
@@ -139,6 +142,27 @@ export async function getRentalAddons(
   return data.rental_addons ?? []
 }
 
+/**
+ * Zonas a las que se puede entregar este coche (P0-3).
+ *
+ * Lista vacía si falla, por lo mismo que los extras: sin entrega el cliente
+ * todavía puede recoger el coche en la oficina.
+ */
+export async function getDeliveryZones(
+  productId: string
+): Promise<RentalDeliveryZone[]> {
+  const { ok, data } = await medusaFetch<{
+    delivery_zones: RentalDeliveryZone[]
+  }>(`/store/products/${productId}/delivery-zones`)
+
+  if (!ok) {
+    console.warn("[Rental] Could not load delivery zones for", productId)
+    return []
+  }
+
+  return data.delivery_zones ?? []
+}
+
 // ---------------------------------------------------------------------------
 // Rental availability
 // ---------------------------------------------------------------------------
@@ -153,6 +177,7 @@ export async function getRentalAvailability({
   currencyCode,
   cartId,
   addons,
+  deliveryZone,
 }: {
   productId: string
   variantId: string
@@ -165,6 +190,8 @@ export async function getRentalAvailability({
   cartId?: string
   /** Solo códigos y cantidades: el precio lo resuelve el servidor. */
   addons?: RentalAddonSelection[]
+  /** Código de la zona de entrega. Ausente = recogida en la oficina. */
+  deliveryZone?: string | null
 }): Promise<RentalAvailabilityResponse> {
   const params = new URLSearchParams({
     variant_id: variantId,
@@ -177,6 +204,7 @@ export async function getRentalAvailability({
 
   const addonsParam = serializeAddonSelection(addons)
   if (addonsParam) params.set("addons", addonsParam)
+  if (deliveryZone) params.set("delivery_zone", deliveryZone)
 
   // Sin esto, el cliente que ya tiene el coche retenido se ve a sí mismo como
   // "no disponible" en cuanto recotiza (F0-10).
@@ -294,6 +322,41 @@ export interface CreateRentalInput {
    * datos. Si lo mandásemos, cualquiera podría ponerse una sillita a 0 $.
    */
   addons?: RentalAddonSelection[]
+  /**
+   * Zona de entrega (P0-3). Solo el código: la dirección la pone el servidor
+   * desde su cookie (`rental-delivery.ts`), así que nunca pasa por aquí.
+   */
+  delivery_zone?: string | null
+}
+
+/**
+ * La entrega que va al carrito, o nada si se recoge en la oficina.
+ *
+ * Con zona y sin dirección se para aquí en vez de mandar la zona sola: el
+ * backend la rechazaría igual, pero con un mensaje pensado para la API y
+ * después de haber creado el carrito.
+ */
+async function resolveCartDelivery(
+  zoneCode: string | null | undefined
+): Promise<
+  | { ok: true; delivery?: { zone_code: string; address: DeliveryAddress } }
+  | { ok: false; error: string }
+> {
+  if (!zoneCode) {
+    return { ok: true }
+  }
+
+  const address = await getDeliveryAddress()
+
+  if (!address) {
+    return {
+      ok: false,
+      error:
+        "We need your delivery address again. Go back to the previous step and enter it.",
+    }
+  }
+
+  return { ok: true, delivery: { zone_code: zoneCode, address } }
 }
 
 export interface GuestInfo {
@@ -457,6 +520,11 @@ export async function createRental(
     rentalDays = Math.max(1, diffDays)
   }
 
+  const cartDelivery = await resolveCartDelivery(input.delivery_zone)
+  if (!cartDelivery.ok) {
+    return { ok: false, status: 400, data: {}, error: cartDelivery.error }
+  }
+
   try {
     // ---------------------------------------------------------------
     // Step 1: Create cart with customer email
@@ -501,6 +569,7 @@ export async function createRental(
             rental_days: rentalDays,
           },
           ...(input.addons?.length ? { addons: input.addons } : {}),
+          ...(cartDelivery.delivery ? { delivery: cartDelivery.delivery } : {}),
         },
       }
     )
@@ -755,6 +824,11 @@ export async function prepareRentalCheckout(
     rentalDays = Math.max(1, diffDays)
   }
 
+  const cartDelivery = await resolveCartDelivery(input.delivery_zone)
+  if (!cartDelivery.ok) {
+    return { ok: false, error: cartDelivery.error }
+  }
+
   try {
     await abandonPreviousRentalCart()
     const cartRes = await medusaFetch<{ cart: { id: string } }>("/store/carts", {
@@ -790,6 +864,7 @@ export async function prepareRentalCheckout(
             rental_days: rentalDays,
           },
           ...(input.addons?.length ? { addons: input.addons } : {}),
+          ...(cartDelivery.delivery ? { delivery: cartDelivery.delivery } : {}),
         },
       }
     )
@@ -971,6 +1046,9 @@ export async function completeRentalCart(
      * carrito completado.
      */
     await clearRentalCartId()
+    // La dirección ya está en el alquiler: guardarla más sería retener un dato
+    // personal sin motivo.
+    await clearDeliveryAddress()
     return {
       ok: true,
       order: res.data.order,

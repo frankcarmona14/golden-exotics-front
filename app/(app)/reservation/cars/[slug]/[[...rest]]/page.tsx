@@ -2,9 +2,11 @@ export const dynamic = "force-dynamic"
 
 import { Metadata } from "next"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 import { getCarBySlug } from "@/db/queries/car-repository"
 import { getCustomer } from "@/lib/medusa/customer"
 import { getRentalAvailability } from "@/lib/medusa/rental"
+import { getDeliveryAddress } from "@/lib/medusa/rental-delivery"
 import { differenceInDays, isValid } from "date-fns"
 
 import { SearchParams } from "@/lib/types"
@@ -56,6 +58,8 @@ interface CarReservationPageProps {
     [SearchParams.CHECKOUT_TIME]?: string
     /** Extras elegidos en el paso anterior, como `codigo:cantidad` por comas. */
     addons?: string
+    /** Zona de entrega elegida en el paso anterior (P0-3). La dirección, en cookie. */
+    delivery?: string
   }
 }
 
@@ -69,6 +73,7 @@ export default async function CarReservationPage({
     checkin_time: checkinTimeParam,
     checkout_time: checkoutTimeParam,
     addons: addonsParam,
+    delivery: deliveryZone,
   } = searchParams
   const car = await getCarBySlug(params.slug)
 
@@ -150,6 +155,22 @@ export default async function CarReservationPage({
    */
   const selectedAddons = parseAddonSelection(addonsParam)
 
+  /**
+   * Entrega elegida en el paso anterior (P0-3). La zona viene en la URL; la
+   * dirección, en una cookie del servidor (`rental-delivery.ts`).
+   *
+   * Sin dirección —caducó la cookie, o se abrió el enlace en otro navegador—
+   * se vuelve al paso de extras en vez de cobrar una entrega que no se puede
+   * hacer.
+   */
+  const deliveryAddress = deliveryZone ? await getDeliveryAddress() : null
+
+  if (deliveryZone && !deliveryAddress) {
+    const back = new URLSearchParams(checkoutParams)
+    if (addonsParam) back.set("addons", addonsParam)
+    redirect(`/reservation/cars/${params.slug}/extras?${back}`)
+  }
+
   let rentalAvailable = true
   let rentalTotalFromApi: number | null = null
   let depositAmount: number | null = null
@@ -165,6 +186,7 @@ export default async function CarReservationPage({
       endTime: checkoutTime,
       currencyCode: car.currency,
       addons: selectedAddons,
+      deliveryZone,
     })
 
     rentalAvailable = availability.available
@@ -248,6 +270,7 @@ export default async function CarReservationPage({
                   checkoutDate={checkoutDate}
                   checkinTime={checkinTime}
                   checkoutTime={checkoutTime}
+                  deliveryAddress={deliveryAddress}
                 />
               </section>
 
@@ -291,6 +314,7 @@ export default async function CarReservationPage({
                         deposit={depositAmount}
                         currency={currency}
                         addons={selectedAddons}
+                        deliveryZone={deliveryZone ?? null}
                       />
                     ) : (
                       <p className="text-sm text-neutral-500">

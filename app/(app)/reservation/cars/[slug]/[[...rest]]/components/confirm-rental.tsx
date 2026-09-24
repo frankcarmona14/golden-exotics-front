@@ -34,6 +34,11 @@ interface ConfirmRentalProps {
    * carrito, y rehacerlo suelta el hold del coche que se está pagando.
    */
   addons?: { code: string; quantity?: number }[]
+  /**
+   * Zona de entrega, cerrada en el paso anterior (P0-3). Solo el código: la
+   * dirección la añade el servidor al preparar el carrito, desde su cookie.
+   */
+  deliveryZone?: string | null
 }
 
 export function ConfirmRental({
@@ -50,6 +55,7 @@ export function ConfirmRental({
   deposit,
   currency,
   addons,
+  deliveryZone,
 }: ConfirmRentalProps) {
   const router = useRouter()
   const { guest } = useGuest()
@@ -95,6 +101,7 @@ export function ConfirmRental({
     // Solo códigos y cantidades. El precio lo resuelve el backend contra su
     // base de datos; desde aquí no viaja ninguno.
     ...(addons?.length ? { addons } : {}),
+    ...(deliveryZone ? { delivery_zone: deliveryZone } : {}),
   }
 
   /**
@@ -145,6 +152,7 @@ export function ConfirmRental({
     rentalDays,
     guest,
     selectionKey,
+    deliveryZone,
   ])
 
   useEffect(() => {

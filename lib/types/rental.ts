@@ -31,6 +31,32 @@ export interface RentalAddonSelection {
   quantity?: number
 }
 
+/**
+ * Zona de entrega, tal y como la expone la tienda (P0-3).
+ *
+ * El precio se enseña para que el cliente elija; el que se cobra lo vuelve a
+ * leer el backend al cotizar. De aquí solo viaja el `code`.
+ */
+export interface RentalDeliveryZone {
+  code: string
+  name: string
+  description: string | null
+  price: number
+}
+
+/**
+ * Adónde se entrega el coche. Misma forma que valida el backend
+ * (`DeliveryAddressSchema`).
+ */
+export interface DeliveryAddress {
+  address_1: string
+  address_2?: string
+  city: string
+  postal_code: string
+  /** Indicaciones para el conductor: portal, conserje, hotel… */
+  notes?: string
+}
+
 /** Una línea del desglose que devuelve el motor de precios. */
 export interface RentalPriceLine {
   type: "base" | "addon" | "mileage" | "delivery" | "state_fee" | "adjustment"
@@ -56,7 +82,7 @@ export interface RentalPriceBreakdown {
   subtotal: number
   tax_total: number
   total: number
-  /** Todo lo que no es alquiler base: extras e impuestos. */
+  /** Todo lo que no es alquiler base: extras, fees, entrega e impuestos. */
   charges: number
   /**
    * A cobrar al reservar: pago a cuenta **más los cargos**.
