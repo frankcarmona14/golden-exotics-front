@@ -34,6 +34,8 @@ interface StripePaymentFormProps {
   customerName?: string | null
   deposit?: number | null
   currency?: string
+  /** Con entrega no hay recogida: el balance se cobra al entregar el coche. */
+  isDelivered?: boolean
   termsAccepted?: boolean
   onTermsMissing?: () => void
   /** Content rendered right above the submit button (e.g. consent + legal notice). */
@@ -82,6 +84,7 @@ function StripePaymentForm({
   customerName,
   deposit,
   currency,
+  isDelivered = false,
   termsAccepted = true,
   onTermsMissing,
   beforeSubmit,
@@ -253,7 +256,9 @@ function StripePaymentForm({
       {/* Deposit note */}
       {hasDeposit && (
         <p className="text-center text-[13px] text-neutral-500 dark:text-neutral-400">
-          The remaining balance will be charged at vehicle pickup.
+          {isDelivered
+            ? "The remaining balance will be charged when we deliver the car."
+            : "The remaining balance will be charged at vehicle pickup."}
         </p>
       )}
 
@@ -275,6 +280,7 @@ interface StripePaymentProps {
   customerName?: string | null
   deposit?: number | null
   currency?: string
+  isDelivered?: boolean
   termsAccepted?: boolean
   onTermsMissing?: () => void
   /** Content rendered right above the submit button (e.g. consent + legal notice). */
@@ -296,6 +302,7 @@ export function StripePayment({
   customerName,
   deposit,
   currency,
+  isDelivered,
   termsAccepted,
   onTermsMissing,
   beforeSubmit,
@@ -369,6 +376,7 @@ export function StripePayment({
         customerName={customerName}
         deposit={deposit}
         currency={currency}
+        isDelivered={isDelivered}
         termsAccepted={termsAccepted}
         onTermsMissing={onTermsMissing}
         beforeSubmit={beforeSubmit}

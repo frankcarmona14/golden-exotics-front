@@ -314,6 +314,7 @@ export function ConfirmRental({
                 customerName={effectiveName}
                 deposit={deposit}
                 currency={currency}
+                isDelivered={Boolean(deliveryZone)}
                 termsAccepted={termsAccepted}
                 onTermsMissing={() => setShowTermsError(true)}
                 beforeSubmit={consent}
