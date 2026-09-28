@@ -15,7 +15,10 @@ import { Separator } from "@/components/ui/separator"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
 
 import { parseAddonSelection } from "@/lib/medusa/addons"
-import type { RentalPriceBreakdown } from "@/lib/types/rental"
+import type {
+  RentalMileageTerms,
+  RentalPriceBreakdown,
+} from "@/lib/types/rental"
 
 import { AuthSection } from "./components/auth-section"
 import { BackButton } from "./components/back-button"
@@ -175,6 +178,7 @@ export default async function CarReservationPage({
   let rentalTotalFromApi: number | null = null
   let depositAmount: number | null = null
   let breakdown: RentalPriceBreakdown | null = null
+  let mileage: RentalMileageTerms | null = null
 
   if (isRentable && car.medusaProductId && car.medusaVariantId) {
     const availability = await getRentalAvailability({
@@ -191,6 +195,7 @@ export default async function CarReservationPage({
 
     rentalAvailable = availability.available
     breakdown = availability.breakdown ?? null
+    mileage = availability.mileage ?? null
     if (availability.price?.amount && availability.price.amount > 0) {
       rentalTotalFromApi = availability.price.amount
     }
@@ -250,6 +255,7 @@ export default async function CarReservationPage({
                     breakdown={breakdown}
                     deposit={depositAmount}
                     fallbackSubtotal={fallbackSubtotal}
+                    mileage={mileage}
                   />
                   {rentalAvailable && (
                     <div

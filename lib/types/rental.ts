@@ -95,6 +95,29 @@ export interface RentalPriceBreakdown {
   balance_due: number
 }
 
+/** One tier of the extra-mile price. Counts miles over the included ones. */
+export interface RentalMileageTier {
+  from: number
+  /** `null` = no upper limit. Only the last tier. */
+  to: number | null
+  unit_amount: number
+}
+
+/**
+ * Mileage terms for the car (P0-2), or `null` for unlimited miles.
+ *
+ * Not part of the total: extra miles are charged after the car comes back.
+ * They are shown before paying because the card is kept on file to charge them.
+ */
+export interface RentalMileageTerms {
+  label: string
+  included_miles_per_day: number | null
+  /** Already multiplied by the days booked. `null` = unlimited. */
+  included_miles: number | null
+  tiers: RentalMileageTier[]
+  tax_rate: number | null
+}
+
 export interface RentalAvailabilityResponse {
   available: boolean
   /**
@@ -114,4 +137,5 @@ export interface RentalAvailabilityResponse {
     currency_code: string | null
   } | null
   breakdown?: RentalPriceBreakdown
+  mileage?: RentalMileageTerms | null
 }

@@ -11,6 +11,7 @@ import type {
   DeliveryAddress,
   RentalAddon,
   RentalDeliveryZone,
+  RentalMileageTerms,
   RentalPriceBreakdown,
 } from "@/lib/types/rental"
 import { formatAmountForDisplay } from "@/lib/utils"
@@ -33,6 +34,8 @@ export interface ExtrasPickerProps {
   initialAddons?: { code: string; quantity?: number }[]
   initialZone?: string | null
   initialAddress?: DeliveryAddress | null
+  /** Condiciones de millas (P0-2). No cambian con los extras ni la zona. */
+  mileage?: RentalMileageTerms | null
   quoteArgs: {
     productId: string
     variantId: string
@@ -71,6 +74,7 @@ export function ExtrasPicker({
   initialAddons = [],
   initialZone = null,
   initialAddress = null,
+  mileage = null,
   quoteArgs,
 }: ExtrasPickerProps) {
   const router = useRouter()
@@ -291,6 +295,7 @@ export function ExtrasPicker({
             deposit={deposit}
             fallbackSubtotal={breakdown?.total ?? 0}
             isQuoting={isQuoting}
+            mileage={mileage}
           />
         </div>
       </aside>
