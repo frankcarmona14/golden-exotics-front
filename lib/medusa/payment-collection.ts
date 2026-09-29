@@ -25,6 +25,11 @@ export interface PaymentCollectionSummary {
   currency_code: string
   status: string
   paid: boolean
+  /**
+   * What is being paid: the rest of the rental, or extra miles after the car
+   * came back (P0-2). Older backends don't send it: that is a balance.
+   */
+  purpose?: "balance" | "mileage"
 }
 
 export interface PaymentCollectionRental {

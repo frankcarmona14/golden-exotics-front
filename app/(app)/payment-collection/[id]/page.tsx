@@ -9,8 +9,21 @@ import { formatAmountForDisplay } from "@/lib/utils"
 import { PayBalanceForm } from "./pay-balance-form"
 
 export const metadata: Metadata = {
-  title: "Pay your balance",
+  title: "Pay your reservation",
 }
+
+/**
+ * The same page takes the rest of the rental and the extra miles (P0-2). The
+ * heading has to say which: a customer asked to "pay your balance" twice for
+ * the same trip would think they are being charged twice.
+ */
+const HEADINGS = {
+  balance: { due: "Pay your balance", paid: "This balance is already paid" },
+  mileage: {
+    due: "Pay for your extra miles",
+    paid: "Your extra miles are already paid",
+  },
+} as const
 
 function formatRentalDate(value: string | null): string | null {
   if (!value) return null
@@ -43,11 +56,12 @@ export default async function PaymentCollectionPage({
   )
   const from = formatRentalDate(rental.starts_at)
   const to = formatRentalDate(rental.ends_at)
+  const heading = HEADINGS[collection.purpose ?? "balance"]
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-12">
       <h1 className="text-2xl font-semibold tracking-tight">
-        {collection.paid ? "This balance is already paid" : "Pay your balance"}
+        {collection.paid ? heading.paid : heading.due}
       </h1>
 
       <div className="mt-6 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800">

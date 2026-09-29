@@ -73,8 +73,8 @@ function CardForm({
       <div className="mt-6 rounded-xl border border-green-500/30 bg-green-50 p-4 text-sm text-green-800 dark:bg-green-950/20 dark:text-green-300">
         <p className="font-medium">Payment received</p>
         <p className="mt-1">
-          Thank you — your balance of {amountLabel} is paid. You can close this
-          page.
+          Thank you — your payment of {amountLabel} went through. You can
+          close this page.
         </p>
       </div>
     )
