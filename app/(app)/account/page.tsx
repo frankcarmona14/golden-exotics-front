@@ -44,7 +44,8 @@ export default async function AccountOverviewPage() {
   const isFuture = (d: string | null) =>
     d ? new Date(d).getTime() > now : false
 
-  const activeCount = reservations.filter((r) => r.status === "active").length
+  // El coche lo tiene el cliente: entregado y aún no devuelto (P1-2).
+  const activeCount = reservations.filter((r) => r.status === "handed_off").length
   const upcoming = reservations
     .filter((r) => r.status !== "cancelled" && isFuture(r.startDate))
     .sort(
@@ -100,7 +101,7 @@ export default async function AccountOverviewPage() {
       {/* Stats */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <StatCard label="Reservations" value={reservations.length} />
-        <StatCard label="Active" value={activeCount} />
+        <StatCard label="On trip" value={activeCount} />
         <StatCard
           label="Upcoming"
           value={upcoming.length}

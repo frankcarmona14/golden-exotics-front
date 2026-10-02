@@ -21,7 +21,10 @@ export interface Reservation {
   startDate: string | null
   endDate: string | null
   days: number | null
-  /** Rental status: awaiting_documents | documents_in_review | pending | active | returned | cancelled */
+  /**
+   * Rental status (P1-2): awaiting_documents | documents_in_review | approved |
+   * change_requested | handed_off | returned | cancelled
+   */
   status: string
 }
 
@@ -76,7 +79,7 @@ export async function getMyReservations(): Promise<Reservation[]> {
         startDate: rental.rental_start_date ?? null,
         endDate: rental.rental_end_date ?? null,
         days: rental.rental_days ?? null,
-        status: rental.status ?? "pending",
+        status: rental.status ?? "awaiting_documents",
       }
     })
   )

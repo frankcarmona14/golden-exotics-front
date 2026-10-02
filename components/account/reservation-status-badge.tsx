@@ -11,13 +11,18 @@ const STATUS_MAP: Record<string, { label: string; className: string }> = {
     className:
       "bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-300",
   },
-  pending: {
-    label: "Pending",
+  approved: {
+    label: "Confirmed",
     className:
       "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300",
   },
-  active: {
-    label: "Active",
+  change_requested: {
+    label: "Change requested",
+    className:
+      "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300",
+  },
+  handed_off: {
+    label: "On trip",
     className:
       "bg-green-100 text-green-800 dark:bg-green-950/40 dark:text-green-300",
   },

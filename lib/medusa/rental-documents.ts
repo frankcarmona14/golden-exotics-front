@@ -64,8 +64,9 @@ export type RentalDocumentState = {
     status:
       | "awaiting_documents"
       | "documents_in_review"
-      | "pending"
-      | "active"
+      | "approved"
+      | "change_requested"
+      | "handed_off"
       | "returned"
       | "cancelled"
     rental_start_date: string
