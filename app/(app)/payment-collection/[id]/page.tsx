@@ -4,11 +4,13 @@ import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { getPaymentCollection } from "@/lib/medusa/payment-collection"
+import { NOINDEX_METADATA } from "@/lib/seo/metadata"
 import { formatAmountForDisplay } from "@/lib/utils"
 
 import { PayBalanceForm } from "./pay-balance-form"
 
 export const metadata: Metadata = {
+  ...NOINDEX_METADATA,
   title: "Pay your reservation",
 }
 

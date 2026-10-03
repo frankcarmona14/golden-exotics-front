@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Driver Requirements",
   description:
     "Age, license and insurance requirements to rent a vehicle through Carhive in Miami, Florida.",
+  alternates: { canonical: "/driver-requirements" },
 }
 
 const lastUpdated = new Date("2026-04-01")

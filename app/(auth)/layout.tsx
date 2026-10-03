@@ -1,4 +1,9 @@
+import type { Metadata } from "next"
+
+import { NOINDEX_METADATA } from "@/lib/seo/metadata"
 import { AppChromeHeader } from "@/components/app-chrome-header"
+
+export const metadata: Metadata = NOINDEX_METADATA
 
 export default function AuthLayout({
   children,

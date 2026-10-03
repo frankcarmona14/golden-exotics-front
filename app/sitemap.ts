@@ -1,0 +1,46 @@
+import type { MetadataRoute } from "next"
+import { getCars } from "@/db/queries/car-repository"
+
+import { absoluteUrl } from "@/lib/seo/urls"
+
+/**
+ * El catálogo cambia desde el admin de Medusa: regenerar cada hora para que un
+ * coche nuevo entre en el sitemap sin tener que redesplegar.
+ */
+export const revalidate = 3600
+
+/** Páginas públicas sin datos dinámicos. Los flujos privados no van aquí. */
+const STATIC_PAGES: {
+  path: string
+  changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]
+  priority: number
+}[] = [
+  { path: "/", changeFrequency: "weekly", priority: 1 },
+  { path: "/cars", changeFrequency: "daily", priority: 0.9 },
+  { path: "/driver-requirements", changeFrequency: "yearly", priority: 0.4 },
+  { path: "/cancellation-policy", changeFrequency: "yearly", priority: 0.3 },
+  { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
+  { path: "/privacy", changeFrequency: "yearly", priority: 0.2 },
+]
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const cars = await getCars()
+
+  const staticEntries = STATIC_PAGES.map((page) => ({
+    url: absoluteUrl(page.path),
+    changeFrequency: page.changeFrequency,
+    priority: page.priority,
+  }))
+
+  // La Store API solo devuelve productos publicados, así que todo lo que llega
+  // aquí tiene ficha pública. lastModified viene de Medusa para que Google
+  // vuelva a rastrear la ficha cuando cambian precio o fotos.
+  const carEntries = cars.map((car) => ({
+    url: absoluteUrl(`/cars/${car.slug}`),
+    lastModified: car.updatedAt,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }))
+
+  return [...staticEntries, ...carEntries]
+}

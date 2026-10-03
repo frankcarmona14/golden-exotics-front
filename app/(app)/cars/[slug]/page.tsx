@@ -3,6 +3,8 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getCarBySlug, getCars } from "@/db/queries/car-repository"
 
+import { buildCarMetadata } from "@/lib/seo/metadata"
+
 import { Separator } from "@/components/ui/separator"
 import { CheckIcon } from "@/components/icons/check"
 import { FilledStarIcon } from "@/components/icons/filled-star"
@@ -21,10 +23,7 @@ export async function generateMetadata({
 
   if (!car) return {}
 
-  return {
-    title: car.name,
-    description: car.description,
-  }
+  return buildCarMetadata(car)
 }
 
 export async function generateStaticParams() {
@@ -67,7 +66,8 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
         <div className="md:pt-4">
           <div className="relative grid h-80 grid-cols-1 grid-rows-1 gap-3 md:h-[34rem] md:grid-cols-4 md:grid-rows-2">
             <ShowAllPhotosButton images={images} carName={car.name} />
-            {/* Imagen principal */}
+            {/* Imagen principal. Los sizes siguen la rejilla (3/4 del contenedor,
+                que en xl se fija en max-w-6xl) para no servir el doble de píxeles. */}
             <div className="relative overflow-hidden md:col-span-3 md:row-span-2 md:rounded-l-2xl">
               {mainImage ? (
                 <Image
@@ -75,7 +75,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                   alt={car.name}
                   priority
                   fill
-                  sizes="(max-width: 768px) 100vw, 66vw"
+                  sizes="(max-width: 767px) 100vw, (max-width: 1279px) 68vw, 864px"
                   className="object-cover"
                 />
               ) : (
@@ -84,24 +84,23 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                 </div>
               )}
             </div>
-            {/* Segunda imagen (arriba-derecha) */}
+            {/* Segunda imagen (arriba-derecha). Sin priority: está oculta en
+                móvil y precargarla competiría con la principal, que es el LCP. */}
             <div className="relative col-span-1 row-span-1 hidden overflow-hidden rounded-tr-2xl md:block">
               {secondImage ? (
                 <Image
                   src={secondImage}
                   alt={`${car.name} - 2`}
-                  priority
                   fill
-                  sizes="33vw"
+                  sizes="(max-width: 1279px) 23vw, 288px"
                   className="object-cover"
                 />
               ) : mainImage ? (
                 <Image
                   src={mainImage}
                   alt={`${car.name} - 2`}
-                  priority
                   fill
-                  sizes="33vw"
+                  sizes="(max-width: 1279px) 23vw, 288px"
                   className="object-cover object-right"
                 />
               ) : (
@@ -114,18 +113,16 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                 <Image
                   src={thirdImage}
                   alt={`${car.name} - 3`}
-                  priority
                   fill
-                  sizes="33vw"
+                  sizes="(max-width: 1279px) 23vw, 288px"
                   className="object-cover"
                 />
               ) : mainImage ? (
                 <Image
                   src={mainImage}
                   alt={`${car.name} - 3`}
-                  priority
                   fill
-                  sizes="33vw"
+                  sizes="(max-width: 1279px) 23vw, 288px"
                   className="object-cover object-bottom"
                 />
               ) : (

@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Terms of Service",
   description:
     "The terms and conditions that govern your use of Carhive's car rental services in Miami, Florida.",
+  alternates: { canonical: "/terms" },
 }
 
 const lastUpdated = new Date("2026-04-01")

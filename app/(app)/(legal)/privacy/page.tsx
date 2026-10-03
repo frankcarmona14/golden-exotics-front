@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Privacy Policy",
   description:
     "How Carhive collects, uses, shares and protects your personal information when you rent a car through our platform in Miami, Florida.",
+  alternates: { canonical: "/privacy" },
 }
 
 const lastUpdated = new Date("2026-04-01")

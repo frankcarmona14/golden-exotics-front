@@ -12,6 +12,7 @@ export const metadata: Metadata = {
   title: "Cancellation Policy",
   description:
     "How, when and with what fees you can cancel or modify a Carhive reservation in Miami, Florida.",
+  alternates: { canonical: "/cancellation-policy" },
 }
 
 const lastUpdated = new Date("2026-04-01")

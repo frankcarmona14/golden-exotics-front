@@ -1,6 +1,17 @@
+/**
+ * URL pública del sitio, sin barra final. Sale de NEXT_PUBLIC_SITE_URL porque
+ * el canonical, el sitemap, robots y el JSON-LD tienen que apuntar al dominio
+ * real de producción, que no es el de la plantilla y no debe quedar fijado en
+ * el código. El fallback es el dominio heredado de la plantilla: en producción
+ * la variable es obligatoria o Google recibirá URLs ajenas.
+ */
+const siteUrl = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://carhive.eduam.dev"
+).replace(/\/+$/, "")
+
 export const siteConfig = {
   name: "Golden Exotics",
-  url: "https://carhive.eduam.dev",
+  url: siteUrl,
   author: {
     name: "eduamdev",
     url: "https://eduam.dev",

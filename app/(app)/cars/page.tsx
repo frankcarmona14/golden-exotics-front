@@ -1,6 +1,8 @@
 import { Suspense } from "react"
 import type { Metadata } from "next"
 
+import { buildPageMetadata } from "@/lib/seo/metadata"
+
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 import { FiltersIcon } from "@/components/icons/filters"
@@ -12,9 +14,14 @@ import CarCatalog from "./components/car-catalog"
 import Filters from "./components/filters/filters-wrapper"
 import { CarCatalogSkeleton } from "./components/skeletons/car-catalog"
 
-export const metadata: Metadata = {
-  title: "Cars",
-}
+// El canonical es /cars sin parámetros: cada combinación de filtros, fechas u
+// orden es la misma página para Google y no debe competir con ella.
+export const metadata: Metadata = buildPageMetadata({
+  title: "Exotic & Luxury Car Rentals in Miami",
+  description:
+    "Browse our fleet of exotic and luxury cars for rent in Miami. Compare daily prices, seats and specs, check availability for your dates and book online.",
+  path: "/cars",
+})
 
 export default async function CarsPage({
   searchParams,

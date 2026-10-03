@@ -1,7 +1,19 @@
+import type { Metadata } from "next"
+
+import { buildPageMetadata } from "@/lib/seo/metadata"
+
 import { BrowseCarTypes } from "./components/browse-car-types"
 import { CallToAction } from "./components/call-to-action"
 import { Hero } from "./components/hero"
 import { Testimonials } from "./components/testimonials"
+
+export const metadata: Metadata = buildPageMetadata({
+  title: "Golden Exotics | Exotic & Luxury Car Rental in Miami",
+  description:
+    "Rent exotic and luxury cars in Miami from the world's most iconic brands. See real daily prices, check availability and book online in minutes.",
+  path: "/",
+  absoluteTitle: true,
+})
 
 export default function HomePage() {
   return (
