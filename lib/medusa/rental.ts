@@ -12,6 +12,7 @@ import { translateRentalError } from "./rental-errors"
 import { getMedusaDefaultRegion } from "./store"
 import type {
   DeliveryAddress,
+  GuestNote,
   RentalAddon,
   RentalAddonSelection,
   RentalAvailabilityResponse,
@@ -140,6 +141,25 @@ export async function getRentalAddons(
   }
 
   return data.rental_addons ?? []
+}
+
+/**
+ * Notas del operador para quien alquila este coche (P1-5), en su orden.
+ *
+ * Lista vacía si falla: las notas informan, nunca bloquean una reserva, así que
+ * un fallo aquí no puede romper el checkout.
+ */
+export async function getGuestNotes(productId: string): Promise<GuestNote[]> {
+  const { ok, data } = await medusaFetch<{ guest_notes: GuestNote[] }>(
+    `/store/products/${productId}/guest-notes`
+  )
+
+  if (!ok) {
+    console.warn("[Rental] Could not load guest notes for", productId)
+    return []
+  }
+
+  return data.guest_notes ?? []
 }
 
 /**

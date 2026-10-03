@@ -3,7 +3,9 @@ import { notFound, redirect } from "next/navigation"
 import { format } from "date-fns"
 
 import { getAuthToken } from "@/lib/medusa/customer"
-import { getOrderRentals } from "@/lib/medusa/rental"
+import { getGuestNotes, getOrderRentals } from "@/lib/medusa/rental"
+import { GuestNotes } from "@/components/guest-notes"
+import { ReservationStatusBadge } from "@/components/account/reservation-status-badge"
 import { Button } from "@/components/ui/button"
 
 export const dynamic = "force-dynamic"
@@ -36,6 +38,9 @@ export default async function ReservationDetailPage({
   }
 
   const r = rentals[0]
+  // La página del viaje enseña las notas del operador (P1-5).
+  const productId = r.product_variant?.product?.id ?? null
+  const guestNotes = productId ? await getGuestNotes(productId) : []
   const carName = r.product_variant?.product?.title ?? "Your rental"
   const variantName = r.product_variant?.title
   const start = formatDate(r.rental_start_date)
@@ -85,11 +90,11 @@ export default async function ReservationDetailPage({
           </p>
         )}
         {r.status && (
-          <p className="mt-2 text-xs font-medium uppercase tracking-wide text-neutral-500">
-            Status: {r.status.replace(/_/g, " ")}
-          </p>
+          <ReservationStatusBadge status={r.status} className="mt-3" />
         )}
       </div>
+
+      <GuestNotes notes={guestNotes} className="mt-6" />
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
         <Button asChild>

@@ -118,6 +118,13 @@ export interface RentalMileageTerms {
   tax_rate: number | null
 }
 
+/** A note the operator wants every renter of a car to read (P1-5). Plain text. */
+export interface GuestNote {
+  id: string
+  title: string | null
+  body: string
+}
+
 export interface RentalAvailabilityResponse {
   available: boolean
   /**

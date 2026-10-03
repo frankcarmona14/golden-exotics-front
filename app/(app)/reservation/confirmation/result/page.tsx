@@ -1,9 +1,10 @@
+import { GuestNotes } from "@/components/guest-notes"
 import Link from "next/link"
 import { Metadata } from "next"
 import { format } from "date-fns"
 
 import { getCustomer } from "@/lib/medusa/customer"
-import { getOrderRentals } from "@/lib/medusa/rental"
+import { getGuestNotes, getOrderRentals } from "@/lib/medusa/rental"
 import { formatAmountForDisplay } from "@/lib/utils"
 import { getWhatsAppUrl, siteConfig } from "@/config/site"
 import { Button } from "@/components/ui/button"
@@ -125,6 +126,10 @@ export default async function ResultPage({
   const endDate = rental?.rental_end_date ?? null
   const rentalDays = rental?.rental_days ?? null
   const delivery = rental?.delivery ?? null
+  // El recibo repite las notas del operador (P1-5): es la página que el
+  // cliente guarda y vuelve a abrir.
+  const productId = rental?.product_variant?.product?.id ?? null
+  const guestNotes = productId ? await getGuestNotes(productId) : []
 
   // Pre-filled WhatsApp message guests use to send their documents. We
   // always include the reservation id when we have one so the support team
@@ -264,6 +269,8 @@ export default async function ResultPage({
                     )}
                   </div>
                 )}
+
+                <GuestNotes notes={guestNotes} className="mt-4 w-full text-left" />
 
                 {/* Info cards */}
                 <div className="mt-4 w-full space-y-3">

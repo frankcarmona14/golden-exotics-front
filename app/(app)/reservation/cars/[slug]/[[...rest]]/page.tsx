@@ -5,7 +5,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getCarBySlug } from "@/db/queries/car-repository"
 import { getCustomer } from "@/lib/medusa/customer"
-import { getRentalAvailability } from "@/lib/medusa/rental"
+import { getGuestNotes, getRentalAvailability } from "@/lib/medusa/rental"
 import { getDeliveryAddress } from "@/lib/medusa/rental-delivery"
 import { differenceInDays, isValid } from "date-fns"
 
@@ -25,6 +25,7 @@ import { BackButton } from "./components/back-button"
 import { BookDetails } from "./components/book-details"
 import { CarDetails } from "./components/car-details"
 import { ConfirmRental } from "./components/confirm-rental"
+import { GuestNotes } from "@/components/guest-notes"
 import { GuestProvider } from "./components/guest-context"
 import { PriceDetails } from "./components/price-details"
 
@@ -222,6 +223,11 @@ export default async function CarReservationPage({
     ? `${customer.first_name} ${customer.last_name ?? ""}`.trim()
     : null
 
+  // Lo que el operador quiere que se lea antes de pagar (P1-5).
+  const guestNotes = car.medusaProductId
+    ? await getGuestNotes(car.medusaProductId)
+    : []
+
   return (
     <GuestProvider>
       <main id="main-content">
@@ -298,6 +304,7 @@ export default async function CarReservationPage({
 
                 {rentalAvailable && (
                   <>
+                    <GuestNotes notes={guestNotes} className="mb-7" />
                     <AuthSection
                       isLoggedIn={isLoggedIn}
                       customerName={customerName}
