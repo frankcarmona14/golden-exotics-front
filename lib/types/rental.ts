@@ -125,6 +125,16 @@ export interface GuestNote {
   body: string
 }
 
+/**
+ * Late return terms for the car (P1-6). Charged after the car comes back, like
+ * extra miles, so they are shown before paying.
+ */
+export interface RentalLateReturnPolicy {
+  grace_minutes: number
+  hourly_rate: number
+  full_day_after_hours: number
+}
+
 export interface RentalAvailabilityResponse {
   available: boolean
   /**
@@ -145,4 +155,6 @@ export interface RentalAvailabilityResponse {
   } | null
   breakdown?: RentalPriceBreakdown
   mileage?: RentalMileageTerms | null
+  /** Late return terms (P1-6), or `null` when late returns are not charged. */
+  late_return?: RentalLateReturnPolicy | null
 }

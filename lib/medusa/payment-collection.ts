@@ -29,7 +29,7 @@ export interface PaymentCollectionSummary {
    * What is being paid: the rest of the rental, or extra miles after the car
    * came back (P0-2). Older backends don't send it: that is a balance.
    */
-  purpose?: "balance" | "mileage"
+  purpose?: "balance" | "mileage" | "late_return"
 }
 
 export interface PaymentCollectionRental {

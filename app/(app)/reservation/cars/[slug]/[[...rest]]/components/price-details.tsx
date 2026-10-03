@@ -1,4 +1,5 @@
 import type {
+  RentalLateReturnPolicy,
   RentalMileageTerms,
   RentalPriceBreakdown,
 } from "@/lib/types/rental"
@@ -26,6 +27,7 @@ export function PriceDetails({
   fallbackSubtotal,
   isQuoting = false,
   mileage = null,
+  lateReturn = null,
 }: {
   days: number
   currency: string
@@ -37,6 +39,8 @@ export function PriceDetails({
   isQuoting?: boolean
   /** Condiciones de millas (P0-2). `null` = ilimitadas, no se enseña nada. */
   mileage?: RentalMileageTerms | null
+  /** Condiciones de devolución tardía (P1-6). `null` = no se cobra. */
+  lateReturn?: RentalLateReturnPolicy | null
 }) {
   const lines = breakdown?.lines ?? []
   const subtotal = breakdown?.subtotal ?? fallbackSubtotal
@@ -136,6 +140,9 @@ export function PriceDetails({
           )}
 
           {mileage && <MileageTerms mileage={mileage} currency={currency} />}
+          {lateReturn && (
+            <LateReturnTerms policy={lateReturn} currency={currency} />
+          )}
         </div>
       </div>
     </>
@@ -181,6 +188,31 @@ function MileageTerms({
       <p className="text-neutral-500 dark:text-neutral-400">
         Extra miles: {rates.join(", ")}
         {mileage.tax_rate ? `, plus ${mileage.tax_rate}% tax` : ""}. Charged
+        after you return the car.
+      </p>
+    </div>
+  )
+}
+
+/**
+ * Devolución tardía (P1-6). Mismo motivo que las millas para ir en el desglose:
+ * se cobra después a la tarjeta guardada, así que tiene que verse antes.
+ */
+function LateReturnTerms({
+  policy,
+  currency,
+}: {
+  policy: RentalLateReturnPolicy
+  currency: string
+}) {
+  return (
+    <div className="rounded-lg border border-border p-3 text-[13px]">
+      <p className="font-medium">Late returns</p>
+      <p className="text-neutral-500 dark:text-neutral-400">
+        {policy.grace_minutes} minutes of grace. After that,{" "}
+        {formatAmountForDisplay(policy.hourly_rate, currency)} per hour, or the
+        full daily rate from {policy.full_day_after_hours}{" "}
+        {policy.full_day_after_hours === 1 ? "hour" : "hours"} late. Charged
         after you return the car.
       </p>
     </div>

@@ -197,6 +197,7 @@ export default async function CarExtrasPage({
             initialZone={initialZone}
             initialAddress={initialAddress}
             mileage={availability.mileage ?? null}
+            lateReturn={availability.late_return ?? null}
             quoteArgs={{
               productId: car.medusaProductId,
               variantId: car.medusaVariantId,

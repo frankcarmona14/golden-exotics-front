@@ -11,6 +11,7 @@ import type {
   DeliveryAddress,
   RentalAddon,
   RentalDeliveryZone,
+  RentalLateReturnPolicy,
   RentalMileageTerms,
   RentalPriceBreakdown,
 } from "@/lib/types/rental"
@@ -36,6 +37,8 @@ export interface ExtrasPickerProps {
   initialAddress?: DeliveryAddress | null
   /** Condiciones de millas (P0-2). No cambian con los extras ni la zona. */
   mileage?: RentalMileageTerms | null
+  /** Devolución tardía (P1-6). Tampoco cambia con los extras ni la zona. */
+  lateReturn?: RentalLateReturnPolicy | null
   quoteArgs: {
     productId: string
     variantId: string
@@ -75,6 +78,7 @@ export function ExtrasPicker({
   initialZone = null,
   initialAddress = null,
   mileage = null,
+  lateReturn = null,
   quoteArgs,
 }: ExtrasPickerProps) {
   const router = useRouter()
@@ -296,6 +300,7 @@ export function ExtrasPicker({
             fallbackSubtotal={breakdown?.total ?? 0}
             isQuoting={isQuoting}
             mileage={mileage}
+            lateReturn={lateReturn}
           />
         </div>
       </aside>
