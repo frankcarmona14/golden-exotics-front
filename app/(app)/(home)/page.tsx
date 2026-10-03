@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
 
+import { siteConfig } from "@/config/site"
 import { buildPageMetadata } from "@/lib/seo/metadata"
+import { buildOrganizationJsonLd } from "@/lib/seo/structured-data"
+import { JsonLd } from "@/components/json-ld"
 
 import { BrowseCarTypes } from "./components/browse-car-types"
 import { CallToAction } from "./components/call-to-action"
@@ -18,6 +21,15 @@ export const metadata: Metadata = buildPageMetadata({
 export default function HomePage() {
   return (
     <>
+      <JsonLd
+        data={buildOrganizationJsonLd({
+          name: siteConfig.name,
+          url: siteConfig.url,
+          // El icono de 512px y no logo.svg: Google pide un logo cuadrado y
+          // rastreable, y el raster evita sorpresas con SVG.
+          logo: "/icon-512.png",
+        })}
+      />
       <main id="main-content">
         <Hero />
         <div className="pt-14 lg:pt-16">

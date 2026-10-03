@@ -4,6 +4,10 @@ import { notFound } from "next/navigation"
 import { getCarBySlug, getCars } from "@/db/queries/car-repository"
 
 import { buildCarMetadata } from "@/lib/seo/metadata"
+import {
+  buildCarBreadcrumbJsonLd,
+  buildCarProductJsonLd,
+} from "@/lib/seo/structured-data"
 
 import { Separator } from "@/components/ui/separator"
 import { CheckIcon } from "@/components/icons/check"
@@ -12,6 +16,7 @@ import { HeadsetIcon } from "@/components/icons/headset"
 import { KidIcon } from "@/components/icons/kid"
 import { NavigationIcon } from "@/components/icons/navigation"
 import { WifiIcon } from "@/components/icons/wifi"
+import { JsonLd } from "@/components/json-ld"
 
 import { ShowAllPhotosButton } from "./components/image-gallery"
 import { ReserveCard } from "./components/reserve-card"
@@ -59,6 +64,9 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
         } as React.CSSProperties
       }
     >
+      <JsonLd
+        data={[buildCarProductJsonLd(car), buildCarBreadcrumbJsonLd(car)]}
+      />
       <div className="mx-auto w-full max-w-none p-0 md:max-w-[90%] xl:max-w-6xl">
         <div className="px-5 pt-6 md:px-0 md:pt-8">
           <h1 className="text-balance text-2xl font-semibold">{car.name}</h1>
