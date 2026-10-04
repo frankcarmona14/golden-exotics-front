@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { addDays, isAfter } from "date-fns"
 import { DayPicker } from "react-day-picker"
 
 import { cn } from "@/lib/utils"
@@ -9,16 +10,50 @@ import { buttonVariants } from "@/components/ui/button"
 import { ChevronLeftIcon } from "../icons/chevron-left"
 import { ChevronRightIcon } from "../icons/chevron-right"
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker> & {
+  /**
+   * Con la primera fecha ya elegida, al pasar el ratón por un día posterior se
+   * pinta en suave el rango que quedaría (Airbnb). `undefined` = sin vista previa.
+   */
+  previewFrom?: Date
+}
 
 function Calendar({
   className,
   classNames,
   showOutsideDays = true,
+  previewFrom,
+  modifiers,
+  modifiersClassNames,
+  onDayMouseEnter,
+  onDayMouseLeave,
   ...props
 }: CalendarProps) {
+  const [hovered, setHovered] = React.useState<Date>()
+  const preview =
+    previewFrom && hovered && isAfter(hovered, previewFrom)
+      ? { from: addDays(previewFrom, 1), to: hovered }
+      : undefined
+
   return (
     <DayPicker
+      modifiers={{
+        ...modifiers,
+        ...(preview && { preview, preview_end: preview.to }),
+      }}
+      modifiersClassNames={{
+        preview: "!bg-primary/15 !text-foreground rounded-none",
+        preview_end: "!bg-primary/40 rounded-md",
+        ...modifiersClassNames,
+      }}
+      onDayMouseEnter={(day, dayModifiers, e) => {
+        setHovered(dayModifiers.disabled ? undefined : day)
+        onDayMouseEnter?.(day, dayModifiers, e)
+      }}
+      onDayMouseLeave={(day, dayModifiers, e) => {
+        setHovered(undefined)
+        onDayMouseLeave?.(day, dayModifiers, e)
+      }}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{

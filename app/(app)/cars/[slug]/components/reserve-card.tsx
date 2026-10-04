@@ -8,7 +8,7 @@ import type { DateRange } from "react-day-picker"
 import { DESKTOP_MEDIA_QUERY } from "@/lib/constants"
 import { getRentalAvailability, getRentalBookedDates } from "@/lib/medusa/rental"
 import type { BookedRange } from "@/lib/medusa/rental"
-import type { SelectCar } from "@/lib/schema-types"
+import { PICKUP_LOCATION, type SelectCar } from "@/lib/schema-types"
 import { SearchParams } from "@/lib/types"
 import type { RentalAvailabilityResponse } from "@/lib/types/rental"
 import { cn, formatAmountForDisplay } from "@/lib/utils"
@@ -489,6 +489,12 @@ export function ReserveCard({ car }: ReserveCardProps) {
     params.set(SearchParams.CHECKIN_TIME, checkinTime)
     params.set(SearchParams.CHECKOUT_TIME, checkoutTime)
 
+    // La zona de entrega elegida en el buscador llega marcada al paso de
+    // extras. Allí se valida contra las zonas de este coche: si no se entrega
+    // en ella, o es la oficina, simplemente no se marca nada.
+    const location = searchParams.get(SearchParams.LOCATION)
+    if (location && location !== PICKUP_LOCATION) params.set("delivery", location)
+
     // Al paso de extras, no directo al pago. Si este coche no tiene extras, esa
     // pantalla redirige sola al checkout: quien sabe si los hay es el servidor,
     // y esta tarjeta no debería tener que averiguarlo.
@@ -530,10 +536,20 @@ export function ReserveCard({ car }: ReserveCardProps) {
   const datePickerTitle =
     dateStep === "checkin" ? "Select check-in date" : "Select check-out date"
 
+  const firstBookedAfterCheckin = checkinDate
+    ? Array.from(bookedDates)
+        .filter((day) => day > format(checkinDate, "yyyy-MM-dd"))
+        .sort()[0]
+    : undefined
+
   const calendarDisabled = (d: Date) => {
     if (d < todayStart) return true
     if (dateStep === "checkout" && checkinDate) {
-      if (format(d, "yyyy-MM-dd") <= format(checkinDate, "yyyy-MM-dd")) return true
+      const day = format(d, "yyyy-MM-dd")
+      if (day <= format(checkinDate, "yyyy-MM-dd")) return true
+      // Un rango no puede saltar por encima de una reserva: todo lo que queda
+      // detrás del primer día ocupado tras la recogida no se puede elegir.
+      if (firstBookedAfterCheckin && day > firstBookedAfterCheckin) return true
     }
     // Check if date is booked
     if (bookedDates.has(format(d, "yyyy-MM-dd"))) return true
@@ -681,6 +697,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
           disabled={calendarDisabled}
           defaultMonth={calendarDefaultMonth}
           onMonthChange={fetchBookedDates}
+          previewFrom={dateStep === "checkout" ? checkinDate : undefined}
           modifiers={{ booked: (d: Date) => bookedDates.has(format(d, "yyyy-MM-dd")) }}
           modifiersStyles={{ booked: { textDecoration: "line-through", opacity: 0.4 } }}
         />
@@ -706,6 +723,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
             disabled={calendarDisabled}
             defaultMonth={calendarDefaultMonth}
             onMonthChange={fetchBookedDates}
+          previewFrom={dateStep === "checkout" ? checkinDate : undefined}
             modifiers={{ booked: (d: Date) => bookedDates.has(format(d, "yyyy-MM-dd")) }}
             modifiersStyles={{ booked: { textDecoration: "line-through", opacity: 0.4 } }}
             className="mx-auto w-full p-3"

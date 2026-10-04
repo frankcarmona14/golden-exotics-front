@@ -1,6 +1,7 @@
 import { ReadonlyURLSearchParams } from "next/navigation"
 import clsx, { ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { format, isValid, parseISO } from "date-fns"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -77,4 +78,26 @@ export const formatAmountForDisplay = (
     maximumFractionDigits: hasCents ? 2 : 0,
   })
   return numberFormat.format(amount)
+}
+
+/**
+ * Fecha para `?checkin=` / `?checkout=`: el día de calendario, `yyyy-MM-dd`.
+ *
+ * Nunca `toISOString()`: pasa a UTC, y la medianoche de un día en Europa es el
+ * día anterior en UTC. Además el backend no acepta ese formato, y el catálogo,
+ * al fallar la comprobación, dejaba el coche como disponible.
+ */
+export function toDateParam(date: Date) {
+  return format(date, "yyyy-MM-dd")
+}
+
+/**
+ * Lee `?checkin=` / `?checkout=` como día local. `new Date("2026-10-13")` es
+ * medianoche UTC, que en Miami ya es el día 12. Acepta también los enlaces
+ * viejos con timestamp ISO.
+ */
+export function fromDateParam(value: string | null | undefined) {
+  if (!value) return undefined
+  const date = parseISO(value)
+  return isValid(date) ? date : undefined
 }

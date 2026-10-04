@@ -2,25 +2,28 @@
 
 import { useEffect, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import type { SelectLocation } from "@/lib/schema-types"
+import type { SearchLocation } from "@/lib/schema-types"
 import { format } from "date-fns"
 import type { DateRange } from "react-day-picker"
 
 import { SearchParams } from "@/lib/types"
-import { cn, constructUrlWithParams } from "@/lib/utils"
+import {
+  cn,
+  constructUrlWithParams,
+  fromDateParam,
+  toDateParam,
+} from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
   Command,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
 } from "@/components/ui/command"
 import { ResponsiveModal } from "@/components/responsive-modal"
-import { CheckIcon } from "@/components/icons/check"
 import { SearchIcon } from "@/components/icons/search"
+import { LocationOptions } from "@/components/location-options"
 
 /**
  * Compact mobile search. The desktop SearchPanel is a wide 3-column form that
@@ -28,7 +31,7 @@ import { SearchIcon } from "@/components/icons/search"
  * opens a modal/drawer with location + date-range pickers. The submit logic
  * mirrors SearchPanel so mobile and desktop produce identical URLs.
  */
-export function MobileSearch({ locations }: { locations: SelectLocation[] }) {
+export function MobileSearch({ locations }: { locations: SearchLocation[] }) {
   const { push } = useRouter()
   const searchParams = useSearchParams()
 
@@ -45,12 +48,12 @@ export function MobileSearch({ locations }: { locations: SelectLocation[] }) {
 
     setLocation(locationParam ?? "")
 
-    const from = checkinParam ? new Date(checkinParam) : undefined
-    const to = checkoutParam ? new Date(checkoutParam) : undefined
+    const from = fromDateParam(checkinParam)
+    const to = fromDateParam(checkoutParam)
     setRange(from || to ? { from, to } : undefined)
   }, [searchParams])
 
-  const selectedLocationName = locations.find((l) => l.slug === location)?.name
+  const selectedLocationName = locations.find((l) => l.value === location)?.name
 
   const dateLabel =
     range?.from && range?.to
@@ -70,17 +73,10 @@ export function MobileSearch({ locations }: { locations: SelectLocation[] }) {
     newParams.delete(SearchParams.CHECKIN)
     newParams.delete(SearchParams.CHECKOUT)
 
-    if (location) {
-      newParams.set(SearchParams.LOCATION, location)
-      const currentLocation = locations.find((loc) => loc.slug === location)
-      if (currentLocation) {
-        newParams.set(SearchParams.LAT, currentLocation.latitude.toString())
-        newParams.set(SearchParams.LNG, currentLocation.longitude.toString())
-      }
-    }
+    if (location) newParams.set(SearchParams.LOCATION, location)
 
-    if (range?.from) newParams.set(SearchParams.CHECKIN, range.from.toISOString())
-    if (range?.to) newParams.set(SearchParams.CHECKOUT, range.to.toISOString())
+    if (range?.from) newParams.set(SearchParams.CHECKIN, toDateParam(range.from))
+    if (range?.to) newParams.set(SearchParams.CHECKOUT, toDateParam(range.to))
 
     setOpen(false)
     push(constructUrlWithParams("/cars", newParams))
@@ -152,27 +148,11 @@ export function MobileSearch({ locations }: { locations: SelectLocation[] }) {
               <CommandInput placeholder="Search location..." />
               <CommandList className="max-h-44">
                 <CommandEmpty>No location found.</CommandEmpty>
-                <CommandGroup>
-                  {locations.map((loc) => (
-                    <CommandItem
-                      key={loc.id}
-                      value={loc.slug}
-                      onSelect={(currentValue) =>
-                        setLocation(
-                          currentValue === location ? "" : currentValue
-                        )
-                      }
-                    >
-                      <CheckIcon
-                        className={cn(
-                          "mr-2 size-4 shrink-0",
-                          location === loc.slug ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                      {loc.name}
-                    </CommandItem>
-                  ))}
-                </CommandGroup>
+                <LocationOptions
+                  locations={locations}
+                  selected={location}
+                  onSelect={setLocation}
+                />
               </CommandList>
             </Command>
           </div>

@@ -5,16 +5,22 @@ import type { RentalConfiguration } from "@/lib/types/rental"
  * Independientes de la capa de datos (antes en Drizzle; en el futuro desde Medusa).
  */
 
-export interface SelectLocation {
-  id: number
-  slug: string
+/**
+ * Valor de `?location=` para recoger en la oficina. Cualquier otro valor es el
+ * `code` de una zona de entrega.
+ */
+export const PICKUP_LOCATION = "pickup"
+
+/** Una opción del campo *Pick-up / Drop-off* del buscador. */
+export interface SearchLocation {
+  /** Lo que viaja en `?location=`: `PICKUP_LOCATION` o el code de la zona. */
+  value: string
+  kind: "pickup" | "delivery"
   name: string
-  latitude: number
-  longitude: number
-  imageUrl: string | null
-  featured: boolean
-  createdAt: Date
-  updatedAt: Date
+  /** Dirección de la oficina o descripción de la zona. */
+  detail: string | null
+  /** Coches que se entregan en la zona. `null` = todos (y siempre en la oficina). */
+  productIds: string[] | null
 }
 
 export interface SelectCar {

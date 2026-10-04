@@ -1,11 +1,10 @@
-import type { SelectCar, SelectLocation } from "@/lib/schema-types"
+import type { SelectCar } from "@/lib/schema-types"
 import {
   getCarImagePublicId,
   getLocalCarImagePath,
 } from "@/lib/cloudinary"
 
 import { cars as carsSeed } from "./cars"
-import { locations as locationsSeed } from "./locations"
 
 const now = new Date()
 
@@ -41,30 +40,6 @@ export const mockCars: SelectCar[] = carsSeed.map((car, index) => ({
   status: car.status ?? "active",
   metadata: car.metadata ?? null,
   rentalConfiguration: null,
-  createdAt: now,
-  updatedAt: now,
-}))
-
-const locationImageBySlug: Record<string, string> = {
-  cancun: "/assets/images/locations/cancun.jpg",
-  dubai: "/assets/images/locations/dubai.jpg",
-  paris: "/assets/images/locations/paris.jpg",
-  rio: "/assets/images/locations/rio.jpg",
-  rome: "/assets/images/locations/rome.jpg",
-  sydney: "/assets/images/locations/sydney.jpg",
-}
-
-/**
- * Mock locations en formato SelectLocation para usar el frontend sin base de datos.
- */
-export const mockLocations: SelectLocation[] = locationsSeed.map((loc, index) => ({
-  id: index + 1,
-  slug: loc.slug,
-  name: loc.name,
-  latitude: loc.latitude,
-  longitude: loc.longitude,
-  imageUrl: locationImageBySlug[loc.slug] ?? null,
-  featured: loc.featured ?? false,
   createdAt: now,
   updatedAt: now,
 }))

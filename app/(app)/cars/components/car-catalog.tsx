@@ -1,14 +1,17 @@
 import { getCars } from "@/db/queries/car-repository"
+import { getLocations } from "@/db/queries/location-repository"
 import { getRentalAvailability } from "@/lib/medusa/rental"
 
+import { PICKUP_LOCATION } from "@/lib/schema-types"
 import { SearchParams } from "@/lib/types"
-import { slugify } from "@/lib/utils"
+import { fromDateParam, slugify, toDateParam } from "@/lib/utils"
 
 import { CarCard } from "./car-card"
 import { CatalogSort } from "./catalog-sort"
 
 interface CarCatalogProps {
   searchParams: {
+    [SearchParams.LOCATION]?: string
     [SearchParams.MIN_PRICE]?: string
     [SearchParams.MAX_PRICE]?: string
     [SearchParams.BODY_STYLE]?: string[]
@@ -27,6 +30,7 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
   const cars = await getCars()
 
   const {
+    [SearchParams.LOCATION]: location,
     [SearchParams.MIN_PRICE]: minPrice,
     [SearchParams.MAX_PRICE]: maxPrice,
     [SearchParams.BODY_STYLE]: bodyStyles,
@@ -40,8 +44,20 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
     [SearchParams.SORT]: sort,
   } = searchParams
 
+  // Con una zona de entrega elegida, solo los coches que se entregan ahí. La
+  // oficina no filtra: todos los coches salen de ella. Una zona que ya no existe
+  // (enlace viejo) tampoco filtra, en vez de dejar el catálogo vacío.
+  const deliveryZone =
+    location && location !== PICKUP_LOCATION
+      ? (await getLocations()).find((loc) => loc.value === location)
+      : undefined
+  const deliveredProductIds = deliveryZone?.productIds ?? null
+
   const filteredCars = cars.filter((car) => {
     return (
+      (!deliveredProductIds ||
+        (!!car.medusaProductId &&
+          deliveredProductIds.includes(car.medusaProductId))) &&
       (!minPrice || Number(car.pricePerDay) >= Number(minPrice)) &&
       (!maxPrice || Number(car.pricePerDay) <= Number(maxPrice)) &&
       (!bodyStyles || bodyStyles.includes(slugify(car.bodyStyle))) &&
@@ -57,7 +73,11 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
   // fail open when the check itself fails (network error, or the product
   // isn't configured as rentable) so a backend config issue never silently
   // hides inventory — only a genuine date conflict removes a car.
-  const hasDateRange = Boolean(checkin && checkout)
+  // Siempre `yyyy-MM-dd`: con un timestamp ISO (enlaces viejos del buscador)
+  // el backend falla y, como se falla en abierto, el coche salía disponible.
+  const startDate = fromDateParam(checkin)
+  const endDate = fromDateParam(checkout)
+  const hasDateRange = Boolean(startDate && endDate)
   let availableCars = filteredCars
   if (hasDateRange) {
     const checks = await Promise.all(
@@ -66,8 +86,8 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
         const result = await getRentalAvailability({
           productId: car.medusaProductId,
           variantId: car.medusaVariantId,
-          startDate: checkin as string,
-          endDate: checkout as string,
+          startDate: toDateParam(startDate!),
+          endDate: toDateParam(endDate!),
           startTime: checkinTime || "10:00",
           endTime: checkoutTime || "10:00",
           currencyCode: car.currency,

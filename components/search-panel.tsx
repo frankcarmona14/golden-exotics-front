@@ -1,9 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
-import type { SelectLocation } from "@/lib/schema-types"
-import { format, isBefore } from "date-fns"
+import type { SearchLocation } from "@/lib/schema-types"
+import { format, isAfter, isBefore } from "date-fns"
 
 import { SearchParams } from "@/lib/types"
 import { Button } from "@/components/ui/button"
@@ -11,24 +11,28 @@ import { Calendar } from "@/components/ui/calendar"
 import {
   Command,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
-  CommandItem,
   CommandList,
 } from "@/components/ui/command"
 import {
   Popover,
+  PopoverAnchor,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Separator } from "@/components/ui/separator"
-import { CheckIcon } from "@/components/icons/check"
 import { SearchIcon } from "@/components/icons/search"
 import { SelectorIcon } from "@/components/icons/selector"
+import { LocationOptions } from "@/components/location-options"
 
-import { cn, constructUrlWithParams } from "../lib/utils"
+import {
+  cn,
+  constructUrlWithParams,
+  fromDateParam,
+  toDateParam,
+} from "../lib/utils"
 
-export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
+export function SearchPanel({ locations }: { locations: SearchLocation[] }) {
   const { push } = useRouter()
   const searchParams = useSearchParams()
 
@@ -37,6 +41,26 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
 
   const [checkInDate, setCheckInDate] = useState<Date>()
   const [checkOutDate, setCheckOutDate] = useState<Date>()
+  /** Qué fecha pide el calendario. `null` = cerrado. */
+  const [dateStep, setDateStep] = useState<"checkin" | "checkout" | null>(null)
+  const datesRef = useRef<HTMLDivElement>(null)
+
+  /**
+   * Un solo calendario para las dos fechas: el primer clic es la recogida y el
+   * calendario sigue abierto pidiendo la devolución; el segundo la fija y
+   * cierra. Un día anterior o igual a la recogida empieza de nuevo por ella.
+   */
+  function pickDay(day: Date) {
+    if (dateStep === "checkout" && checkInDate && isAfter(day, checkInDate)) {
+      setCheckOutDate(day)
+      setDateStep(null)
+      return
+    }
+
+    setCheckInDate(day)
+    if (checkOutDate && !isAfter(checkOutDate, day)) setCheckOutDate(undefined)
+    setDateStep("checkout")
+  }
 
   useEffect(() => {
     const locationParam = searchParams.get(SearchParams.LOCATION)
@@ -45,8 +69,8 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
 
     if (locationParam) setLocation(locationParam)
 
-    const checkInDate = checkinParam ? new Date(checkinParam) : undefined
-    const checkOutDate = checkoutParam ? new Date(checkoutParam) : undefined
+    const checkInDate = fromDateParam(checkinParam)
+    const checkOutDate = fromDateParam(checkoutParam)
 
     if (checkInDate && checkOutDate) {
       // Only set the dates if the check-in date is before the check-out date
@@ -77,25 +101,16 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
     const newParams = new URLSearchParams(searchParams.toString())
 
     newParams.delete(SearchParams.LOCATION)
+    newParams.delete(SearchParams.LAT)
+    newParams.delete(SearchParams.LNG)
     newParams.delete(SearchParams.CHECKIN)
     newParams.delete(SearchParams.CHECKOUT)
 
-    if (location) {
-      newParams.set(SearchParams.LOCATION, location)
+    if (location) newParams.set(SearchParams.LOCATION, location)
 
-      const currentLocation = locations.find((loc) => loc.slug === location)
-      if (currentLocation) {
-        newParams.set(SearchParams.LAT, currentLocation.latitude.toString())
-        newParams.set(SearchParams.LNG, currentLocation.longitude.toString())
-      }
-    }
-
-    const checkinISOString = checkInDate?.toISOString()
-    if (checkinISOString) newParams.set(SearchParams.CHECKIN, checkinISOString)
-
-    const checkoutISOString = checkOutDate?.toISOString()
-    if (checkoutISOString)
-      newParams.set(SearchParams.CHECKOUT, checkoutISOString)
+    if (checkInDate) newParams.set(SearchParams.CHECKIN, toDateParam(checkInDate))
+    if (checkOutDate)
+      newParams.set(SearchParams.CHECKOUT, toDateParam(checkOutDate))
 
     push(constructUrlWithParams("/cars", newParams))
   }
@@ -127,7 +142,7 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
                           {location ? (
                             <p className="truncate font-semibold text-neutral-800 dark:text-neutral-200">
                               {
-                                locations.find((loc) => loc.slug === location)
+                                locations.find((loc) => loc.value === location)
                                   ?.name
                               }
                             </p>
@@ -146,116 +161,89 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
                       <CommandInput placeholder="Search location..." />
                       <CommandList>
                         <CommandEmpty>No location found.</CommandEmpty>
-                        <CommandGroup>
-                          {locations.map((loc) => (
-                            <CommandItem
-                              key={loc.id}
-                              value={loc.slug}
-                              onSelect={(currentValue) => {
-                                setLocation(
-                                  currentValue === location ? "" : currentValue
-                                )
-                                setOpen(false)
-                              }}
-                            >
-                              <CheckIcon
-                                className={cn(
-                                  "mr-2 size-4 shrink-0",
-                                  location === loc.slug
-                                    ? "opacity-100"
-                                    : "opacity-0"
-                                )}
-                              />
-                              {loc.name}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
+                        <LocationOptions
+                          locations={locations}
+                          selected={location}
+                          onSelect={(value) => {
+                            setLocation(value)
+                            setOpen(false)
+                          }}
+                        />
                       </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
               </div>
             </div>
-            <div className="relative h-full">
-              <Separator
-                orientation="vertical"
-                className="absolute inset-y-0 right-0 m-auto h-6 shrink-0"
-              />
-              <div className="flex size-full items-center justify-center px-0">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"ghost"}
-                      className="size-full flex-col overflow-hidden rounded-full border-none px-5 py-0 focus-visible:z-10"
-                    >
-                      <div className="flex size-full flex-col items-start justify-center truncate">
-                        <div className="text-[13px] font-bold">Check in</div>
-                        {checkInDate ? (
-                          <div className="font-semibold text-neutral-800 dark:text-neutral-200">
-                            {format(checkInDate, "LLL dd, y")}
-                          </div>
-                        ) : (
-                          <div className="truncate text-neutral-500 dark:text-neutral-400">
-                            Pick a date
-                          </div>
-                        )}
-                      </div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={checkInDate}
-                      onSelect={setCheckInDate}
-                      initialFocus
-                      disabled={(date) => {
-                        const today = new Date()
-                        today.setHours(0, 0, 0, 0)
-                        return date < today
-                      }}
+            <Popover
+              open={dateStep !== null}
+              onOpenChange={(open) => !open && setDateStep(null)}
+            >
+              <PopoverAnchor asChild>
+                <div
+                  ref={datesRef}
+                  className="col-span-2 grid h-full grid-cols-2 items-center"
+                >
+                  <div className="relative h-full">
+                    <Separator
+                      orientation="vertical"
+                      className="absolute inset-y-0 right-0 m-auto h-6 shrink-0"
                     />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
-            <div className="h-full">
-              <div className="flex size-full items-center justify-center px-0">
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant={"ghost"}
-                      className="size-full flex-col overflow-hidden rounded-full border-none py-0 pl-5 pr-16 focus-visible:z-10"
-                    >
-                      <div className="flex size-full flex-col items-start justify-center truncate">
-                        <div className="text-[13px] font-bold">Check out</div>
-                        {checkOutDate ? (
-                          <div className="font-semibold text-neutral-800 dark:text-neutral-200">
-                            {format(checkOutDate, "LLL dd, y")}
-                          </div>
-                        ) : (
-                          <div className="truncate text-neutral-500 dark:text-neutral-400">
-                            Pick a date
-                          </div>
-                        )}
-                      </div>
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0">
-                    <Calendar
-                      mode="single"
-                      selected={checkOutDate}
-                      onSelect={setCheckOutDate}
-                      initialFocus
-                      disabled={(date) => {
-                        const today = new Date()
-                        today.setHours(0, 0, 0, 0)
-                        return date < today
-                      }}
+                    <DateButton
+                      label="Check in"
+                      date={checkInDate}
+                      active={dateStep === "checkin"}
+                      onClick={() => setDateStep("checkin")}
+                      className="px-5"
                     />
-                  </PopoverContent>
-                </Popover>
-              </div>
-            </div>
+                  </div>
+                  <div className="h-full">
+                    <DateButton
+                      label="Check out"
+                      date={checkOutDate}
+                      active={dateStep === "checkout"}
+                      onClick={() =>
+                        setDateStep(checkInDate ? "checkout" : "checkin")
+                      }
+                      className="pl-5 pr-16"
+                    />
+                  </div>
+                </div>
+              </PopoverAnchor>
+              <PopoverContent
+                className="w-auto p-0"
+                // Los botones de fecha están fuera del calendario: pulsarlos
+                // cambia de paso, no lo cierra.
+                onInteractOutside={(e) => {
+                  if (datesRef.current?.contains(e.target as Node))
+                    e.preventDefault()
+                }}
+                onOpenAutoFocus={(e) => e.preventDefault()}
+              >
+                <p className="px-4 pt-4 text-sm font-semibold">
+                  {dateStep === "checkout"
+                    ? "Select your return date"
+                    : "Select your pick-up date"}
+                </p>
+                <Calendar
+                  mode="range"
+                  numberOfMonths={2}
+                  selected={{ from: checkInDate, to: checkOutDate }}
+                  defaultMonth={checkInDate}
+                  previewFrom={
+                    dateStep === "checkout" ? checkInDate : undefined
+                  }
+                  onDayClick={(day, modifiers) => {
+                    if (!modifiers.disabled) pickDay(day)
+                  }}
+                  disabled={(date) => {
+                    const today = new Date()
+                    today.setHours(0, 0, 0, 0)
+                    return date < today
+                  }}
+                />
+              </PopoverContent>
+            </Popover>
           </div>
           <div className="absolute right-2 z-20">
             <Button
@@ -269,5 +257,48 @@ export function SearchPanel({ locations }: { locations: SelectLocation[] }) {
         </div>
       </div>
     </form>
+  )
+}
+
+function DateButton({
+  label,
+  date,
+  active,
+  onClick,
+  className,
+}: {
+  label: string
+  date: Date | undefined
+  active: boolean
+  onClick: () => void
+  className?: string
+}) {
+  return (
+    <div className="flex size-full items-center justify-center px-0">
+      <Button
+        type="button"
+        variant="ghost"
+        onClick={onClick}
+        aria-expanded={active}
+        className={cn(
+          "size-full flex-col overflow-hidden rounded-full border-none py-0 focus-visible:z-10",
+          active && "bg-neutral-100 dark:bg-neutral-800",
+          className
+        )}
+      >
+        <div className="flex size-full flex-col items-start justify-center truncate">
+          <div className="text-[13px] font-bold">{label}</div>
+          {date ? (
+            <div className="font-semibold text-neutral-800 dark:text-neutral-200">
+              {format(date, "LLL dd, y")}
+            </div>
+          ) : (
+            <div className="truncate text-neutral-500 dark:text-neutral-400">
+              Pick a date
+            </div>
+          )}
+        </div>
+      </Button>
+    </div>
   )
 }

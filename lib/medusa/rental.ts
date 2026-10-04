@@ -17,6 +17,7 @@ import type {
   RentalAddonSelection,
   RentalAvailabilityResponse,
   RentalDeliveryZone,
+  RentalLocations,
   RentalQuote,
   RentalQuoteItem,
 } from "@/lib/types/rental"
@@ -183,6 +184,25 @@ export async function getDeliveryZones(
   }
 
   return data.delivery_zones ?? []
+}
+
+/**
+ * La oficina y todas las zonas de entrega activas, para el buscador.
+ *
+ * Si falla, sin oficina ni zonas: el buscador se queda sin opciones de lugar
+ * pero se sigue pudiendo buscar por fechas.
+ */
+export async function getRentalLocations(): Promise<RentalLocations> {
+  const { ok, data } = await medusaFetch<RentalLocations>(
+    "/store/rental-locations"
+  )
+
+  if (!ok) {
+    console.warn("[Rental] Could not load rental locations")
+    return { pickup: null, delivery_zones: [] }
+  }
+
+  return { pickup: data.pickup ?? null, delivery_zones: data.delivery_zones ?? [] }
 }
 
 // ---------------------------------------------------------------------------

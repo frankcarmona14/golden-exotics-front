@@ -45,6 +45,25 @@ export interface RentalDeliveryZone {
 }
 
 /**
+ * Dónde empieza y acaba el alquiler, para el campo *Pick-up / Drop-off* del
+ * buscador: la oficina (una sola) y las zonas de entrega activas. Viene de
+ * `GET /store/rental-locations`.
+ */
+export interface RentalLocations {
+  pickup: {
+    name: string
+    address_1: string | null
+    city: string | null
+    province: string | null
+    postal_code: string | null
+  } | null
+  delivery_zones: (RentalDeliveryZone & {
+    /** Coches que se entregan en la zona. `null` = todos. */
+    product_ids: string[] | null
+  })[]
+}
+
+/**
  * Adónde se entrega el coche. Misma forma que valida el backend
  * (`DeliveryAddressSchema`).
  */
