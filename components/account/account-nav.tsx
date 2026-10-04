@@ -44,10 +44,19 @@ function DocumentIcon({ className }: { className?: string }) {
   )
 }
 
+function CardIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 16 16" fill="currentColor" className={className}>
+      <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5V6h14V4.5A1.5 1.5 0 0 0 13.5 3h-11ZM15 7H1v4.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V7ZM3 10.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Zm5.75-.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" />
+    </svg>
+  )
+}
+
 const NAV_ITEMS: NavItem[] = [
   { href: "/account", label: "Overview", icon: OverviewIcon },
   { href: "/account/reservations", label: "My reservations", icon: CarIcon },
   { href: "/account/documents", label: "Documents", icon: DocumentIcon },
+  { href: "/account/payment-methods", label: "Payment methods", icon: CardIcon },
   { href: "/account/profile", label: "Profile", icon: UserIcon },
 ]
 

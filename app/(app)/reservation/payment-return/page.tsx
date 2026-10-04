@@ -12,6 +12,10 @@ function PaymentReturnContent() {
 
   const cartId = searchParams.get("cart_id")
   const redirectStatus = searchParams.get("redirect_status")
+  // Los pone el checkout en el `return_url`, para que la confirmación diga lo
+  // mismo que cuando el pago no sale de la página.
+  const deposit = searchParams.get("deposit")
+  const currency = searchParams.get("currency")
 
   useEffect(() => {
     if (!cartId) {
@@ -33,15 +37,21 @@ function PaymentReturnContent() {
         return
       }
       const orderId = (result.order as { id?: string })?.id ?? ""
-      router.replace(
-        `/reservation/confirmation/result?rental_id=${orderId}&status=success`
-      )
+      const confirmParams = new URLSearchParams({
+        rental_id: orderId,
+        status: "success",
+      })
+      if (deposit && Number(deposit) > 0 && currency) {
+        confirmParams.set("deposit", deposit)
+        confirmParams.set("currency", currency)
+      }
+      router.replace(`/reservation/confirmation/result?${confirmParams}`)
     })
 
     return () => {
       cancelled = true
     }
-  }, [cartId, redirectStatus, router])
+  }, [cartId, redirectStatus, deposit, currency, router])
 
   if (error) {
     return (

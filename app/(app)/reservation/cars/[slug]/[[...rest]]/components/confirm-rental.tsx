@@ -89,6 +89,8 @@ export function ConfirmRental({
     paymentProviderId?: string
     /** Aviso legal del guardado de tarjeta. Ver `rental-payment-session` (F0-7). */
     disclosure?: string | null
+    /** Tarjetas guardadas en el Payment Element (P1-6b). `null` para invitados. */
+    customerSessionClientSecret?: string | null
   }>(() => ({
     // Start in "loading" when the user is already logged in on first mount,
     // so the overlay renders synchronously on the first paint (no flash of
@@ -144,6 +146,7 @@ export function ConfirmRental({
         clientSecret: result.clientSecret,
         paymentProviderId: result.paymentProviderId,
         disclosure: result.cardWillBeSaved ? result.disclosure : null,
+        customerSessionClientSecret: result.customerSessionClientSecret ?? null,
       })
     })
   // `selectionKey` va aquí porque `rentalInput` lo captura: sin él, `prepare`
@@ -287,15 +290,10 @@ export function ConfirmRental({
           </div>
 
           {/*
-            Obligatorio cuando la tarjeta queda guardada: el backend manda el
-            texto junto con `card_will_be_saved`. Cobrar el balance más tarde a
-            una tarjeta sin haberlo advertido aquí es una disputa perdida.
+            El aviso del guardado de tarjeta (`disclosure`) lo pinta
+            `StripePayment` junto al botón de pagar: es obligatorio cuando la
+            tarjeta queda guardada, y tiene que leerse en el momento de pagar.
           */}
-          {checkoutState.disclosure && (
-            <p className="mb-4 rounded-lg border border-neutral-200 bg-neutral-50 p-3 text-[13px] leading-relaxed text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
-              {checkoutState.disclosure}
-            </p>
-          )}
 
           {(() => {
             // Consent block shown right above the pay/confirm button in both
@@ -318,6 +316,10 @@ export function ConfirmRental({
             return isStripe ? (
               <StripePayment
                 clientSecret={checkoutState.clientSecret!}
+                customerSessionClientSecret={
+                  checkoutState.customerSessionClientSecret
+                }
+                disclosure={checkoutState.disclosure}
                 cartId={checkoutState.cartId}
                 customerEmail={effectiveEmail}
                 customerName={effectiveName}

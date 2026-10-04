@@ -2,56 +2,74 @@
 
 import { useEffect, useState } from "react"
 import {
-  CardElement,
   Elements,
+  PaymentElement,
   useElements,
   useStripe,
 } from "@stripe/react-stripe-js"
-import { loadStripe } from "@stripe/stripe-js"
-import { useTheme } from "next-themes"
 
 import { startPaymentCollectionSession } from "@/lib/medusa/payment-collection"
+import {
+  CARD_ONLY_PAYMENT_ELEMENT_OPTIONS,
+  NON_CARD_METHOD_MESSAGE,
+  STRIPE_LOCALE,
+  stripePromise,
+  usePaymentElementAppearance,
+} from "@/lib/stripe/payment-element"
 import { Button } from "@/components/ui/button"
 import { LoadingDots } from "@/components/loading-dots"
 
-const stripePublishableKey =
-  typeof process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY === "string"
-    ? process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
-    : ""
-const stripePromise = stripePublishableKey
-  ? loadStripe(stripePublishableKey)
-  : null
+/**
+ * Lo que deja Stripe en la URL al volver de un método que sale de la página.
+ * Con tarjeta no se sale (3D Secure va en un modal), pero si pasa, la vuelta
+ * cae aquí mismo y no hay que abrir otra sesión de pago.
+ */
+function readRedirectStatus(): string | null {
+  if (typeof window === "undefined") return null
+  return new URLSearchParams(window.location.search).get("redirect_status")
+}
 
-function CardForm({
-  clientSecret,
-  amountLabel,
-}: {
-  clientSecret: string
-  amountLabel: string
-}) {
+function PaymentReceived({ amountLabel }: { amountLabel: string }) {
+  return (
+    <div className="mt-6 rounded-xl border border-green-500/30 bg-green-50 p-4 text-sm text-green-800 dark:bg-green-950/20 dark:text-green-300">
+      <p className="font-medium">Payment received</p>
+      <p className="mt-1">
+        Thank you — your payment of {amountLabel} went through. You can close
+        this page.
+      </p>
+    </div>
+  )
+}
+
+function CardForm({ amountLabel }: { amountLabel: string }) {
   const stripe = useStripe()
   const elements = useElements()
-  const { resolvedTheme } = useTheme()
-  const isDark = resolvedTheme === "dark"
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [done, setDone] = useState(false)
+  const [ready, setReady] = useState(false)
+  const [methodType, setMethodType] = useState("card")
 
   const handlePay = async () => {
-    const card = elements?.getElement(CardElement)
-    if (!stripe || !card) {
+    if (!stripe || !elements) {
       setError("Payment form is not ready.")
+      return
+    }
+    if (methodType !== "card") {
+      setError(NON_CARD_METHOD_MESSAGE)
       return
     }
 
     setLoading(true)
     setError(null)
 
-    const { error: confirmError } = await stripe.confirmCardPayment(
-      clientSecret,
-      { payment_method: { card } }
-    )
+    const returnUrl = `${window.location.origin}${window.location.pathname}`
+    const { error: confirmError } = await stripe.confirmPayment({
+      elements,
+      redirect: "if_required",
+      confirmParams: { return_url: returnUrl },
+    })
 
     if (confirmError) {
       setError(confirmError.message ?? "Payment error.")
@@ -69,34 +87,30 @@ function CardForm({
   }
 
   if (done) {
-    return (
-      <div className="mt-6 rounded-xl border border-green-500/30 bg-green-50 p-4 text-sm text-green-800 dark:bg-green-950/20 dark:text-green-300">
-        <p className="font-medium">Payment received</p>
-        <p className="mt-1">
-          Thank you — your payment of {amountLabel} went through. You can
-          close this page.
-        </p>
-      </div>
-    )
+    return <PaymentReceived amountLabel={amountLabel} />
   }
 
   return (
     <div className="mt-6 space-y-4">
       <div className="rounded-xl border border-neutral-200 p-4 dark:border-neutral-800">
-        <CardElement
-          options={{
-            style: {
-              base: {
-                fontSize: "16px",
-                fontFamily: "var(--font-sans), system-ui, sans-serif",
-                color: isDark ? "#fafafa" : "#0a0a0a",
-                "::placeholder": { color: isDark ? "#737373" : "#a3a3a3" },
-              },
-              invalid: { color: "#ef4444", iconColor: "#ef4444" },
-            },
-            hidePostalCode: true,
-          }}
-        />
+        {!ready && (
+          <div className="flex justify-center py-4">
+            <LoadingDots variant="default" />
+          </div>
+        )}
+        <div className={ready ? "block" : "hidden"}>
+          <PaymentElement
+            options={CARD_ONLY_PAYMENT_ELEMENT_OPTIONS}
+            onReady={() => setReady(true)}
+            onChange={(e) => {
+              setMethodType(e.value.type)
+              setError(null)
+            }}
+            onLoadError={(e) =>
+              setError(e.error.message ?? "The payment form could not load.")
+            }
+          />
+        </div>
       </div>
 
       {error && (
@@ -106,7 +120,7 @@ function CardForm({
       <Button
         className="w-full"
         onClick={handlePay}
-        disabled={loading || !stripe}
+        disabled={loading || !stripe || !ready}
       >
         {loading ? <LoadingDots variant="default" /> : `Pay ${amountLabel}`}
       </Button>
@@ -125,10 +139,18 @@ export function PayBalanceForm({
   paymentCollectionId: string
   amountLabel: string
 }) {
+  const appearance = usePaymentElementAppearance()
   const [clientSecret, setClientSecret] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [returnedPaid, setReturnedPaid] = useState(false)
 
   useEffect(() => {
+    const status = readRedirectStatus()
+    if (status === "succeeded" || status === "processing") {
+      setReturnedPaid(true)
+      return
+    }
+
     let cancelled = false
 
     startPaymentCollectionSession(paymentCollectionId).then((result) => {
@@ -144,6 +166,10 @@ export function PayBalanceForm({
       cancelled = true
     }
   }, [paymentCollectionId])
+
+  if (returnedPaid) {
+    return <PaymentReceived amountLabel={amountLabel} />
+  }
 
   if (error) {
     return (
@@ -164,21 +190,11 @@ export function PayBalanceForm({
 
   return (
     <Elements
+      key={clientSecret}
       stripe={stripePromise}
-      options={{
-        locale: "en",
-        appearance: {
-          theme: "stripe",
-          variables: {
-            colorPrimary: "#f8e33f",
-            colorBackground: "transparent",
-            borderRadius: "8px",
-            fontFamily: "var(--font-sans), system-ui, sans-serif",
-          },
-        },
-      }}
+      options={{ clientSecret, locale: STRIPE_LOCALE, appearance }}
     >
-      <CardForm clientSecret={clientSecret} amountLabel={amountLabel} />
+      <CardForm amountLabel={amountLabel} />
     </Elements>
   )
 }

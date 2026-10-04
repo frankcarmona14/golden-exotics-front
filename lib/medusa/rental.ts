@@ -527,6 +527,12 @@ export interface PrepareRentalCheckoutResult {
    * haberlo advertido es motivo de disputa, y la gana el cliente.
    */
   disclosure?: string | null
+  /**
+   * Customer Session del Payment Element (P1-6b): ofrece las tarjetas que el
+   * cliente guardó y la casilla de guardarla para próximas reservas. `null`
+   * para invitados.
+   */
+  customerSessionClientSecret?: string | null
   paymentProviderId?: string
   error?: string
 }
@@ -1021,6 +1027,7 @@ export async function prepareRentalCheckout(
       payment_collection?: { id: string; payment_sessions?: { id: string; provider_id?: string; data?: { client_secret?: string } }[] }
       card_will_be_saved?: boolean
       disclosure?: string | null
+      customer_session_client_secret?: string | null
       reason?: string | null
     }>(`/store/carts/${cartId}/rental-payment-session`, {
       method: "POST",
@@ -1086,6 +1093,8 @@ export async function prepareRentalCheckout(
       paymentProviderId: activeProviderId,
       cardWillBeSaved: paySessionRes.data.card_will_be_saved ?? false,
       disclosure: paySessionRes.data.disclosure ?? null,
+      customerSessionClientSecret:
+        paySessionRes.data.customer_session_client_secret ?? null,
     }
   } catch (err) {
     const message = err instanceof Error ? err.message : "Network error"
