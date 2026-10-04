@@ -20,6 +20,7 @@ import {
 import {
   STRIPE_LOCALE,
   stripePromise,
+  PAYMENT_ELEMENT_FONTS,
   usePaymentElementAppearance,
 } from "@/lib/stripe/payment-element"
 import { Button } from "@/components/ui/button"
@@ -242,7 +243,12 @@ function AddCardPanel({
         <Elements
           key={clientSecret}
           stripe={stripePromise}
-          options={{ clientSecret, locale: STRIPE_LOCALE, appearance }}
+          options={{
+            clientSecret,
+            locale: STRIPE_LOCALE,
+            appearance,
+            fonts: PAYMENT_ELEMENT_FONTS,
+          }}
         >
           <AddCardForm onAdded={onAdded} onCancel={onCancel} />
         </Elements>

@@ -3,6 +3,7 @@
 import {
   loadStripe,
   type Appearance,
+  type CssFontSource,
   type StripePaymentElementOptions,
 } from "@stripe/stripe-js"
 import { useTheme } from "next-themes"
@@ -30,6 +31,19 @@ export const stripePromise = stripePublishableKey
 export const STRIPE_LOCALE = "en" as const
 
 /**
+ * Fuentes que carga el iframe del Payment Element. El iframe no ve las
+ * variables CSS ni las fuentes de la página (`var(--font-sans)` no resuelve y
+ * el navegador cae a serif), así que Inter se carga aparte y se nombra tal cual.
+ * Va en las `options` de cada `<Elements>`, junto a `appearance`.
+ */
+export const PAYMENT_ELEMENT_FONTS: CssFontSource[] = [
+  {
+    cssSrc:
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap",
+  },
+]
+
+/**
  * Apariencia del Payment Element según el tema de la página.
  *
  * A diferencia del CardElement, el Payment Element pinta sus propios campos con
@@ -49,7 +63,8 @@ export function usePaymentElementAppearance(): Appearance {
       colorText: isDark ? "#fafafa" : "#0a0a0a",
       colorDanger: "#ef4444",
       borderRadius: "8px",
-      fontFamily: "var(--font-sans), system-ui, sans-serif",
+      fontFamily:
+        'Inter, -apple-system, "Segoe UI", system-ui, Roboto, "Helvetica Neue", Arial, sans-serif',
     },
   }
 }

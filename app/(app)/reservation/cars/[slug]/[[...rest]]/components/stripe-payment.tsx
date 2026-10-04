@@ -18,6 +18,7 @@ import {
   STRIPE_LOCALE,
   stripePromise,
   stripePublishableKey,
+  PAYMENT_ELEMENT_FONTS,
   usePaymentElementAppearance,
 } from "@/lib/stripe/payment-element"
 import { Button } from "@/components/ui/button"
@@ -415,6 +416,7 @@ export function StripePayment({
     ...(customerSessionClientSecret ? { customerSessionClientSecret } : {}),
     locale: STRIPE_LOCALE,
     appearance,
+    fonts: PAYMENT_ELEMENT_FONTS,
   }
 
   return (

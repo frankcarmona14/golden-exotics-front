@@ -14,6 +14,7 @@ import {
   NON_CARD_METHOD_MESSAGE,
   STRIPE_LOCALE,
   stripePromise,
+  PAYMENT_ELEMENT_FONTS,
   usePaymentElementAppearance,
 } from "@/lib/stripe/payment-element"
 import { Button } from "@/components/ui/button"
@@ -192,7 +193,12 @@ export function PayBalanceForm({
     <Elements
       key={clientSecret}
       stripe={stripePromise}
-      options={{ clientSecret, locale: STRIPE_LOCALE, appearance }}
+      options={{
+        clientSecret,
+        locale: STRIPE_LOCALE,
+        appearance,
+        fonts: PAYMENT_ELEMENT_FONTS,
+      }}
     >
       <CardForm amountLabel={amountLabel} />
     </Elements>
