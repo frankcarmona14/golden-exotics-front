@@ -93,9 +93,11 @@ export function PriceDetails({
                 <span>
                   {line.type === "base"
                     ? `${days} ${days === 1 ? "day" : "days"}`
-                    : line.quantity > 1
-                      ? `${line.label} × ${line.quantity}`
-                      : line.label}
+                    : line.type === "adjustment"
+                      ? `${line.label} · ${line.quantity} ${line.quantity === 1 ? "day" : "days"}`
+                      : line.quantity > 1
+                        ? `${line.label} × ${line.quantity}`
+                        : line.label}
                   {line.type === "base" && dailyRate && (
                     <DailyRate
                       rate={dailyRate}
@@ -104,7 +106,19 @@ export function PriceDetails({
                     />
                   )}
                 </span>
-                <span>{formatAmountForDisplay(line.amount, currency)}</span>
+                {line.type === "adjustment" ? (
+                  <span
+                    className={
+                      line.amount < 0
+                        ? "text-green-700 dark:text-green-400"
+                        : undefined
+                    }
+                  >
+                    {formatSignedAmount(line.amount, currency)}
+                  </span>
+                ) : (
+                  <span>{formatAmountForDisplay(line.amount, currency)}</span>
+                )}
               </div>
             ))
           ) : (
@@ -163,6 +177,17 @@ export function PriceDetails({
       </div>
     </>
   )
+}
+
+/**
+ * Importe de un ajuste por regla de fecha (P0-5), con su signo: "+$200" o
+ * "−$200", con el signo menos de verdad (U+2212) y no el guion de `Intl`.
+ */
+function formatSignedAmount(amount: number, currency: string): string {
+  const abs = formatAmountForDisplay(Math.abs(amount), currency)
+  if (amount < 0) return `−${abs}`
+  if (amount > 0) return `+${abs}`
+  return abs
 }
 
 /**

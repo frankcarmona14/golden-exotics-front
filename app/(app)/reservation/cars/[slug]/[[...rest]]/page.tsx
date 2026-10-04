@@ -6,6 +6,7 @@ import { redirect } from "next/navigation"
 import { getCarBySlug } from "@/db/queries/car-repository"
 import { getCustomer } from "@/lib/medusa/customer"
 import { getGuestNotes, getRentalAvailability } from "@/lib/medusa/rental"
+import { isDateRuleMinimum } from "@/lib/medusa/rental-errors"
 import { getDeliveryAddress } from "@/lib/medusa/rental-delivery"
 import { differenceInDays, isValid } from "date-fns"
 
@@ -212,6 +213,8 @@ export default async function CarReservationPage({
   }
 
   let rentalAvailable = true
+  /** Mínimo de una regla por fecha (P0-5): explica el "no disponible". */
+  let unavailableReason: string | null = null
   let rentalTotalFromApi: number | null = null
   let depositAmount: number | null = null
   let breakdown: RentalPriceBreakdown | null = null
@@ -232,6 +235,9 @@ export default async function CarReservationPage({
     })
 
     rentalAvailable = availability.available
+    if (!availability.available && isDateRuleMinimum(availability.message)) {
+      unavailableReason = availability.message ?? null
+    }
     breakdown = availability.breakdown ?? null
     mileage = availability.mileage ?? null
     lateReturn = availability.late_return ?? null
@@ -353,8 +359,17 @@ export default async function CarReservationPage({
                   >
                     <p className="font-medium">Not available</p>
                     <p className="mt-1">
-                      This car is not available for the selected dates. Please
-                      go back and choose different dates.
+                      {unavailableReason ? (
+                        <>
+                          {unavailableReason} Please go back and choose
+                          different dates.
+                        </>
+                      ) : (
+                        <>
+                          This car is not available for the selected dates.
+                          Please go back and choose different dates.
+                        </>
+                      )}
                     </p>
                   </div>
                 )}

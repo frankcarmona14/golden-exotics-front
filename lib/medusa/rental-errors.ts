@@ -12,7 +12,26 @@
  * código no distingue "fechas pisadas" de "faltan metadatos". Lo que no se
  * reconoce se devuelve tal cual, que es peor copy pero nunca información falsa.
  */
-const RENTAL_ERROR_COPY: { match: RegExp; message: string }[] = [
+/**
+ * Mínimo de días de una regla por fecha (P0-5): "Weekend minimum: bookings on
+ * these dates need at least 3 days." El backend lo escribe para el cliente y el
+ * nombre de la regla es copy del operador, así que se enseña tal cual.
+ */
+const DATE_RULE_MINIMUM = /: bookings on these dates need at least \d+ days?\./i
+
+/** Si el mensaje es el mínimo de una regla por fecha, que se enseña tal cual. */
+export function isDateRuleMinimum(message: string | undefined | null): boolean {
+  return !!message && DATE_RULE_MINIMUM.test(message)
+}
+
+/** `message: null` = se deja pasar el texto del backend sin tocarlo. */
+const RENTAL_ERROR_COPY: { match: RegExp; message: string | null }[] = [
+  {
+    // Va primero: el nombre de la regla lo elige el operador y podría casar
+    // con un patrón genérico de abajo ("Minimum rental days for holidays: ...").
+    match: DATE_RULE_MINIMUM,
+    message: null,
+  },
   {
     // El caso que de verdad ve un cliente: otro carrito se le adelantó.
     match: /already rented or held during the requested period/i,
@@ -73,5 +92,5 @@ export function translateRentalError(
   if (!error) return fallback
 
   const copy = RENTAL_ERROR_COPY.find((entry) => entry.match.test(error))
-  return copy ? copy.message : error
+  return copy?.message ?? error
 }

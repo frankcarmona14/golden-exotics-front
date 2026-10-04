@@ -49,14 +49,21 @@ export function formatWallClock(
   }
 }
 
-/** The pricing engine line type, from the code it gives each line. */
+/**
+ * The pricing engine line type, from the code it gives each line. Quote lines
+ * only carry the code.
+ */
 function lineType(code: string): RentalPriceLine["type"] {
   if (code === "rental_base") return "base"
+  // Date rules (P0-5): `rule_<id>`, a discount or surcharge on the base.
+  if (code.startsWith("rule_")) return "adjustment"
   if (code.startsWith("delivery_")) return "delivery"
   if (code.startsWith("addon_")) return "addon"
   if (code.startsWith("mileage")) return "mileage"
   if (code.startsWith("state_fee")) return "state_fee"
-  return "adjustment"
+  // Unknown code: painted as a plain extra, and counted as a charge like the
+  // backend counts every line that is not the rental itself.
+  return "addon"
 }
 
 const round = (n: number) => Math.round(n * 100) / 100
@@ -76,8 +83,10 @@ export function quoteItemToBreakdown(
     type: lineType(line.code),
   }))
   const subtotal = round(lines.reduce((sum, line) => sum + line.amount, 0))
+  // The rental itself: the base and its date-rule adjustments, which go to the
+  // balance with it. Everything else is a charge, paid upfront.
   const base = lines
-    .filter((line) => line.type === "base")
+    .filter((line) => line.type === "base" || line.type === "adjustment")
     .reduce((sum, line) => sum + line.amount, 0)
 
   return {
