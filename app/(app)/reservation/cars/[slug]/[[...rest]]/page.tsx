@@ -15,6 +15,7 @@ import { Separator } from "@/components/ui/separator"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
 
 import { parseAddonSelection } from "@/lib/medusa/addons"
+import { resolveQuoteBooking } from "@/lib/quote-booking"
 import type {
   RentalLateReturnPolicy,
   RentalMileageTerms,
@@ -29,6 +30,7 @@ import { ConfirmRental } from "./components/confirm-rental"
 import { GuestNotes } from "@/components/guest-notes"
 import { GuestProvider } from "./components/guest-context"
 import { PriceDetails } from "./components/price-details"
+import { QuoteLockedNote, QuoteUnavailable } from "./components/quote-notice"
 
 export const metadata: Metadata = {
   title: "Confirm and pay",
@@ -65,6 +67,9 @@ interface CarReservationPageProps {
     addons?: string
     /** Zona de entrega elegida en el paso anterior (P0-3). La dirección, en cookie. */
     delivery?: string
+    /** Presupuesto del que sale la reserva (P1-1). Ver `lib/quote-booking.ts`. */
+    quote?: string
+    quote_item?: string
   }
 }
 
@@ -72,6 +77,20 @@ export default async function CarReservationPage({
   params,
   searchParams,
 }: CarReservationPageProps) {
+  /**
+   * Desde un presupuesto (P1-1) fechas, extras, zona y precio salen del
+   * presupuesto, releído aquí en el servidor; de la URL solo sale cuál es.
+   */
+  const quoted = await resolveQuoteBooking(params.slug, searchParams)
+
+  if (quoted.kind === "unavailable") {
+    return <QuoteUnavailable token={quoted.token} message={quoted.message} />
+  }
+  if (quoted.kind === "redirect") {
+    redirect(quoted.href)
+  }
+  const fromQuote = quoted.kind === "ok" ? quoted : null
+
   const {
     checkin,
     checkout,
@@ -79,7 +98,16 @@ export default async function CarReservationPage({
     checkout_time: checkoutTimeParam,
     addons: addonsParam,
     delivery: deliveryZone,
-  } = searchParams
+  } = fromQuote
+    ? {
+        checkin: fromQuote.checkin,
+        checkout: fromQuote.checkout,
+        checkin_time: fromQuote.checkinTime,
+        checkout_time: fromQuote.checkoutTime,
+        addons: undefined,
+        delivery: fromQuote.item.delivery_zone ?? undefined,
+      }
+    : searchParams
   const car = await getCarBySlug(params.slug)
 
   if (!car) {
@@ -119,9 +147,12 @@ export default async function CarReservationPage({
     /^\d{1,2}:\d{2}$/.test(checkinTimeParam) &&
     /^\d{1,2}:\d{2}$/.test(checkoutTimeParam)
 
-  const days = useTimeBasedDays
-    ? rentalDaysFromDateTimes(checkin, checkout, checkinTime, checkoutTime)
-    : differenceInDays(checkoutDate, checkinDate)
+  // Con presupuesto, los días son los que se cotizaron.
+  const days = fromQuote
+    ? fromQuote.item.rental_days
+    : useTimeBasedDays
+      ? rentalDaysFromDateTimes(checkin, checkout, checkinTime, checkoutTime)
+      : differenceInDays(checkoutDate, checkinDate)
 
   if (days <= 0) {
     return (
@@ -148,6 +179,7 @@ export default async function CarReservationPage({
     checkout,
     checkin_time: checkinTime,
     checkout_time: checkoutTime,
+    ...(fromQuote?.params ?? {}),
   })
   const redirectTo = `/reservation/cars/${params.slug}?${checkoutParams}`
 
@@ -158,7 +190,9 @@ export default async function CarReservationPage({
    * se puede cambiar. Cambiarla en esta pantalla obligaría a rehacer el carrito,
    * y rehacer el carrito suelta el hold del coche que se está pagando.
    */
-  const selectedAddons = parseAddonSelection(addonsParam)
+  const selectedAddons = fromQuote
+    ? fromQuote.item.addons
+    : parseAddonSelection(addonsParam)
 
   /**
    * Entrega elegida en el paso anterior (P0-3). La zona viene en la URL; la
@@ -173,6 +207,7 @@ export default async function CarReservationPage({
   if (deliveryZone && !deliveryAddress) {
     const back = new URLSearchParams(checkoutParams)
     if (addonsParam) back.set("addons", addonsParam)
+    if (fromQuote) back.set("delivery", deliveryZone)
     redirect(`/reservation/cars/${params.slug}/extras?${back}`)
   }
 
@@ -206,6 +241,16 @@ export default async function CarReservationPage({
     if (availability.deposit?.amount && availability.deposit.amount > 0) {
       depositAmount = availability.deposit.amount
     }
+  }
+
+  /**
+   * La disponibilidad no sabe de presupuestos: cotiza a precio de catálogo. Con
+   * presupuesto se enseña su precio, que es el que cobrará el backend.
+   */
+  if (fromQuote) {
+    rentalTotalFromApi = fromQuote.item.total
+    depositAmount = fromQuote.deposit ?? depositAmount
+    breakdown = fromQuote.breakdown
   }
 
   /**
@@ -247,6 +292,13 @@ export default async function CarReservationPage({
               </div>
             </header>
 
+            {fromQuote && (
+              <QuoteLockedNote
+                token={fromQuote.ref.token}
+                className="mb-6 md:mb-10"
+              />
+            )}
+
             <div className="grid grid-cols-1 md:grid-cols-[minmax(0,560px)_minmax(260px,465px)] md:items-start md:justify-between md:gap-x-14">
               <aside className="md:sticky md:top-[calc(var(--site-header-height)+1.5rem)] md:col-start-2 md:row-span-2 md:rounded-xl md:border md:border-border">
                 <div className="py-3 md:p-6">
@@ -266,6 +318,7 @@ export default async function CarReservationPage({
                     fallbackSubtotal={fallbackSubtotal}
                     mileage={mileage}
                     lateReturn={lateReturn}
+                    dailyRate={fromQuote?.dailyRate ?? null}
                   />
                   {rentalAvailable && (
                     <div
@@ -332,6 +385,7 @@ export default async function CarReservationPage({
                         currency={currency}
                         addons={selectedAddons}
                         deliveryZone={deliveryZone ?? null}
+                        quote={fromQuote?.ref ?? null}
                       />
                     ) : (
                       <p className="text-sm text-neutral-500">

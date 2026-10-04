@@ -35,6 +35,29 @@ const RENTAL_ERROR_COPY: { match: RegExp; message: string }[] = [
     match: /is not rentable/i,
     message: "This car is not available for rental right now.",
   },
+  // Presupuestos (P1-1). El backend ya los escribe para el cliente; se mapean
+  // igual para que un cambio de redacción allí no cuele copy de API aquí.
+  {
+    match: /quote has expired/i,
+    message: "This quote has expired. Ask us for a new one.",
+  },
+  {
+    match: /quote was cancelled/i,
+    message: "This quote was cancelled. Contact us if you still want the car.",
+  },
+  {
+    match: /from the quote is already booked/i,
+    message: "This car from your quote is already booked.",
+  },
+  {
+    match: /(do|does) not match the quote/i,
+    message:
+      "This booking no longer matches your quote. Open the quote again and book from there.",
+  },
+  {
+    match: /quote not found|not part of the quote|quote is not ready yet/i,
+    message: "We could not find this quote. Open the link we sent you again.",
+  },
   {
     match: /requires rental_start_date|must have a quantity of 1/i,
     // Un fallo nuestro, no del cliente: no le pedimos que arregle nada.

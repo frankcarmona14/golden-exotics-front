@@ -11,11 +11,17 @@ import {
   getRentalAvailability,
 } from "@/lib/medusa/rental"
 import { getDeliveryAddress } from "@/lib/medusa/rental-delivery"
+import { resolveQuoteBooking } from "@/lib/quote-booking"
+import type { RentalDeliveryZone } from "@/lib/types/rental"
 import { SearchParams } from "@/lib/types"
 import { Button } from "@/components/ui/button"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
 
 import { BackButton } from "../[[...rest]]/components/back-button"
+import {
+  QuoteLockedNote,
+  QuoteUnavailable,
+} from "../[[...rest]]/components/quote-notice"
 import { ExtrasPicker } from "./components/extras-picker"
 
 export const dynamic = "force-dynamic"
@@ -57,6 +63,9 @@ interface ExtrasPageProps {
      */
     addons?: string
     delivery?: string
+    /** Presupuesto del que sale la reserva (P1-1). Ver `lib/quote-booking.ts`. */
+    quote?: string
+    quote_item?: string
   }
 }
 
@@ -81,6 +90,20 @@ export default async function CarExtrasPage({
   params,
   searchParams,
 }: ExtrasPageProps) {
+  /**
+   * Desde un presupuesto (P1-1) las fechas, los extras y la zona salen del
+   * presupuesto, no de la URL: aquí solo queda dar la dirección de entrega.
+   */
+  const quoted = await resolveQuoteBooking(params.slug, searchParams)
+
+  if (quoted.kind === "unavailable") {
+    return <QuoteUnavailable token={quoted.token} message={quoted.message} />
+  }
+  if (quoted.kind === "redirect") {
+    redirect(quoted.href)
+  }
+  const fromQuote = quoted.kind === "ok" ? quoted : null
+
   const {
     checkin,
     checkout,
@@ -88,7 +111,16 @@ export default async function CarExtrasPage({
     checkout_time: checkoutTimeParam,
     addons: addonsParam,
     delivery: deliveryParam,
-  } = searchParams
+  } = fromQuote
+    ? {
+        checkin: fromQuote.checkin,
+        checkout: fromQuote.checkout,
+        checkin_time: fromQuote.checkinTime,
+        checkout_time: fromQuote.checkoutTime,
+        addons: undefined,
+        delivery: fromQuote.item.delivery_zone ?? undefined,
+      }
+    : searchParams
 
   const car = await getCarBySlug(params.slug)
 
@@ -101,6 +133,7 @@ export default async function CarExtrasPage({
     checkout: checkout ?? "",
     ...(checkinTimeParam ? { checkin_time: checkinTimeParam } : {}),
     ...(checkoutTimeParam ? { checkout_time: checkoutTimeParam } : {}),
+    ...(fromQuote?.params ?? {}),
   })
   const checkoutHref = `/reservation/cars/${params.slug}?${checkoutParams}`
 
@@ -135,19 +168,35 @@ export default async function CarExtrasPage({
     redirect(checkoutHref)
   }
 
-  const [addons, deliveryZones] = await Promise.all([
+  // Presupuesto con recogida: no hay nada que elegir ni dirección que pedir.
+  if (fromQuote && !fromQuote.item.delivery_zone) {
+    redirect(checkoutHref)
+  }
+
+  const [addons, allDeliveryZones] = await Promise.all([
     getRentalAddons(car.medusaProductId),
     getDeliveryZones(car.medusaProductId),
   ])
+
+  /**
+   * Con presupuesto solo existe su zona. Si se desactivó después de cotizar, se
+   * sigue ofreciendo con el nombre y el precio que tenía en el presupuesto: es
+   * lo que se aceptó y lo que el backend va a cobrar.
+   */
+  const deliveryZones: RentalDeliveryZone[] = fromQuote
+    ? [quotedZone(fromQuote.item, allDeliveryZones)]
+    : allDeliveryZones
 
   /**
    * Lo que el cliente ya había elegido, filtrado contra lo que existe hoy: un
    * extra o una zona que se desactivó mientras tanto se cae de la selección en
    * vez de hacer fallar la cotización.
    */
-  const initialAddons = parseAddonSelection(addonsParam).filter((selected) =>
-    addons.some((addon) => addon.code === selected.code)
-  )
+  const initialAddons = fromQuote
+    ? fromQuote.item.addons
+    : parseAddonSelection(addonsParam).filter((selected) =>
+        addons.some((addon) => addon.code === selected.code)
+      )
   const initialZone = deliveryZones.some((zone) => zone.code === deliveryParam)
     ? deliveryParam!
     : null
@@ -180,17 +229,43 @@ export default async function CarExtrasPage({
                 <ChevronLeftIcon className="size-5 shrink-0" />
               </BackButton>
               <h1 className="absolute inset-0 flex items-center justify-center text-base font-semibold md:static md:justify-start md:text-3xl">
-                {addons.length ? "Add extras" : "Delivery or pickup"}
+                {fromQuote
+                  ? "Delivery address"
+                  : addons.length
+                    ? "Add extras"
+                    : "Delivery or pickup"}
               </h1>
             </div>
           </header>
+
+          {fromQuote && (
+            <QuoteLockedNote token={fromQuote.ref.token} className="mb-8" />
+          )}
 
           <ExtrasPicker
             days={days}
             currency={car.currency}
             checkoutHref={checkoutHref}
-            initialBreakdown={availability.breakdown ?? null}
-            initialDeposit={availability.deposit?.amount ?? null}
+            initialBreakdown={
+              fromQuote ? fromQuote.breakdown : (availability.breakdown ?? null)
+            }
+            initialDeposit={
+              fromQuote ? fromQuote.deposit : (availability.deposit?.amount ?? null)
+            }
+            quoted={
+              fromQuote
+                ? {
+                    dailyRate: fromQuote.dailyRate,
+                    addons: fromQuote.item.addons.map((selected) => ({
+                      code: selected.code,
+                      quantity: selected.quantity,
+                      name:
+                        addons.find((addon) => addon.code === selected.code)
+                          ?.name ?? selected.code.replace(/_/g, " "),
+                    })),
+                  }
+                : null
+            }
             available={addons}
             deliveryZones={deliveryZones}
             initialAddons={initialAddons}
@@ -210,16 +285,44 @@ export default async function CarExtrasPage({
           />
 
           <p className="mt-10 text-[13px] text-neutral-500 dark:text-neutral-400">
-            Changed your mind about the dates?{" "}
-            <Link
-              href={`/cars/${params.slug}`}
-              className="underline underline-offset-4"
-            >
-              Back to {car.name}
-            </Link>
+            {fromQuote ? (
+              <Link
+                href={`/quote/${encodeURIComponent(fromQuote.ref.token)}`}
+                className="underline underline-offset-4"
+              >
+                Back to your quote
+              </Link>
+            ) : (
+              <>
+                Changed your mind about the dates?{" "}
+                <Link
+                  href={`/cars/${params.slug}`}
+                  className="underline underline-offset-4"
+                >
+                  Back to {car.name}
+                </Link>
+              </>
+            )}
           </p>
         </div>
       </div>
     </main>
   )
+}
+
+/** La zona del presupuesto, con lo que costaba en él si ya no está activa. */
+function quotedZone(
+  item: { delivery_zone: string | null; lines: { code: string; label: string; amount: number }[] },
+  zones: RentalDeliveryZone[]
+): RentalDeliveryZone {
+  const code = item.delivery_zone ?? ""
+  const line = item.lines.find((candidate) => candidate.code === `delivery_${code}`)
+  const zone = zones.find((candidate) => candidate.code === code)
+
+  return {
+    code,
+    name: zone?.name ?? line?.label ?? code.replace(/_/g, " "),
+    description: zone?.description ?? null,
+    price: line?.amount ?? zone?.price ?? 0,
+  }
 }

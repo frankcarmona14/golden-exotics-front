@@ -17,6 +17,8 @@ import type {
   RentalAddonSelection,
   RentalAvailabilityResponse,
   RentalDeliveryZone,
+  RentalQuote,
+  RentalQuoteItem,
 } from "@/lib/types/rental"
 
 const MEDUSA_BACKEND_URL =
@@ -246,6 +248,36 @@ export async function getRentalAvailability({
 }
 
 // ---------------------------------------------------------------------------
+// Quotes (P1-1)
+// ---------------------------------------------------------------------------
+
+/**
+ * A quote by its public token, or `null` if it doesn't exist (or is still a
+ * draft, which the backend answers as 404).
+ */
+export async function getRentalQuote(
+  token: string
+): Promise<RentalQuote | null> {
+  if (!token) return null
+  const { ok, data } = await medusaFetch<{ quote: RentalQuote }>(
+    `/store/rental-quotes/${encodeURIComponent(token)}`
+  )
+  if (!ok) return null
+  return data.quote ?? null
+}
+
+/** A quote and one of its cars, or `null` if either is missing. */
+export async function getRentalQuoteItem(
+  token: string | undefined,
+  itemId: string | undefined
+): Promise<{ quote: RentalQuote; item: RentalQuoteItem } | null> {
+  if (!token || !itemId) return null
+  const quote = await getRentalQuote(token)
+  const item = quote?.items.find((candidate) => candidate.id === itemId)
+  return quote && item ? { quote, item } : null
+}
+
+// ---------------------------------------------------------------------------
 // Order rental details (for confirmation page)
 // ---------------------------------------------------------------------------
 
@@ -358,6 +390,12 @@ export interface CreateRentalInput {
    * desde su cookie (`rental-delivery.ts`), así que nunca pasa por aquí.
    */
   delivery_zone?: string | null
+  /**
+   * Presupuesto del que sale esta reserva (P1-1). Con él, el backend cobra el
+   * precio negociado y los extras del presupuesto (ignora `addons`), y rechaza
+   * el carrito si el coche, las fechas o la zona no coinciden.
+   */
+  quote?: { token: string; item_id: string } | null
 }
 
 /**
@@ -601,6 +639,7 @@ export async function createRental(
           },
           ...(input.addons?.length ? { addons: input.addons } : {}),
           ...(cartDelivery.delivery ? { delivery: cartDelivery.delivery } : {}),
+          ...(input.quote ? { quote: input.quote } : {}),
         },
       }
     )
@@ -896,6 +935,7 @@ export async function prepareRentalCheckout(
           },
           ...(input.addons?.length ? { addons: input.addons } : {}),
           ...(cartDelivery.delivery ? { delivery: cartDelivery.delivery } : {}),
+          ...(input.quote ? { quote: input.quote } : {}),
         },
       }
     )

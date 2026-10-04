@@ -9,7 +9,10 @@ import { absoluteUrl } from "@/lib/seo/urls"
  */
 export const revalidate = 3600
 
-/** Páginas públicas sin datos dinámicos. Los flujos privados no van aquí. */
+/**
+ * Páginas públicas sin datos dinámicos. Los flujos privados no van aquí, ni los
+ * presupuestos (/quote/[token]): su URL es la llave del cliente.
+ */
 const STATIC_PAGES: {
   path: string
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"]

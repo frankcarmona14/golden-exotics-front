@@ -28,6 +28,8 @@ export function PriceDetails({
   isQuoting = false,
   mileage = null,
   lateReturn = null,
+  title = "Your total",
+  dailyRate = null,
 }: {
   days: number
   currency: string
@@ -41,6 +43,13 @@ export function PriceDetails({
   mileage?: RentalMileageTerms | null
   /** Condiciones de devolución tardía (P1-6). `null` = no se cobra. */
   lateReturn?: RentalLateReturnPolicy | null
+  /** Heading. `null` hides it (the quote page puts its own above). */
+  title?: string | null
+  /**
+   * Precio por día de un presupuesto (P1-1): el negociado, con el de catálogo
+   * tachado cuando es más bajo. `null` fuera de presupuestos.
+   */
+  dailyRate?: { price: number; list: number } | null
 }) {
   const lines = breakdown?.lines ?? []
   const subtotal = breakdown?.subtotal ?? fallbackSubtotal
@@ -62,9 +71,9 @@ export function PriceDetails({
 
   return (
     <>
-      <h2 className="text-xl font-semibold">Your total</h2>
+      {title && <h2 className="text-xl font-semibold">{title}</h2>}
       <div
-        className="pt-5"
+        className={title ? "pt-5" : undefined}
         // Mientras se recotiza, lo que hay en pantalla es el precio anterior.
         // Atenuarlo lo dice sin vaciar la cifra, que parecería un alquiler
         // gratis durante un instante.
@@ -87,6 +96,13 @@ export function PriceDetails({
                     : line.quantity > 1
                       ? `${line.label} × ${line.quantity}`
                       : line.label}
+                  {line.type === "base" && dailyRate && (
+                    <DailyRate
+                      rate={dailyRate}
+                      currency={currency}
+                      className="ml-1.5 text-[13px] text-neutral-500 dark:text-neutral-400"
+                    />
+                  )}
                 </span>
                 <span>{formatAmountForDisplay(line.amount, currency)}</span>
               </div>
@@ -146,6 +162,35 @@ export function PriceDetails({
         </div>
       </div>
     </>
+  )
+}
+
+/**
+ * Precio por día de un presupuesto: "× $700/day", con el de catálogo tachado
+ * cuando el negociado es más bajo. Así el cliente ve el descuento que se le
+ * hizo sin tener que hacer la cuenta.
+ */
+export function DailyRate({
+  rate,
+  currency,
+  className,
+}: {
+  rate: { price: number; list: number }
+  currency: string
+  className?: string
+}) {
+  const discounted = rate.list > rate.price
+  return (
+    <span className={className}>
+      {discounted && (
+        <>
+          <span className="sr-only">Catalog price </span>
+          <s className="mr-1">{formatAmountForDisplay(rate.list, currency)}</s>
+          <span className="sr-only">, your price </span>
+        </>
+      )}
+      {formatAmountForDisplay(rate.price, currency)}/day
+    </span>
   )
 }
 

@@ -11,6 +11,7 @@ const PRIVATE_PATHS = [
   "/reservation/",
   "/payment-collection/",
   "/rental-documents/",
+  "/quote/",
   "/sign-in",
   "/sign-up",
   "/api-test",

@@ -158,3 +158,50 @@ export interface RentalAvailabilityResponse {
   /** Late return terms (P1-6), or `null` when late returns are not charged. */
   late_return?: RentalLateReturnPolicy | null
 }
+
+/** Status a customer can see on a quote (P1-1). Drafts never reach the store. */
+export type RentalQuoteStatus = "sent" | "accepted" | "cancelled" | "expired"
+
+/** One line of a quoted item, as priced when the quote was sent. */
+export interface RentalQuoteLine {
+  code: string
+  label: string
+  quantity: number
+  unit_amount: number
+  amount: number
+}
+
+/** One car inside a quote, already priced at the negotiated daily rate. */
+export interface RentalQuoteItem {
+  id: string
+  vehicle: string
+  /** Product handle = car slug. `null` if the product no longer exists. */
+  handle: string | null
+  /** Business wall-clock time (Miami), `YYYY-MM-DDTHH:mm:00`, no time zone. */
+  rental_start_date: string
+  rental_end_date: string
+  rental_days: number
+  addons: { code: string; quantity: number }[]
+  /** Delivery zone code, or `null` for pickup at the office. */
+  delivery_zone: string | null
+  daily_price: number
+  /** Catalog daily price when the quote was made, to show the discount. */
+  list_daily_price: number
+  total: number
+  upfront: number
+  balance_due: number
+  lines: RentalQuoteLine[]
+  booked: boolean
+}
+
+/** A quote as the public page sees it (P1-1). Amounts in main currency units. */
+export interface RentalQuote {
+  token: string
+  status: RentalQuoteStatus
+  first_name: string | null
+  message: string | null
+  expires_at: string
+  currency_code: string
+  totals: { total: number; upfront: number }
+  items: RentalQuoteItem[]
+}

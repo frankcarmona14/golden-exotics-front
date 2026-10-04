@@ -39,6 +39,14 @@ export interface ExtrasPickerProps {
   mileage?: RentalMileageTerms | null
   /** Devolución tardía (P1-6). Tampoco cambia con los extras ni la zona. */
   lateReturn?: RentalLateReturnPolicy | null
+  /**
+   * Reserva desde un presupuesto (P1-1). Extras, zona y precio vienen fijados:
+   * no se recotiza ni se puede cambiar nada, solo dar la dirección de entrega.
+   */
+  quoted?: {
+    dailyRate: { price: number; list: number }
+    addons: { code: string; name: string; quantity: number }[]
+  } | null
   quoteArgs: {
     productId: string
     variantId: string
@@ -79,6 +87,7 @@ export function ExtrasPicker({
   initialAddress = null,
   mileage = null,
   lateReturn = null,
+  quoted = null,
   quoteArgs,
 }: ExtrasPickerProps) {
   const router = useRouter()
@@ -156,7 +165,8 @@ export function ExtrasPicker({
   const goToCheckout = async (withAddons: boolean) => {
     const params = new URLSearchParams()
 
-    if (withAddons) {
+    // Con presupuesto los extras no viajan: el servidor los lee del presupuesto.
+    if (withAddons && !quoted) {
       const encoded = serializeAddonSelection(selection)
       if (encoded) params.set("addons", encoded)
     }
@@ -202,10 +212,27 @@ export function ExtrasPicker({
             }}
             error={addressError}
             disabled={isBusy}
+            locked={Boolean(quoted)}
           />
         )}
 
-        {available.length > 0 && (
+        {quoted && quoted.addons.length > 0 && (
+          <div className="mt-12">
+            <h2 className="text-xl font-semibold">Extras in your quote</h2>
+            <ul className="mt-4 grid grid-cols-1 gap-2 text-[15px]">
+              {quoted.addons.map((addon) => (
+                <li key={addon.code} className="flex justify-between gap-4">
+                  <span className="capitalize">{addon.name}</span>
+                  <span className="tabular-nums text-neutral-500 dark:text-neutral-400">
+                    × {addon.quantity}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {!quoted && available.length > 0 && (
           <div className={deliveryZones.length > 0 ? "mt-12" : undefined}>
             <h2 className="text-xl font-semibold">Add extras</h2>
             <p className="mt-1 text-[15px] text-neutral-500 dark:text-neutral-400">
@@ -274,7 +301,7 @@ export function ExtrasPicker({
           <Button onClick={() => goToCheckout(true)} disabled={isBusy}>
             Continue
           </Button>
-          {selection.length > 0 && (
+          {!quoted && selection.length > 0 && (
             <button
               type="button"
               // "Saltar" solo aparece si hay algo que saltarse. Con la lista a
@@ -301,6 +328,7 @@ export function ExtrasPicker({
             isQuoting={isQuoting}
             mileage={mileage}
             lateReturn={lateReturn}
+            dailyRate={quoted?.dailyRate ?? null}
           />
         </div>
       </aside>
@@ -357,6 +385,7 @@ function DeliveryPicker({
   onAddressChange,
   error,
   disabled,
+  locked = false,
 }: {
   zones: RentalDeliveryZone[]
   currency: string
@@ -366,6 +395,8 @@ function DeliveryPicker({
   onAddressChange: (next: Partial<DeliveryAddress>) => void
   error: string | null
   disabled: boolean
+  /** Zona fijada por un presupuesto: sin opción de recogida, solo la dirección. */
+  locked?: boolean
 }) {
   const options: {
     code: string | null
@@ -380,7 +411,7 @@ function DeliveryPicker({
       price: 0,
     },
     ...zones,
-  ]
+  ].filter((option) => !locked || option.code !== null)
 
   const field = (key: keyof DeliveryAddress) => ({
     id: `delivery-${key}`,
@@ -392,10 +423,13 @@ function DeliveryPicker({
 
   return (
     <div>
-      <h2 className="text-xl font-semibold">Delivery or pickup</h2>
+      <h2 className="text-xl font-semibold">
+        {locked ? "Delivery" : "Delivery or pickup"}
+      </h2>
       <p className="mt-1 text-[15px] text-neutral-500 dark:text-neutral-400">
-        We can bring the car to you. Delivery is charged when you book and
-        covers drop-off and collection at the same address.
+        {locked
+          ? "Your quote includes delivery. Tell us where to bring the car: we drop it off and collect it at the same address."
+          : "We can bring the car to you. Delivery is charged when you book and covers drop-off and collection at the same address."}
       </p>
 
       <fieldset className="mt-6 grid grid-cols-1 gap-3" disabled={disabled}>

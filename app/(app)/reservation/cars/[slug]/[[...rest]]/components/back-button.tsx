@@ -33,6 +33,21 @@ export function BackButton({
       .replace(/\/extras$/, "")
       .replace("/reservation/cars", "/cars")
 
+    /**
+     * Desde un presupuesto (P1-1) no hay ficha del coche a la que volver: las
+     * fechas y la selección vienen fijadas. Del pago se vuelve a la dirección
+     * si hay entrega; si no, y desde la dirección, al presupuesto.
+     */
+    const quoteToken = searchParams.get("quote")
+    if (quoteToken) {
+      if (!isExtrasStep && searchParams.has("delivery")) {
+        router.push(`${pathname}/extras?${searchParams.toString()}`)
+        return
+      }
+      router.push(`/quote/${encodeURIComponent(quoteToken)}`)
+      return
+    }
+
     const choseSomething =
       searchParams.has("addons") || searchParams.has("delivery")
 

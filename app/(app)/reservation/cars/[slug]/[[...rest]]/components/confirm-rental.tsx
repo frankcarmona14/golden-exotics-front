@@ -39,6 +39,11 @@ interface ConfirmRentalProps {
    * dirección la añade el servidor al preparar el carrito, desde su cookie.
    */
   deliveryZone?: string | null
+  /**
+   * Presupuesto del que sale la reserva (P1-1). Va al add-to-cart para que el
+   * backend cobre el precio negociado con los extras del presupuesto.
+   */
+  quote?: { token: string; item_id: string } | null
 }
 
 export function ConfirmRental({
@@ -56,6 +61,7 @@ export function ConfirmRental({
   currency,
   addons,
   deliveryZone,
+  quote,
 }: ConfirmRentalProps) {
   const router = useRouter()
   const { guest } = useGuest()
@@ -102,6 +108,7 @@ export function ConfirmRental({
     // base de datos; desde aquí no viaja ninguno.
     ...(addons?.length ? { addons } : {}),
     ...(deliveryZone ? { delivery_zone: deliveryZone } : {}),
+    ...(quote ? { quote: { token: quote.token, item_id: quote.item_id } } : {}),
   }
 
   /**
@@ -153,6 +160,8 @@ export function ConfirmRental({
     guest,
     selectionKey,
     deliveryZone,
+    quote?.token,
+    quote?.item_id,
   ])
 
   useEffect(() => {
