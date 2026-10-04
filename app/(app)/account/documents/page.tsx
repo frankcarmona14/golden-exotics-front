@@ -2,6 +2,7 @@ import Link from "next/link"
 
 import { getMyReservations } from "@/lib/medusa/reservations"
 import { Button } from "@/components/ui/button"
+import { AccountShell } from "@/components/account/account-shell"
 import RentalDocumentsClient from "@/components/rental-documents/client"
 
 export const dynamic = "force-dynamic"
@@ -17,30 +18,41 @@ export default async function AccountDocumentsPage() {
     reservations.find((r) => r.status === "documents_in_review") ??
     reservations[0]
 
-  if (!carrier) {
-    return (
-      <div className="container mx-auto max-w-3xl px-4 py-16 text-center">
-        <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
-          My documents
-        </h1>
-        <p className="mx-auto mt-2 max-w-md text-[15px] text-neutral-500 dark:text-neutral-400">
-          Once you have a reservation, you&apos;ll be able to upload your
-          driver&apos;s license, ID and insurance here — and they&apos;ll apply
-          to every booking.
+  return (
+    <AccountShell>
+      <header className="mb-8">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text">
+          Account
         </p>
-        <div className="mt-6 flex items-center justify-center gap-3">
-          <Button asChild>
+        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+          Documents
+        </h1>
+        <p className="mt-1.5 text-[15px] text-neutral-500 dark:text-neutral-400">
+          Upload your driver&apos;s license, ID and insurance once — they
+          apply to all your reservations.
+        </p>
+      </header>
+
+      {carrier ? (
+        <RentalDocumentsClient
+          mode="auth"
+          orderId={carrier.orderId}
+          variant="account"
+        />
+      ) : (
+        <div className="rounded-2xl border border-dashed border-neutral-300 bg-white p-12 text-center dark:border-neutral-700 dark:bg-neutral-900/40">
+          <p className="text-[15px] font-medium text-neutral-900 dark:text-neutral-100">
+            No documents yet
+          </p>
+          <p className="mx-auto mt-1 max-w-sm text-[13px] text-neutral-500 dark:text-neutral-400">
+            Once you have a reservation, you&apos;ll be able to upload your
+            documents here.
+          </p>
+          <Button asChild className="mt-5">
             <Link href="/cars">Explore cars</Link>
           </Button>
-          <Button variant="outline" asChild>
-            <Link href="/account">Back to account</Link>
-          </Button>
         </div>
-      </div>
-    )
-  }
-
-  return (
-    <RentalDocumentsClient mode="auth" orderId={carrier.orderId} variant="account" />
+      )}
+    </AccountShell>
   )
 }

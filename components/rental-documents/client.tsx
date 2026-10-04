@@ -32,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { ChevronLeftIcon } from "@/components/icons/chevron-left"
 import { CircleCheckIcon } from "@/components/icons/circle-check"
 import { useToast } from "@/hooks/use-toast"
+import { cn } from "@/lib/utils"
 
 const ALLOWED_MIME = ["application/pdf", "image/jpeg", "image/png"]
 const MAX_BYTES = 25 * 1024 * 1024
@@ -293,9 +294,9 @@ export type RentalDocumentsClientProps =
       mode: "auth"
       orderId: string
       /**
-       * "account" reframes the header as a customer-level "My documents" view
-       * (documents are stored per-customer and shared across all reservations).
-       * Defaults to the per-booking framing.
+       * "account" renders inside the account dashboard (`AccountShell`), which
+       * provides the page chrome and title: documents are stored per-customer
+       * and shared across all reservations. Defaults to the per-booking page.
        */
       variant?: "account"
     }
@@ -401,10 +402,16 @@ export default function RentalDocumentsClient(
     [props, refresh, toast]
   )
 
+  const isAccountView = props.mode === "auth" && props.variant === "account"
+  // Inside the account shell the page already has its padding and width.
+  const pageClass = isAccountView
+    ? "max-w-3xl"
+    : "container mx-auto max-w-3xl px-4 py-10"
+
   // ---------- LOADING ----------
   if (loading) {
     return (
-      <div className="container mx-auto max-w-3xl space-y-6 px-4 py-10">
+      <div className={cn(pageClass, "space-y-6")}>
         <Skeleton className="h-8 w-2/3" />
         <Skeleton className="h-4 w-1/2" />
         <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
@@ -421,6 +428,7 @@ export default function RentalDocumentsClient(
   if (errorCode === "TOKEN_EXPIRED" && props.mode === "token") {
     return (
       <ErrorScreen
+        embedded={isAccountView}
         title="This link has expired"
         description="For your security, links expire after 48 hours. Request a new one and we'll email it to you."
         showResend
@@ -434,6 +442,7 @@ export default function RentalDocumentsClient(
   if (errorCode === "UNAUTHORIZED") {
     return (
       <ErrorScreen
+        embedded={isAccountView}
         title="Session expired"
         description="Please sign in again to continue."
       />
@@ -442,6 +451,7 @@ export default function RentalDocumentsClient(
   if (errorCode === "FORBIDDEN") {
     return (
       <ErrorScreen
+        embedded={isAccountView}
         title="Access denied"
         description="This booking doesn't belong to your account."
       />
@@ -450,6 +460,7 @@ export default function RentalDocumentsClient(
   if (errorCode === "TOKEN_INVALID" || errorCode === "ORDER_NOT_FOUND") {
     return (
       <ErrorScreen
+        embedded={isAccountView}
         title="Invalid link"
         description={errorMessage}
         showResend={props.mode === "token"}
@@ -463,6 +474,7 @@ export default function RentalDocumentsClient(
   if (!state) {
     return (
       <ErrorScreen
+        embedded={isAccountView}
         title="Something went wrong"
         description={errorMessage || "Please try again in a few minutes."}
         showResend={props.mode === "token"}
@@ -488,17 +500,13 @@ export default function RentalDocumentsClient(
     ? Math.round((completedGroups / totalGroups) * 100)
     : 0
 
-  const isAccountView = props.mode === "auth" && props.variant === "account"
   const backHref =
-    props.mode === "auth"
-      ? isAccountView
-        ? "/account"
-        : `/account/reservations/${props.orderId}`
+    props.mode === "auth" && !isAccountView
+      ? `/account/reservations/${props.orderId}`
       : null
-  const backLabel = isAccountView ? "Back to account" : "Back to booking"
 
   return (
-    <div className="container mx-auto max-w-3xl space-y-7 px-4 py-10">
+    <div className={cn(pageClass, "space-y-7")}>
       {/* Back link */}
       {backHref && (
         <Link
@@ -506,42 +514,30 @@ export default function RentalDocumentsClient(
           className="-ml-1 inline-flex items-center gap-1 rounded-sm px-1 py-0.5 text-sm text-neutral-600 transition-colors hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100 dark:focus-visible:ring-white"
         >
           <ChevronLeftIcon className="size-4" />
-          {backLabel}
+          Back to booking
         </Link>
       )}
 
       {/* Header */}
       <header className="space-y-3">
-        <div className="space-y-1.5">
-          {isAccountView ? (
-            <>
-              <h1 className="text-[26px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
-                My documents
-              </h1>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                Upload your driver&apos;s license, ID and insurance once — they
-                apply to all your reservations.
-              </p>
-            </>
-          ) : (
-            <>
-              <h1 className="text-[26px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
-                Documents for booking{" "}
-                <span className="text-neutral-500 dark:text-neutral-400">
-                  #{state.order.display_id}
-                </span>
-              </h1>
-              <p className="text-sm text-neutral-600 dark:text-neutral-400">
-                {state.rentals.length === 1
-                  ? formatRange(
-                      state.rentals[0].rental_start_date,
-                      state.rentals[0].rental_end_date,
-                    )
-                  : `${state.rentals.length} bookings linked to this order`}
-              </p>
-            </>
-          )}
-        </div>
+        {!isAccountView && (
+          <div className="space-y-1.5">
+            <h1 className="text-[26px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+              Documents for booking{" "}
+              <span className="text-neutral-500 dark:text-neutral-400">
+                #{state.order.display_id}
+              </span>
+            </h1>
+            <p className="text-sm text-neutral-600 dark:text-neutral-400">
+              {state.rentals.length === 1
+                ? formatRange(
+                    state.rentals[0].rental_start_date,
+                    state.rentals[0].rental_end_date,
+                  )
+                : `${state.rentals.length} bookings linked to this order`}
+            </p>
+          </div>
+        )}
 
         {/* Progress */}
         {!allApproved && totalGroups > 0 && (
@@ -1042,6 +1038,7 @@ function ErrorScreen({
   resendOpen,
   setResendOpen,
   initialOrderDisplayId,
+  embedded,
 }: {
   title: string
   description: string
@@ -1050,9 +1047,16 @@ function ErrorScreen({
   resendOpen?: boolean
   setResendOpen?: (b: boolean) => void
   initialOrderDisplayId?: string | null
+  /** Inside the account shell: no page padding of its own. */
+  embedded?: boolean
 }) {
   return (
-    <div className="container mx-auto max-w-md space-y-4 px-4 py-16 text-center">
+    <div
+      className={cn(
+        "mx-auto max-w-md space-y-4 text-center",
+        embedded ? "py-8" : "container px-4 py-16"
+      )}
+    >
       <h1 className="text-2xl font-semibold">{title}</h1>
       <p className="text-sm text-neutral-600 dark:text-neutral-400">
         {description}
