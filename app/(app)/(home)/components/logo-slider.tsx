@@ -5,45 +5,30 @@ import { useEffect, useRef, useState } from "react"
 import { CAR_LOGO_WIDTH, CLONE_SETS_COUNT } from "@/lib/constants"
 import { cn, setCSSVariable } from "@/lib/utils"
 
-import { AudiIcon } from "./car-logos/audi"
 import { BMWIcon } from "./car-logos/bmw"
-import { FordIcon } from "./car-logos/ford"
-import { HondaIcon } from "./car-logos/honda"
-import { HyundaiIcon } from "./car-logos/hyundai"
-import { JeepIcon } from "./car-logos/jeep"
-import { KiaIcon } from "./car-logos/kia"
+import { CadillacIcon } from "./car-logos/cadillac"
+import { ChevroletIcon } from "./car-logos/chevrolet"
+import { LamborghiniIcon } from "./car-logos/lamborghini"
+import { McLarenIcon } from "./car-logos/mclaren"
 import { MercedesBenzIcon } from "./car-logos/mercedes-benz"
-import { MiniIcon } from "./car-logos/mini"
-import { NissanIcon } from "./car-logos/nissan"
-import { PorscheIcon } from "./car-logos/porsche"
-import { SubaruIcon } from "./car-logos/subaru"
-import { TeslaIcon } from "./car-logos/tesla"
-import { ToyotaIcon } from "./car-logos/toyota"
-import { VolkswagenIcon } from "./car-logos/volkswagen"
-import { VolvoIcon } from "./car-logos/volvo"
 
 interface LogoData {
   id: string
   icon: JSX.Element
 }
 
+/**
+ * Solo las marcas de la flota real (Lamborghini, McLaren, Mercedes-Benz con
+ * AMG y Maybach, Cadillac, BMW, Chevrolet Corvette). Una marca que no se
+ * alquila no pinta nada aquí: es una promesa que la web no cumple.
+ */
 const logoIcons: Record<string, JSX.Element> = {
-  kia: <KiaIcon style={{ height: "10px", flexShrink: 0 }} />,
-  subaru: <SubaruIcon style={{ height: "15px", flexShrink: 0 }} />,
-  mini: <MiniIcon style={{ height: "24px", flexShrink: 0 }} />,
-  hyundai: <HyundaiIcon style={{ height: "12px", flexShrink: 0 }} />,
-  mercedesBenz: <MercedesBenzIcon style={{ height: "24px", flexShrink: 0 }} />,
-  toyota: <ToyotaIcon style={{ height: "17px", flexShrink: 0 }} />,
+  lamborghini: <LamborghiniIcon style={{ height: "34px", flexShrink: 0 }} />,
+  mclaren: <McLarenIcon style={{ height: "14px", flexShrink: 0 }} />,
+  mercedesBenz: <MercedesBenzIcon style={{ height: "26px", flexShrink: 0 }} />,
+  cadillac: <CadillacIcon style={{ height: "22px", flexShrink: 0 }} />,
   bmw: <BMWIcon style={{ height: "28px", flexShrink: 0 }} />,
-  honda: <HondaIcon style={{ height: "12px", flexShrink: 0 }} />,
-  audi: <AudiIcon style={{ height: "21px", flexShrink: 0 }} />,
-  volvo: <VolvoIcon style={{ height: "11px", flexShrink: 0 }} />,
-  volkswagen: <VolkswagenIcon style={{ height: "25px", flexShrink: 0 }} />,
-  porsche: <PorscheIcon style={{ height: "8px", flexShrink: 0 }} />,
-  nissan: <NissanIcon style={{ height: "26px", flexShrink: 0 }} />,
-  tesla: <TeslaIcon style={{ height: "10px", flexShrink: 0 }} />,
-  jeep: <JeepIcon style={{ height: "18px", flexShrink: 0 }} />,
-  ford: <FordIcon style={{ height: "29px", flexShrink: 0 }} />,
+  chevrolet: <ChevroletIcon style={{ height: "20px", flexShrink: 0 }} />,
 }
 
 const initialLogos: LogoData[] = Object.entries(logoIcons).map(
