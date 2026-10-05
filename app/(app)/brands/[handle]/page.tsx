@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import type { Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import { SERVICE_AREAS } from "@/data/service-areas"
@@ -76,16 +77,49 @@ export default async function BrandPage({ params }: BrandPageProps) {
       <BrandNav brands={brands} activeHandle={brand.handle} />
 
       <header
-        className="relative mt-6 overflow-hidden rounded-card border border-white/[0.06] px-6 py-10 sm:px-10 sm:py-14"
+        className={`relative mt-6 overflow-hidden rounded-card border border-white/[0.06] ${
+          brand.heroImage
+            ? "flex aspect-[4/3] items-end px-6 py-8 sm:aspect-[3/1] sm:p-10"
+            : "px-6 py-10 sm:px-10 sm:py-14"
+        }`}
         style={{
           background: `linear-gradient(145deg, ${brand.gradientFrom}, ${brand.gradientTo})`,
         }}
       >
+        {brand.heroImage && (
+          <>
+            {/* Es el LCP de la página: prioridad y tamaño a ancho completo. */}
+            <Image
+              src={brand.heroImage.url}
+              alt={brand.heroImage.alt}
+              fill
+              priority
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="object-cover"
+              style={{
+                objectPosition: `${brand.heroImage.focalX}% ${brand.heroImage.focalY}%`,
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent sm:bg-gradient-to-r sm:from-black/75 sm:via-black/30" />
+          </>
+        )}
         <div
           className="absolute -right-10 -top-10 size-48 rounded-full opacity-10 blur-3xl"
           style={{ background: brand.logoColor }}
         />
         <div className="relative max-w-2xl">
+          {brand.logoUrl && (
+            // Logo subido en el admin, en blanco sea cual sea su color. <img>
+            // y no next/image: un SVG no se optimiza y así no hace falta
+            // activar dangerouslyAllowSVG.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={brand.logoUrl}
+              alt=""
+              className="mb-4 h-10 w-auto max-w-[180px] object-contain"
+              style={{ filter: "brightness(0) invert(1)" }}
+            />
+          )}
           <p className="text-caption font-semibold uppercase tracking-[0.25em] text-white/60">
             {countLabel}
           </p>
@@ -97,7 +131,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
               &ldquo;{brand.tagline}&rdquo;
             </p>
           )}
-          {brand.description && (
+          {brand.description && !brand.heroImage && (
             <p className="mt-4 text-body leading-relaxed text-white/75">
               {brand.description}
             </p>
@@ -110,6 +144,14 @@ export default async function BrandPage({ params }: BrandPageProps) {
           }}
         />
       </header>
+
+      {/* Con foto, la descripción va debajo: encima de la imagen no se lee y
+          tapa el coche. */}
+      {brand.heroImage && brand.description && (
+        <p className="mt-6 max-w-3xl text-body leading-relaxed text-neutral-600 dark:text-neutral-300">
+          {brand.description}
+        </p>
+      )}
 
       <section aria-label={`${brand.name} cars`} className="mt-8">
         {cars.length > 0 ? (

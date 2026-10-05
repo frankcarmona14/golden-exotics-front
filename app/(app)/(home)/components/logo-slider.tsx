@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 import { CAR_LOGO_WIDTH, CLONE_SETS_COUNT } from "@/lib/constants"
 import { cn, setCSSVariable } from "@/lib/utils"
@@ -17,23 +17,57 @@ interface LogoData {
   icon: JSX.Element
 }
 
+/** Lo que la franja necesita de cada marca (ver brand-repository). */
+export interface SliderBrand {
+  handle: string
+  name: string
+  logoUrl: string | null
+}
+
 /**
- * Solo las marcas de la flota real (Lamborghini, McLaren, Mercedes-Benz con
- * AMG y Maybach, Cadillac, BMW, Chevrolet Corvette). Una marca que no se
- * alquila no pinta nada aquí: es una promesa que la web no cumple.
+ * Logos incluidos en el código para las marcas de la flota, por handle de
+ * categoría. Se usan mientras no se suba uno en el admin (Brand images).
  */
-const logoIcons: Record<string, JSX.Element> = {
+const builtInLogos: Record<string, JSX.Element> = {
   lamborghini: <LamborghiniIcon style={{ height: "34px", flexShrink: 0 }} />,
   mclaren: <McLarenIcon style={{ height: "14px", flexShrink: 0 }} />,
-  mercedesBenz: <MercedesBenzIcon style={{ height: "26px", flexShrink: 0 }} />,
+  "mercedes-benz": (
+    <MercedesBenzIcon style={{ height: "26px", flexShrink: 0 }} />
+  ),
   cadillac: <CadillacIcon style={{ height: "22px", flexShrink: 0 }} />,
   bmw: <BMWIcon style={{ height: "28px", flexShrink: 0 }} />,
   chevrolet: <ChevroletIcon style={{ height: "20px", flexShrink: 0 }} />,
 }
 
-const initialLogos: LogoData[] = Object.entries(logoIcons).map(
-  ([id, icon]) => ({ id, icon })
-)
+/**
+ * Solo las marcas de la flota (las categorías de Medusa): una marca que no se
+ * alquila no pinta nada aquí. Logo subido, si no el incluido; una marca sin
+ * ninguno no sale.
+ */
+function toLogos(brands: SliderBrand[]): LogoData[] {
+  return brands.flatMap(({ handle, name, logoUrl }) => {
+    if (logoUrl) {
+      return [
+        {
+          id: handle,
+          icon: (
+            // Monocromo como los incluidos: el color lo pone la franja. <img>
+            // y no next/image porque puede ser un SVG.
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={logoUrl}
+              alt={name}
+              className="max-h-7 w-auto max-w-[110px] object-contain opacity-60"
+              style={{ filter: "brightness(0)" }}
+            />
+          ),
+        },
+      ]
+    }
+    const icon = builtInLogos[handle]
+    return icon ? [{ id: handle, icon }] : []
+  })
+}
 
 function createClonedLogos(logos: LogoData[], totalClones: number): LogoData[] {
   return Array.from({ length: totalClones }).flatMap((_, index) =>
@@ -44,10 +78,11 @@ function createClonedLogos(logos: LogoData[], totalClones: number): LogoData[] {
   )
 }
 
-export function LogoSlider() {
+export function LogoSlider({ brands }: { brands: SliderBrand[] }) {
   const logosListRef = useRef<HTMLDivElement>(null)
   const [clonedLogos, setClonedLogos] = useState<LogoData[]>([])
   const [isVisible, setIsVisible] = useState(false)
+  const initialLogos = useMemo(() => toLogos(brands), [brands])
 
   useEffect(() => {
     const logoList = logosListRef.current
@@ -68,7 +103,9 @@ export function LogoSlider() {
       setClonedLogos(createClonedLogos(initialLogos, CLONE_SETS_COUNT))
       setIsVisible(true)
     }
-  }, [])
+  }, [initialLogos])
+
+  if (initialLogos.length === 0) return null
 
   return (
     <div ref={logosListRef} className="animate-slider motion-reduce:animate-none">

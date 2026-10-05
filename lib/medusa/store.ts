@@ -303,6 +303,8 @@ export interface MedusaBrandCategory {
   name: string
   description: string
   rank: number
+  /** Imágenes de la marca: ver `readBrandAssets` en brand-repository. */
+  metadata: Record<string, unknown> | null
 }
 
 /**
@@ -317,7 +319,7 @@ export async function getMedusaBrandCategories(): Promise<
   try {
     const { product_categories } = await sdk.store.category.list({
       parent_category_id: "null",
-      fields: "id,handle,name,description,rank",
+      fields: "id,handle,name,description,rank,metadata",
       limit: 100,
     })
     return (product_categories ?? [])
@@ -327,6 +329,7 @@ export async function getMedusaBrandCategories(): Promise<
         name: c.name,
         description: c.description ?? "",
         rank: c.rank ?? 0,
+        metadata: (c.metadata as Record<string, unknown> | null) ?? null,
       }))
       .sort((a, b) => a.rank - b.rank)
   } catch (error) {

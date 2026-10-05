@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 import type { Brand } from "@/db/queries/brand-repository"
@@ -6,7 +7,13 @@ import { cn } from "@/lib/utils"
 interface BrandCardProps {
   brand: Pick<
     Brand,
-    "handle" | "name" | "tagline" | "logoColor" | "gradientFrom" | "gradientTo"
+    | "handle"
+    | "name"
+    | "tagline"
+    | "logoColor"
+    | "gradientFrom"
+    | "gradientTo"
+    | "cardImage"
   >
   /** Coches de la marca; sin él la etiqueta dice "Premium". */
   carCount?: number
@@ -15,7 +22,15 @@ interface BrandCardProps {
 
 /** Tarjeta vertical de una marca que lleva a su página. */
 export function BrandCard({ brand, carCount, className }: BrandCardProps) {
-  const { handle, name, tagline, logoColor, gradientFrom, gradientTo } = brand
+  const {
+    handle,
+    name,
+    tagline,
+    logoColor,
+    gradientFrom,
+    gradientTo,
+    cardImage,
+  } = brand
   const badge =
     carCount === undefined
       ? "Premium"
@@ -37,6 +52,23 @@ export function BrandCard({ brand, carCount, className }: BrandCardProps) {
           background: `linear-gradient(145deg, ${gradientFrom}, ${gradientTo})`,
         }}
       >
+        {cardImage && (
+          <>
+            <Image
+              src={cardImage.url}
+              alt={cardImage.alt}
+              fill
+              sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
+              className="object-cover"
+              style={{
+                objectPosition: `${cardImage.focalX}% ${cardImage.focalY}%`,
+              }}
+            />
+            {/* Oscurece el pie de la foto para que el nombre se lea siempre. */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
+          </>
+        )}
+
         {/* Decorative elements */}
         <div
           className="absolute -right-8 -top-8 size-32 rounded-full opacity-[0.07] blur-2xl"
