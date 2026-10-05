@@ -22,11 +22,24 @@ const footerLinks: FooterSection[] = [
     links: [
       { label: "Browse cars", href: "/cars" },
       { label: "Brands", href: "/brands" },
-      { label: "Locations", href: "/locations" },
       { label: "Driver requirements", href: "/driver-requirements" },
       { label: "Insurance options", href: "/driver-requirements#insurance" },
       { label: "Corporate rentals", href: "/" },
       { label: "FAQs", href: "/" },
+    ],
+  },
+  {
+    // Las áreas y las ciudades más buscadas; el resto cuelga de /locations.
+    // Un pie con todas las ciudades parece relleno de palabras clave.
+    title: "Locations",
+    links: [
+      { label: "Miami", href: "/locations/miami-area" },
+      { label: "Miami Beach", href: "/locations/miami-beach" },
+      { label: "Fort Lauderdale", href: "/locations/fort-lauderdale-area" },
+      { label: "Pompano Beach", href: "/locations/pompano-beach-area" },
+      { label: "West Palm Beach", href: "/locations/west-palm-beach-area" },
+      { label: "Boca Raton", href: "/locations/boca-raton" },
+      { label: "All locations", href: "/locations" },
     ],
   },
   {
@@ -63,7 +76,7 @@ const footerLinks: FooterSection[] = [
 export function SiteFooter() {
   return (
     <footer className="border-t border-neutral-100 py-14 dark:border-neutral-800/60">
-      <div className="mx-auto w-full max-w-none px-5 text-sm sm:max-w-[90%] sm:px-0 xl:max-w-5xl">
+      <div className="mx-auto w-full max-w-none px-5 text-sm sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
         <div className="grid grid-cols-12 items-start justify-center gap-y-12">
           <div className="col-span-full md:col-span-3">
             <LogoLink />
@@ -72,11 +85,11 @@ export function SiteFooter() {
               journeys.
             </p>
           </div>
-          <nav className="col-span-full grid grid-cols-12 gap-x-6 gap-y-11 md:col-span-9">
+          <nav className="col-span-full grid grid-cols-2 gap-x-6 gap-y-11 sm:grid-cols-3 md:col-span-9 lg:grid-cols-5">
             {footerLinks.map((section) => (
               <ul
                 key={section.title}
-                className="col-span-6 flex flex-col gap-3 md:col-span-3 lg:gap-3.5"
+                className="flex flex-col gap-3 lg:gap-3.5"
               >
                 <div className="pb-1.5">
                   <h2 className="whitespace-nowrap text-balance text-body-sm font-bold uppercase tracking-wider text-neutral-950 dark:text-neutral-50">
