@@ -48,6 +48,8 @@ export interface SelectCar {
   status: string | null
   metadata: Record<string, unknown> | null
   rentalConfiguration?: RentalConfiguration | null
+  /** Marca: la categoría de producto en Medusa. Null en los datos mock. */
+  brand?: { handle: string; name: string } | null
   createdAt: Date
   updatedAt: Date
 }

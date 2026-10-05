@@ -16,6 +16,10 @@ export function isMedusaConfigured(): boolean {
   )
 }
 
+/** Campos de producto que necesita `medusaProductToCar`. */
+const PRODUCT_FIELDS =
+  "*variants,*variants.calculated_price,+variants.inventory_quantity,+images,*rental_configuration,*categories"
+
 // ---------------------------------------------------------------------------
 // Medusa Product → SelectCar mapping
 // ---------------------------------------------------------------------------
@@ -56,6 +60,15 @@ export function medusaProductToCar(
     features = meta.features.split(",").map((f: string) => f.trim())
   }
 
+  // Las marcas son las categorías de producto de Medusa. Si un coche está en
+  // varias, manda la de nivel superior (una subcategoría no es una marca).
+  const categories = product.categories ?? []
+  const brandCategory =
+    categories.find((c) => !c.parent_category_id) ?? categories[0]
+  const brand = brandCategory
+    ? { handle: brandCategory.handle, name: brandCategory.name }
+    : null
+
   const rentalConfig = (product as unknown as Record<string, unknown>)
     .rental_configuration as RentalConfiguration | undefined
 
@@ -82,6 +95,7 @@ export function medusaProductToCar(
     status: product.status ?? "active",
     metadata: meta,
     rentalConfiguration: rentalConfig ?? null,
+    brand,
     createdAt: product.created_at ? new Date(product.created_at) : new Date(),
     updatedAt: product.updated_at ? new Date(product.updated_at) : new Date(),
   }
@@ -198,8 +212,7 @@ export async function getMedusaProducts(options?: {
     const query: Record<string, unknown> = {
       limit: options?.limit ?? 100,
       offset: options?.offset ?? 0,
-      fields:
-        "*variants,*variants.calculated_price,+variants.inventory_quantity,+images,*rental_configuration",
+      fields: PRODUCT_FIELDS,
     }
 
     if (regionId) {
@@ -235,8 +248,7 @@ export async function getMedusaProductByHandle(
     const query: Record<string, unknown> = {
       handle,
       limit: 1,
-      fields:
-        "*variants,*variants.calculated_price,+variants.inventory_quantity,+images,*rental_configuration",
+      fields: PRODUCT_FIELDS,
     }
 
     if (resolvedRegionId) {
@@ -267,8 +279,7 @@ export async function getMedusaProductById(
     const resolvedRegionId = regionId ?? (await getDefaultRegionId())
 
     const query: Record<string, unknown> = {
-      fields:
-        "*variants,*variants.calculated_price,+variants.inventory_quantity,+images,*rental_configuration",
+      fields: PRODUCT_FIELDS,
     }
 
     if (resolvedRegionId) {
@@ -282,6 +293,45 @@ export async function getMedusaProductById(
   } catch (error) {
     console.error("[Medusa] Error fetching product by id:", error)
     return undefined
+  }
+}
+
+/** Una marca tal como llega de Medusa: una categoría de producto de nivel superior. */
+export interface MedusaBrandCategory {
+  id: string
+  handle: string
+  name: string
+  description: string
+  rank: number
+}
+
+/**
+ * Marcas: las categorías de producto de nivel superior, en el orden (`rank`)
+ * que se les da en el admin. La Store API ya solo devuelve las activas y no
+ * internas.
+ */
+export async function getMedusaBrandCategories(): Promise<
+  MedusaBrandCategory[]
+> {
+  if (!isMedusaConfigured()) return []
+  try {
+    const { product_categories } = await sdk.store.category.list({
+      parent_category_id: "null",
+      fields: "id,handle,name,description,rank",
+      limit: 100,
+    })
+    return (product_categories ?? [])
+      .map((c) => ({
+        id: c.id,
+        handle: c.handle,
+        name: c.name,
+        description: c.description ?? "",
+        rank: c.rank ?? 0,
+      }))
+      .sort((a, b) => a.rank - b.rank)
+  } catch (error) {
+    console.error("[Medusa] Error fetching brand categories:", error)
+    return []
   }
 }
 

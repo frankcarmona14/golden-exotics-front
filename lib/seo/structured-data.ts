@@ -181,17 +181,11 @@ export function buildCarProductJsonLd(
   return product
 }
 
-/** Home › Cars › <coche>, con URLs absolutas como pide Google. */
-export function buildCarBreadcrumbJsonLd(
-  car: Pick<SelectCar, "name" | "slug">,
-  options: { baseUrl?: string } = {}
+/** BreadcrumbList a partir de migas con ruta relativa; Google pide URLs absolutas. */
+function buildBreadcrumbJsonLd(
+  crumbs: { name: string; path: string }[],
+  baseUrl: string
 ): JsonLd {
-  const baseUrl = options.baseUrl ?? siteConfig.url
-  const crumbs = [
-    { name: "Home", url: absoluteUrl("/", baseUrl) },
-    { name: "Cars", url: absoluteUrl("/cars", baseUrl) },
-    { name: car.name, url: absoluteUrl(`/cars/${car.slug}`, baseUrl) },
-  ]
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -199,9 +193,39 @@ export function buildCarBreadcrumbJsonLd(
       "@type": "ListItem",
       position: index + 1,
       name: crumb.name,
-      item: crumb.url,
+      item: absoluteUrl(crumb.path, baseUrl),
     })),
   }
+}
+
+/** Home › Cars › <coche>. */
+export function buildCarBreadcrumbJsonLd(
+  car: Pick<SelectCar, "name" | "slug">,
+  options: { baseUrl?: string } = {}
+): JsonLd {
+  return buildBreadcrumbJsonLd(
+    [
+      { name: "Home", path: "/" },
+      { name: "Cars", path: "/cars" },
+      { name: car.name, path: `/cars/${car.slug}` },
+    ],
+    options.baseUrl ?? siteConfig.url
+  )
+}
+
+/** Home › Brands › <marca>. */
+export function buildBrandBreadcrumbJsonLd(
+  brand: { name: string; handle: string },
+  options: { baseUrl?: string } = {}
+): JsonLd {
+  return buildBreadcrumbJsonLd(
+    [
+      { name: "Home", path: "/" },
+      { name: "Brands", path: "/brands" },
+      { name: brand.name, path: `/brands/${brand.handle}` },
+    ],
+    options.baseUrl ?? siteConfig.url
+  )
 }
 
 interface OrganizationInput {

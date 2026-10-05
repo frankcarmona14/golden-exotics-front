@@ -73,6 +73,9 @@ export async function UserMenuButton() {
                 <Link href="/cars">Cars</Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
+                <Link href="/brands">Brands</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem asChild>
                 <Link href="/driver-requirements">Requirements</Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>

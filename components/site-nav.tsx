@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 
 const links = [
   { href: "/cars", label: "Cars" },
+  { href: "/brands", label: "Brands" },
   { href: "/driver-requirements", label: "Requirements" },
 ]
 
@@ -24,7 +25,7 @@ export function SiteNav({ className }: { className?: string }) {
             href={link.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "inline-flex h-11 items-center rounded-full px-3.5 text-[14px] font-medium transition-colors",
+              "inline-flex h-11 items-center rounded-full px-3.5 text-body-sm font-medium transition-colors",
               active
                 ? "text-foreground"
                 : "text-muted-foreground hover:text-foreground"

@@ -7,4 +7,6 @@ export {
   getMedusaProductById,
   getMedusaRegions,
   getMedusaDefaultRegion,
+  getMedusaBrandCategories,
+  type MedusaBrandCategory,
 } from "./store"

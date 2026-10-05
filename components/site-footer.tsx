@@ -21,6 +21,7 @@ const footerLinks: FooterSection[] = [
     title: "Services",
     links: [
       { label: "Browse cars", href: "/cars" },
+      { label: "Brands", href: "/brands" },
       { label: "Driver requirements", href: "/driver-requirements" },
       { label: "Insurance options", href: "/driver-requirements#insurance" },
       { label: "Corporate rentals", href: "/" },
@@ -65,7 +66,7 @@ export function SiteFooter() {
         <div className="grid grid-cols-12 items-start justify-center gap-y-12">
           <div className="col-span-full md:col-span-3">
             <LogoLink />
-            <p className="mt-4 max-w-[220px] text-[13px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+            <p className="mt-4 max-w-[220px] text-body-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
               Premium car rental service based in Miami, FL — for unforgettable
               journeys.
             </p>
@@ -77,7 +78,7 @@ export function SiteFooter() {
                 className="col-span-6 flex flex-col gap-3 md:col-span-3 lg:gap-3.5"
               >
                 <div className="pb-1.5">
-                  <h2 className="whitespace-nowrap text-balance text-[13px] font-bold uppercase tracking-wider text-neutral-950 dark:text-neutral-50">
+                  <h2 className="whitespace-nowrap text-balance text-body-sm font-bold uppercase tracking-wider text-neutral-950 dark:text-neutral-50">
                     {section.title}
                   </h2>
                 </div>
@@ -88,7 +89,7 @@ export function SiteFooter() {
                   >
                     <Button
                       variant={"link"}
-                      className="h-auto text-balance rounded-none p-0 text-[13px] font-normal leading-none transition-colors hover:text-neutral-950 dark:hover:text-white sm:text-sm"
+                      className="h-auto text-balance rounded-none p-0 text-body-sm font-normal leading-none transition-colors hover:text-neutral-950 dark:hover:text-white sm:text-sm"
                       asChild
                     >
                       {link.external ? (
@@ -110,11 +111,11 @@ export function SiteFooter() {
           </nav>
           <div className="col-span-full border-t border-neutral-100 pt-8 dark:border-neutral-800/60">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-              <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+              <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
                 &copy; {new Date().getFullYear()} {siteConfig.name}. All rights
                 reserved. &middot; Miami, FL
               </p>
-              <div className="flex items-center gap-4 text-[13px] text-neutral-500 dark:text-neutral-400">
+              <div className="flex items-center gap-4 text-body-sm text-neutral-500 dark:text-neutral-400">
                 <Link
                   href="/terms"
                   className="transition-colors hover:text-neutral-950 dark:hover:text-white"

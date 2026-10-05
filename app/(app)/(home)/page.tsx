@@ -1,6 +1,10 @@
 import type { Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
+import {
+  getBrandCarCounts,
+  getBrands,
+} from "@/db/queries/brand-repository"
 import { buildPageMetadata } from "@/lib/seo/metadata"
 import { buildOrganizationJsonLd } from "@/lib/seo/structured-data"
 import { JsonLd } from "@/components/json-ld"
@@ -18,7 +22,12 @@ export const metadata: Metadata = buildPageMetadata({
   absoluteTitle: true,
 })
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [brands, carCounts] = await Promise.all([
+    getBrands(),
+    getBrandCarCounts(),
+  ])
+
   return (
     <>
       <JsonLd
@@ -32,13 +41,15 @@ export default function HomePage() {
       />
       <main id="main-content">
         <Hero />
-        <div className="pt-14 lg:pt-16">
-          <BrowseCarTypes />
+        {/* One rhythm for the whole page: 56px between sections on mobile,
+            80px from lg, and a wider 100px approach into the closing CTA. */}
+        <div className="pt-14 lg:pt-section">
+          <BrowseCarTypes brands={brands} carCounts={carCounts} />
         </div>
-        <div className="pt-14 lg:pt-20">
+        <div className="pt-14 lg:pt-section">
           <Testimonials />
         </div>
-        <div className="pb-14 pt-24 sm:pb-20 sm:pt-36">
+        <div className="pb-14 pt-section sm:pb-section sm:pt-section-lg">
           <CallToAction />
         </div>
       </main>

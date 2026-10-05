@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next"
+import { getBrands } from "@/db/queries/brand-repository"
 import { getCars } from "@/db/queries/car-repository"
 
 import { absoluteUrl } from "@/lib/seo/urls"
@@ -20,6 +21,7 @@ const STATIC_PAGES: {
 }[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
   { path: "/cars", changeFrequency: "daily", priority: 0.9 },
+  { path: "/brands", changeFrequency: "weekly", priority: 0.7 },
   { path: "/driver-requirements", changeFrequency: "yearly", priority: 0.4 },
   { path: "/cancellation-policy", changeFrequency: "yearly", priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
@@ -27,7 +29,7 @@ const STATIC_PAGES: {
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const cars = await getCars()
+  const [cars, brands] = await Promise.all([getCars(), getBrands()])
 
   const staticEntries = STATIC_PAGES.map((page) => ({
     url: absoluteUrl(page.path),
@@ -45,5 +47,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }))
 
-  return [...staticEntries, ...carEntries]
+  const brandEntries = brands.map((brand) => ({
+    url: absoluteUrl(`/brands/${brand.handle}`),
+    changeFrequency: "weekly" as const,
+    priority: 0.7,
+  }))
+
+  return [...staticEntries, ...brandEntries, ...carEntries]
 }
