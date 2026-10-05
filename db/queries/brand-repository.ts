@@ -24,10 +24,8 @@ export interface Brand {
   description: string
   /** Logo subido en el admin (SVG o PNG); se pinta en monocromo. */
   logoUrl: string | null
-  /** Foto principal: de ella sale el banner de la página de la marca. */
+  /** Foto de la marca: de ella salen el banner y la tarjeta, ambos apaisados. */
   heroImage: BrandImage | null
-  /** Foto de la tarjeta: la propia si se subió, si no la principal recortada. */
-  cardImage: BrandImage | null
   tagline: string | null
   logoColor: string
   gradientFrom: string
@@ -69,7 +67,7 @@ function percent(value: unknown): number {
 function readBrandAssets(
   name: string,
   metadata: Record<string, unknown> | null | undefined
-): Pick<Brand, "logoUrl" | "heroImage" | "cardImage"> {
+): Pick<Brand, "logoUrl" | "heroImage"> {
   const m = metadata ?? {}
   const heroUrl = text(m.hero_image_url)
   const alt = text(m.hero_image_alt) ?? name
@@ -81,14 +79,7 @@ function readBrandAssets(
         focalY: percent(m.hero_focal_y),
       }
     : null
-  const cardUrl = text(m.card_image_url)
-  return {
-    logoUrl: text(m.logo_url),
-    heroImage,
-    cardImage: cardUrl
-      ? { url: cardUrl, alt, focalX: 50, focalY: 50 }
-      : heroImage,
-  }
+  return { logoUrl: text(m.logo_url), heroImage }
 }
 
 function toBrand(input: {

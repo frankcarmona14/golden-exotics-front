@@ -41,12 +41,13 @@ export default async function BrandsPage() {
       </header>
 
       {brands.length > 0 ? (
-        <div className="grid grid-cols-2 gap-4 sm:gap-5 md:grid-cols-3 xl:grid-cols-4">
-          {brands.map((brand) => (
+        <div className="grid grid-cols-1 gap-4 sm:gap-5 lg:grid-cols-2">
+          {brands.map((brand, index) => (
             <BrandCard
               key={brand.handle}
               brand={brand}
               carCount={carCounts[brand.handle]}
+              priority={index < 2}
             />
           ))}
         </div>

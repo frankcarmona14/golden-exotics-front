@@ -56,7 +56,7 @@ export function BrowseCarTypes({
                 {brands.map((brand) => (
                   <CarouselItem
                     key={brand.handle}
-                    className="relative basis-[72%] p-0 sm:basis-[45%] md:basis-[36%] lg:basis-[28%] xl:basis-[23%]"
+                    className="relative basis-[88%] p-0 sm:basis-[70%] lg:basis-[48%] xl:basis-2/5"
                   >
                     <BrandCard
                       brand={brand}

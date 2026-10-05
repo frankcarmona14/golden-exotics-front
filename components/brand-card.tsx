@@ -13,15 +13,27 @@ interface BrandCardProps {
     | "logoColor"
     | "gradientFrom"
     | "gradientTo"
-    | "cardImage"
+    | "logoUrl"
+    | "heroImage"
   >
   /** Coches de la marca; sin él la etiqueta dice "Premium". */
   carCount?: number
+  /** Para la primera tarjeta visible: su foto puede ser el LCP. */
+  priority?: boolean
   className?: string
 }
 
-/** Tarjeta vertical de una marca que lleva a su página. */
-export function BrandCard({ brand, carCount, className }: BrandCardProps) {
+/**
+ * Tarjeta de una marca que lleva a su página. Apaisada a propósito: una
+ * tarjeta vertical con la foto de un coche se confundía con la ficha de un
+ * coche. Es un banner pequeño, con el logo y el nombre como protagonistas.
+ */
+export function BrandCard({
+  brand,
+  carCount,
+  priority = false,
+  className,
+}: BrandCardProps) {
   const {
     handle,
     name,
@@ -29,7 +41,8 @@ export function BrandCard({ brand, carCount, className }: BrandCardProps) {
     logoColor,
     gradientFrom,
     gradientTo,
-    cardImage,
+    logoUrl,
+    heroImage,
   } = brand
   const badge =
     carCount === undefined
@@ -47,62 +60,66 @@ export function BrandCard({ brand, carCount, className }: BrandCardProps) {
       )}
     >
       <div
-        className="relative aspect-[3/4] overflow-hidden rounded-card border border-white/[0.06] transition-transform duration-500 ease-out group-hover:scale-[1.02]"
+        className="relative aspect-video overflow-hidden rounded-card border border-white/[0.06] sm:aspect-[16/7]"
         style={{
           background: `linear-gradient(145deg, ${gradientFrom}, ${gradientTo})`,
         }}
       >
-        {cardImage && (
+        {heroImage && (
           <>
             <Image
-              src={cardImage.url}
-              alt={cardImage.alt}
+              src={heroImage.url}
+              alt={heroImage.alt}
               fill
-              sizes="(max-width: 768px) 50vw, (max-width: 1280px) 33vw, 25vw"
-              className="object-cover"
+              priority={priority}
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
               style={{
-                objectPosition: `${cardImage.focalX}% ${cardImage.focalY}%`,
+                objectPosition: `${heroImage.focalX}% ${heroImage.focalY}%`,
               }}
             />
-            {/* Oscurece el pie de la foto para que el nombre se lea siempre. */}
-            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-black/10" />
+            {/* Oscurece el lado del texto para que se lea sobre cualquier foto. */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/5" />
           </>
         )}
 
-        {/* Decorative elements */}
-        <div
-          className="absolute -right-8 -top-8 size-32 rounded-full opacity-[0.07] blur-2xl"
-          style={{ background: logoColor }}
-        />
-        <div
-          className="absolute -bottom-12 -left-12 size-40 rounded-full opacity-5 blur-3xl"
-          style={{ background: logoColor }}
-        />
+        {!heroImage && (
+          <div
+            className="absolute -right-10 -top-10 size-48 rounded-full opacity-10 blur-3xl"
+            style={{ background: logoColor }}
+          />
+        )}
 
-        <div className="relative flex h-full flex-col justify-between p-6">
-          <div>
-            <div className="mb-3 inline-flex items-center rounded-pill border border-white/[0.28] bg-black/[0.28] px-3 py-1.5 text-caption font-bold uppercase tracking-[0.2em] text-neutral-50">
-              {badge}
-            </div>
-          </div>
-
-          <div>
+        <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
+          <div className="max-w-[70%]">
+            {logoUrl && (
+              // Logo subido en el admin, en blanco sea cual sea su color.
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={logoUrl}
+                alt=""
+                className="mb-3 h-7 w-auto max-w-[140px] object-contain sm:h-8"
+                style={{ filter: "brightness(0) invert(1)" }}
+              />
+            )}
             <h3 className="text-heading-sm text-white">{name}</h3>
             {tagline && (
-              <p className="mt-2 text-body-sm font-medium italic text-white/50">
+              <p className="mt-1 text-body-sm font-medium italic text-white/60">
                 &ldquo;{tagline}&rdquo;
               </p>
             )}
+          </div>
 
-            <div className="mt-5 flex items-center gap-2">
-              <span className="inline-flex items-center rounded-pill bg-white px-4 py-2 text-caption font-bold uppercase tracking-wider text-neutral-950">
-                Explore →
-              </span>
-            </div>
+          <div className="flex items-center justify-between gap-3">
+            <span className="inline-flex items-center rounded-pill border border-white/[0.28] bg-black/[0.28] px-3 py-1.5 text-caption font-bold uppercase tracking-[0.2em] text-neutral-50">
+              {badge}
+            </span>
+            <span className="inline-flex items-center rounded-pill bg-white px-4 py-2 text-caption font-bold uppercase tracking-wider text-neutral-950 transition-transform group-hover:translate-x-0.5">
+              Explore →
+            </span>
           </div>
         </div>
 
-        {/* Bottom accent line */}
         <div
           className="absolute bottom-0 left-0 h-[2px] w-full opacity-60"
           style={{
