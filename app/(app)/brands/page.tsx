@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 
 import {
   getBrandCarCounts,
-  getBrands,
+  getActiveBrands,
 } from "@/db/queries/brand-repository"
 import { buildPageMetadata } from "@/lib/seo/metadata"
 import { BrandCard } from "@/components/brand-card"
@@ -19,7 +19,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default async function BrandsPage() {
   const [brands, carCounts] = await Promise.all([
-    getBrands(),
+    getActiveBrands(),
     getBrandCarCounts(),
   ])
 

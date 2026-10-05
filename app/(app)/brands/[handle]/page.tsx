@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import { SERVICE_AREAS } from "@/data/service-areas"
 
 import {
+  getActiveBrands,
   getBrandByHandle,
   getBrands,
   getCarsByBrand,
@@ -33,10 +34,13 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: BrandPageProps): Promise<Metadata> {
-  const brand = await getBrandByHandle(params.handle)
+  const [brand, cars] = await Promise.all([
+    getBrandByHandle(params.handle),
+    getCarsByBrand(params.handle),
+  ])
   if (!brand) return {}
 
-  return buildPageMetadata({
+  const metadata = buildPageMetadata({
     title: `${brand.name} Rental in Miami`,
     description: truncateForMeta(
       brand.description ||
@@ -44,12 +48,17 @@ export async function generateMetadata({
     ),
     path: `/brands/${brand.handle}`,
   })
+  // Sin coches la página no tiene nada que enseñar: se sirve (por si alguien
+  // llega desde un enlace viejo) pero fuera de Google hasta que tenga flota.
+  return cars.length > 0
+    ? metadata
+    : { ...metadata, robots: { index: false, follow: true } }
 }
 
 export default async function BrandPage({ params }: BrandPageProps) {
   const [brand, brands, cars] = await Promise.all([
     getBrandByHandle(params.handle),
-    getBrands(),
+    getActiveBrands(),
     getCarsByBrand(params.handle),
   ])
 

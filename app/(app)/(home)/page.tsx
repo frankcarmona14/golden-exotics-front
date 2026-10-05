@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { siteConfig } from "@/config/site"
 import {
   getBrandCarCounts,
-  getBrands,
+  getActiveBrands,
 } from "@/db/queries/brand-repository"
 import { buildPageMetadata } from "@/lib/seo/metadata"
 import { buildOrganizationJsonLd } from "@/lib/seo/structured-data"
@@ -23,7 +23,7 @@ export const metadata: Metadata = buildPageMetadata({
 
 export default async function HomePage() {
   const [brands, carCounts] = await Promise.all([
-    getBrands(),
+    getActiveBrands(),
     getBrandCarCounts(),
   ])
 

@@ -91,3 +91,16 @@ export async function getBrandCarCounts(): Promise<Record<string, number>> {
   }
   return counts
 }
+
+/**
+ * Las marcas que tienen al menos un coche: las únicas que se listan (home,
+ * /brands, enlaces, sitemap). Una marca recién creada en Medusa sin coches
+ * sería una página vacía, y eso es contenido pobre para Google y un callejón
+ * sin salida para el cliente. Con datos mock (sin marca en los coches) se
+ * devuelven todas.
+ */
+export async function getActiveBrands(): Promise<Brand[]> {
+  const [brands, counts] = await Promise.all([getBrands(), getBrandCarCounts()])
+  if (Object.keys(counts).length === 0) return brands
+  return brands.filter((brand) => (counts[brand.handle] ?? 0) > 0)
+}

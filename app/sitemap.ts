@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next"
-import { getBrands } from "@/db/queries/brand-repository"
+import { getActiveBrands } from "@/db/queries/brand-repository"
 import { getCars } from "@/db/queries/car-repository"
 import { SERVICE_AREAS, SERVICE_CITIES } from "@/data/service-areas"
 
@@ -35,7 +35,7 @@ const STATIC_PAGES: {
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [cars, brands] = await Promise.all([getCars(), getBrands()])
+  const [cars, brands] = await Promise.all([getCars(), getActiveBrands()])
 
   const staticEntries = STATIC_PAGES.map((page) => ({
     url: absoluteUrl(page.path),

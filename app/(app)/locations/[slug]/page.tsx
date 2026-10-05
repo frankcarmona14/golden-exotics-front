@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import { SERVICE_AREAS, SERVICE_CITIES } from "@/data/service-areas"
 
-import { getBrands } from "@/db/queries/brand-repository"
+import { getActiveBrands } from "@/db/queries/brand-repository"
 import { getCars } from "@/db/queries/car-repository"
 import { getWhatsAppUrl } from "@/config/site"
 import { getRentalLocations } from "@/lib/medusa/rental"
@@ -74,7 +74,7 @@ export default async function LocationPageView({ params }: LocationPageProps) {
 
   const [cars, brands, { pickup, delivery_zones }] = await Promise.all([
     getCars(),
-    getBrands(),
+    getActiveBrands(),
     getRentalLocations(),
   ])
 
