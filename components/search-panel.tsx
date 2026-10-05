@@ -136,7 +136,7 @@ export function SearchPanel({ locations }: { locations: SearchLocation[] }) {
                     >
                       <div className="flex size-full items-center justify-between">
                         <div className="flex size-full flex-col items-start justify-center truncate">
-                          <div className="text-[13px] font-bold">
+                          <div className="text-body-sm font-bold">
                             Pick-up / Drop-off
                           </div>
                           {location ? (
@@ -287,7 +287,7 @@ function DateButton({
         )}
       >
         <div className="flex size-full flex-col items-start justify-center truncate">
-          <div className="text-[13px] font-bold">{label}</div>
+          <div className="text-body-sm font-bold">{label}</div>
           {date ? (
             <div className="font-semibold text-neutral-800 dark:text-neutral-200">
               {format(date, "LLL dd, y")}

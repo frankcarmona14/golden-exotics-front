@@ -9,7 +9,7 @@ export async function PaymentDetails({
 }) {
   return (
     <>
-      <h2 className="text-[22px] font-semibold">Pay with</h2>
+      <h2 className="text-heading-sm">Pay with</h2>
 
       <div className="pt-5">
         <ElementsForm

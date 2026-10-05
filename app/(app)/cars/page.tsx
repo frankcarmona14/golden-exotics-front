@@ -30,7 +30,7 @@ export default async function CarsPage({
 }) {
   return (
     <div className="[--cars-toolbar-h:100px] md:[--cars-toolbar-h:125px]">
-      <header className="sticky top-[var(--site-header-height)] z-40 h-[var(--cars-toolbar-h)] border-b border-black/10 bg-white dark:border-neutral-800 dark:bg-neutral-950">
+      <header className="sticky top-[var(--site-header-height)] z-40 h-[var(--cars-toolbar-h)] border-b border-black/10 bg-white backdrop-blur-md dark:border-border dark:bg-background/80">
         {/* Phone and Tablets */}
         <div className="h-full md:hidden">
           <div className="h-full px-5 sm:px-6">
@@ -84,7 +84,7 @@ export default async function CarsPage({
             <div className="sticky top-[calc(var(--site-header-height)+var(--cars-toolbar-h)+1.5rem)]">
               <Suspense
                 fallback={
-                  <Skeleton className="h-[640px] w-full rounded-2xl" />
+                  <Skeleton className="h-[640px] w-full rounded-card" />
                 }
               >
                 <Filters variant="sidebar" />

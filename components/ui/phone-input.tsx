@@ -119,7 +119,7 @@ export function PhoneInput({
   return (
     <div
       className={cn(
-        "flex h-10 w-full overflow-hidden rounded-md border border-neutral-300 bg-white shadow-sm transition-colors focus-within:ring-2 focus-within:ring-neutral-950 focus-within:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:focus-within:ring-neutral-300",
+        "flex h-10 w-full overflow-hidden rounded-tight border border-neutral-300 bg-white shadow-sm transition-colors focus-within:ring-2 focus-within:ring-neutral-950 focus-within:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:focus-within:ring-neutral-300",
         ariaInvalid &&
           "border-red-500 focus-within:ring-red-500 dark:border-red-500/70 dark:focus-within:ring-red-500/70",
         disabled && "cursor-not-allowed opacity-50",

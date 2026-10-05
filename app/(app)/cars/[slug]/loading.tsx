@@ -17,13 +17,13 @@ export default function Loading() {
         </div>
         <div className="hidden pt-4 md:block">
           <div className="grid h-[34rem] grid-cols-4 grid-rows-2 gap-3">
-            <div className="relative col-span-3 row-span-2 overflow-hidden rounded-l-2xl">
+            <div className="relative col-span-3 row-span-2 overflow-hidden rounded-l-card">
               <Skeleton className="size-full" />
             </div>
-            <div className="relative col-span-1 row-span-1 overflow-hidden rounded-tr-2xl">
+            <div className="relative col-span-1 row-span-1 overflow-hidden rounded-tr-card">
               <Skeleton className="size-full" />
             </div>
-            <div className="relative col-span-1 row-span-1 overflow-hidden rounded-br-2xl">
+            <div className="relative col-span-1 row-span-1 overflow-hidden rounded-br-card">
               <Skeleton className="size-full" />
             </div>
           </div>

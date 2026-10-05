@@ -11,9 +11,9 @@ export function CancellationPolicy({ checkinDate }: CancellationPolicyProps) {
 
   return (
     <>
-      <h2 className="text-[22px] font-semibold">Cancellation policy</h2>
+      <h2 className="text-heading-sm">Cancellation policy</h2>
       <div className="pt-5">
-        <p className="text-balance text-[16px] text-neutral-700 dark:text-neutral-300">
+        <p className="text-balance text-body text-neutral-700 dark:text-neutral-300">
           {deadlineStr ? (
             <>
               <strong>Free cancellation before {deadlineStr}</strong>. After that,

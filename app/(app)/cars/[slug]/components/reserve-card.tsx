@@ -161,7 +161,7 @@ function TimeGrid({
             onClick={() => !isDisabled && onChange(slot)}
             disabled={isDisabled}
             className={cn(
-              "rounded-lg p-2 text-[13px] font-medium tabular-nums transition-all",
+              "rounded-tight p-2 text-body-sm font-medium tabular-nums transition-all",
               isDisabled
                 ? "cursor-not-allowed text-neutral-300 line-through dark:text-neutral-700"
                 : slot === value
@@ -218,10 +218,10 @@ const mobileCalendarClassNames = {
   table: "w-full border-collapse",
   head_row: "flex w-full",
   head_cell:
-    "text-neutral-500 dark:text-neutral-400 rounded-md flex-1 text-center font-normal text-sm",
+    "text-neutral-500 dark:text-neutral-400 rounded-tight flex-1 text-center font-normal text-sm",
   row: "flex w-full mt-2",
-  cell: "flex-1 aspect-square text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-md [&:has([aria-selected].day-outside)]:bg-neutral-100/50 dark:[&:has([aria-selected].day-outside)]:bg-neutral-800/50 [&:has([aria-selected])]:bg-neutral-100 dark:[&:has([aria-selected])]:bg-neutral-800 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-  day: "h-full w-full rounded-md p-0 font-normal hover:bg-neutral-100 dark:hover:bg-neutral-800 aria-selected:opacity-100",
+  cell: "flex-1 aspect-square text-center text-sm p-0 relative [&:has([aria-selected].day-range-end)]:rounded-r-tight [&:has([aria-selected].day-outside)]:bg-neutral-100/50 dark:[&:has([aria-selected].day-outside)]:bg-neutral-800/50 [&:has([aria-selected])]:bg-neutral-100 dark:[&:has([aria-selected])]:bg-neutral-800 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-tight focus-within:relative focus-within:z-20",
+  day: "h-full w-full rounded-tight p-0 font-normal hover:bg-neutral-100 dark:hover:bg-neutral-800 aria-selected:opacity-100",
   day_range_end: "day-range-end",
   day_selected:
     "bg-primary text-primary-foreground hover:bg-primary-hover hover:text-primary-foreground focus:bg-primary focus:text-primary-foreground",
@@ -608,7 +608,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
 
   const dateBtnClass = (isActive: boolean) =>
     cn(
-      "flex flex-1 flex-col items-start gap-0.5 rounded-lg border bg-white px-3 py-2.5 text-left shadow-sm transition-colors",
+      "flex flex-1 flex-col items-start gap-0.5 rounded-tight border bg-white px-3 py-2.5 text-left shadow-sm transition-colors",
       "border-neutral-200 dark:border-neutral-700 dark:bg-neutral-900",
       "hover:border-neutral-400 dark:hover:border-neutral-500",
       isActive &&
@@ -617,7 +617,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
 
   const timeBtnClass = (isOpen: boolean) =>
     cn(
-      "flex items-center gap-1.5 rounded-lg border bg-white px-3 py-2.5 text-left shadow-sm transition-colors",
+      "flex items-center gap-1.5 rounded-tight border bg-white px-3 py-2.5 text-left shadow-sm transition-colors",
       "border-neutral-200 dark:border-neutral-700 dark:bg-neutral-900",
       "hover:border-neutral-400 dark:hover:border-neutral-500",
       isOpen &&
@@ -629,7 +629,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
     <div className="flex items-center gap-2 px-3 pb-1 pt-2">
       <span
         className={cn(
-          "rounded-full px-2.5 py-1 text-[12px] font-semibold transition-colors",
+          "rounded-full px-2.5 py-1 text-caption font-semibold transition-colors",
           dateStep === "checkin"
             ? "bg-primary text-primary-foreground"
             : "text-neutral-400 dark:text-neutral-500"
@@ -650,7 +650,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
       </svg>
       <span
         className={cn(
-          "rounded-full px-2.5 py-1 text-[12px] font-semibold transition-colors",
+          "rounded-full px-2.5 py-1 text-caption font-semibold transition-colors",
           dateStep === "checkout"
             ? "bg-primary text-primary-foreground"
             : "text-neutral-400 dark:text-neutral-500"
@@ -670,7 +670,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
           className={dateBtnClass(datePickerOpen && dateStep === "checkin")}
           onClick={() => openDatePicker("checkin")}
         >
-          <span className="flex items-center gap-1.5 text-[14px] font-medium leading-snug">
+          <span className="flex items-center gap-1.5 text-body-sm font-medium leading-snug">
             <CalendarIcon className="shrink-0 text-neutral-400 dark:text-neutral-500" />
             {checkinDate ? format(checkinDate, "MMM d, yyyy") : "Add date"}
           </span>
@@ -748,7 +748,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
       className={dateBtnClass(datePickerOpen && dateStep === "checkin")}
       onClick={() => openDatePicker("checkin")}
     >
-      <span className="flex items-center gap-1.5 text-[14px] font-medium leading-snug">
+      <span className="flex items-center gap-1.5 text-body-sm font-medium leading-snug">
         <CalendarIcon className="shrink-0 text-neutral-400 dark:text-neutral-500" />
         {checkinDate ? format(checkinDate, "MMM d, yyyy") : "Add date"}
       </span>
@@ -756,31 +756,31 @@ export function ReserveCard({ car }: ReserveCardProps) {
   )
 
   return (
-    <div className="overflow-hidden rounded-xl border shadow-[0_6px_16px_rgba(0,0,0,0.12)] dark:border-neutral-800 dark:shadow-[0_6px_16px_rgba(0,0,0,0.4)]">
+    <div className="overflow-hidden rounded-card border shadow-[0_6px_16px_rgba(0,0,0,0.12)] dark:border-neutral-800 dark:shadow-[0_6px_16px_rgba(0,0,0,0.4)]">
       <div className="p-6">
         {/* Price */}
         {hasValidPrice ? (
           <div className="mb-6">
             {hasDates ? (
               <>
-                <span className="block text-[26px] font-semibold tabular-nums leading-tight tracking-tight">
+                <span className="block text-heading-sm tabular-nums">
                   {formatAmountForDisplay(totalAmount, car.currency)}
                 </span>
-                <span className="text-[14px] text-neutral-500 dark:text-neutral-400">
+                <span className="text-body-sm text-neutral-500 dark:text-neutral-400">
                   Total for {days} day{days > 1 ? "s" : ""}
                 </span>
                 {availability?.deposit && (
-                  <span className="mt-1.5 block text-[13px] font-medium text-neutral-600 dark:text-neutral-400">
+                  <span className="mt-1.5 block text-body-sm font-medium text-neutral-600 dark:text-neutral-400">
                     {formatAmountForDisplay(availability.deposit.amount, car.currency)} deposit due at booking
                   </span>
                 )}
               </>
             ) : (
               <>
-                <span className="block text-[26px] font-semibold tabular-nums leading-tight tracking-tight">
+                <span className="block text-heading-sm tabular-nums">
                   {formatAmountForDisplay(pricePerDayNum, car.currency)}
                 </span>
-                <span className="text-[14px] text-neutral-500 dark:text-neutral-400">
+                <span className="text-body-sm text-neutral-500 dark:text-neutral-400">
                   Per day
                 </span>
               </>
@@ -796,8 +796,8 @@ export function ReserveCard({ car }: ReserveCardProps) {
         {mobileDateDrawer}
 
         {/* Check in section */}
-        <div className="rounded-xl bg-neutral-50 p-3 dark:bg-neutral-800/50">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
+        <div className="rounded-card bg-neutral-50 p-3 dark:bg-neutral-800/50">
+          <p className="mb-2 text-caption font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
             Check in
           </p>
           <div className="flex items-stretch gap-2">
@@ -814,7 +814,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
               trigger={
                 <button type="button" className={timeBtnClass(checkinTimeOpen)}>
                   <ClockIcon className="shrink-0 text-neutral-400 dark:text-neutral-500" />
-                  <span className="text-[14px] font-medium tabular-nums">
+                  <span className="text-body-sm font-medium tabular-nums">
                     {checkinTime}
                   </span>
                 </button>
@@ -824,8 +824,8 @@ export function ReserveCard({ car }: ReserveCardProps) {
         </div>
 
         {/* Check out section */}
-        <div className="mt-2 rounded-xl bg-neutral-50 p-3 dark:bg-neutral-800/50">
-          <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
+        <div className="mt-2 rounded-card bg-neutral-50 p-3 dark:bg-neutral-800/50">
+          <p className="mb-2 text-caption font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
             Check out
           </p>
           <div className="flex items-stretch gap-2">
@@ -837,7 +837,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
               )}
               onClick={() => openDatePicker("checkout")}
             >
-              <span className="flex items-center gap-1.5 text-[14px] font-medium leading-snug">
+              <span className="flex items-center gap-1.5 text-body-sm font-medium leading-snug">
                 <CalendarIcon className="shrink-0 text-neutral-400 dark:text-neutral-500" />
                 {checkoutDate
                   ? format(checkoutDate, "MMM d, yyyy")
@@ -859,7 +859,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
                   className={timeBtnClass(checkoutTimeOpen)}
                 >
                   <ClockIcon className="shrink-0 text-neutral-400 dark:text-neutral-500" />
-                  <span className="text-[14px] font-medium tabular-nums">
+                  <span className="text-body-sm font-medium tabular-nums">
                     {checkoutTime}
                   </span>
                 </button>
@@ -870,7 +870,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
 
         {/* Rental config hint */}
         {isRentable && rentalConfig && (
-          <p className="mt-3 text-[12px] text-neutral-400 dark:text-neutral-500">
+          <p className="mt-3 text-caption text-neutral-400 dark:text-neutral-500">
             Min {rentalConfig.min_rental_days} day
             {rentalConfig.min_rental_days > 1 ? "s" : ""}
             {rentalConfig.max_rental_days
@@ -883,7 +883,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
         {statusMessage && (
           <div
             className={cn(
-              "mt-4 rounded-lg px-3.5 py-2.5 text-[13px] font-medium",
+              "mt-4 rounded-tight px-3.5 py-2.5 text-body-sm font-medium",
               statusMessage.type === "loading" &&
                 "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400",
               statusMessage.type === "error" &&
@@ -900,7 +900,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
         <div className="pt-5">
           <Button
             size="lg"
-            className="w-full text-[15px]"
+            className="w-full text-body"
             disabled={!canReserve || isReserving}
             onClick={handleReserve}
           >
@@ -917,7 +917,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
         </div>
 
         {checkinDate != null && checkoutDate != null && canReserve && (
-          <p className="pt-3 text-center text-[13px] text-neutral-500 dark:text-neutral-400">
+          <p className="pt-3 text-center text-body-sm text-neutral-500 dark:text-neutral-400">
             You won&apos;t be charged yet
           </p>
         )}

@@ -39,7 +39,7 @@ export function PowertrainFilters({
 
   return (
     <section>
-      <h3 className="text-[15px] font-semibold">Powertrain</h3>
+      <h3 className="text-body font-semibold">Powertrain</h3>
       <div className="pt-4">
         <ToggleGroup
           type="single"
@@ -47,15 +47,15 @@ export function PowertrainFilters({
           onValueChange={(value) =>
             handlePowertrainChange(value as Powertrain | undefined)
           }
-          className="grid min-h-12 w-full auto-cols-fr grid-flow-col gap-0 rounded-2xl border border-neutral-300 p-1 dark:border-neutral-700"
+          className="grid min-h-12 w-full auto-cols-fr grid-flow-col gap-0 rounded-pill border border-neutral-300 p-1 dark:border-neutral-700"
         >
           {powertrains.map(({ slug, name }) => (
             <ToggleGroupItem
               key={slug}
               value={slug}
-              className="group relative m-0 size-full rounded-none p-0 text-neutral-900 first:rounded-l-xl last:rounded-r-xl hover:bg-none dark:text-neutral-100 [&>span]:data-[state=off]:border-transparent [&>span]:data-[state=on]:border-accent [&>span]:data-[state=off]:bg-transparent [&>span]:data-[state=on]:bg-accent [&>span]:data-[state=on]:text-accent-foreground"
+              className="group relative m-0 size-full rounded-none p-0 text-neutral-900 first:rounded-l-pill last:rounded-r-pill hover:bg-none dark:text-neutral-100 [&>span]:data-[state=off]:border-transparent [&>span]:data-[state=on]:border-accent [&>span]:data-[state=off]:bg-transparent [&>span]:data-[state=on]:bg-accent [&>span]:data-[state=on]:text-accent-foreground"
             >
-              <span className="flex size-full items-center justify-center rounded-xl border-2 border-transparent text-[14px] font-medium transition-colors">
+              <span className="flex size-full items-center justify-center rounded-pill border-2 border-transparent text-body-sm font-medium transition-colors">
                 {name}
               </span>
               <Separator

@@ -100,7 +100,7 @@ export function MobileSearch({ locations }: { locations: SearchLocation[] }) {
         >
           <SearchIcon className="size-5 shrink-0 [stroke-width:2.5px]" />
           <span className="flex min-w-0 flex-1 items-center gap-2.5">
-            <span className="truncate text-[14px] font-semibold text-neutral-900 dark:text-neutral-50">
+            <span className="truncate text-body-sm font-semibold text-neutral-900 dark:text-neutral-50">
               {selectedLocationName ?? "Anywhere"}
             </span>
             <span
@@ -109,7 +109,7 @@ export function MobileSearch({ locations }: { locations: SearchLocation[] }) {
             />
             <span
               className={cn(
-                "shrink-0 whitespace-nowrap text-[13px] font-medium",
+                "shrink-0 whitespace-nowrap text-body-sm font-medium",
                 range?.from
                   ? "text-neutral-700 dark:text-neutral-200"
                   : "text-neutral-500 dark:text-neutral-400"
@@ -124,13 +124,13 @@ export function MobileSearch({ locations }: { locations: SearchLocation[] }) {
         <div className="flex w-full items-center justify-between gap-x-2 px-6">
           <Button
             variant="ghost"
-            className="-ml-2.5 px-2.5 text-[15px]"
+            className="-ml-2.5 px-2.5 text-body"
             onClick={handleClear}
             disabled={!hasSelection}
           >
             Clear
           </Button>
-          <Button size="lg" className="gap-2 text-[15px]" onClick={handleSearch}>
+          <Button size="lg" className="gap-2 text-body" onClick={handleSearch}>
             <SearchIcon className="size-4 shrink-0 [stroke-width:3px]" />
             Search cars
           </Button>
@@ -140,10 +140,10 @@ export function MobileSearch({ locations }: { locations: SearchLocation[] }) {
       <div className="space-y-6 px-5 py-5">
         {/* Location */}
         <div>
-          <h3 className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+          <h3 className="mb-2 text-caption font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
             Pick-up / Drop-off
           </h3>
-          <div className="overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800">
+          <div className="overflow-hidden rounded-card border border-neutral-200 dark:border-neutral-800">
             <Command>
               <CommandInput placeholder="Search location..." />
               <CommandList className="max-h-44">
@@ -160,10 +160,10 @@ export function MobileSearch({ locations }: { locations: SearchLocation[] }) {
 
         {/* Dates */}
         <div>
-          <h3 className="mb-2 text-[12px] font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+          <h3 className="mb-2 text-caption font-semibold uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
             Dates
           </h3>
-          <div className="flex justify-center rounded-xl border border-neutral-200 dark:border-neutral-800">
+          <div className="flex justify-center rounded-card border border-neutral-200 dark:border-neutral-800">
             <Calendar
               mode="range"
               selected={range}

@@ -223,12 +223,12 @@ export default async function CarExtrasPage({
     <main id="main-content">
       <div className="px-5 pb-16 md:py-16">
         <div className="mx-auto max-w-none sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
-          <header className="sticky top-[var(--site-header-height)] z-40 -mx-5 mb-2 border-b border-black/10 bg-white px-5 dark:border-neutral-800 dark:bg-neutral-950 md:static md:z-auto md:mx-0 md:mb-12 md:border-0 md:bg-transparent md:px-0 md:dark:bg-transparent">
+          <header className="sticky top-[var(--site-header-height)] z-40 -mx-5 mb-2 border-b border-black/10 bg-white px-5 backdrop-blur-md dark:border-border dark:bg-background/80 md:static md:z-auto md:mx-0 md:mb-12 md:border-0 md:bg-transparent md:px-0 md:dark:bg-transparent">
             <div className="relative flex h-[var(--site-header-height)] items-center md:h-auto">
               <BackButton className="z-40 -ml-2 md:-ml-12 md:mr-2">
                 <ChevronLeftIcon className="size-5 shrink-0" />
               </BackButton>
-              <h1 className="absolute inset-0 flex items-center justify-center text-base font-semibold md:static md:justify-start md:text-3xl">
+              <h1 className="absolute inset-0 flex items-center justify-center text-base font-semibold md:static md:justify-start md:text-heading">
                 {fromQuote
                   ? "Delivery address"
                   : addons.length
@@ -284,7 +284,7 @@ export default async function CarExtrasPage({
             }}
           />
 
-          <p className="mt-10 text-[13px] text-neutral-500 dark:text-neutral-400">
+          <p className="mt-10 text-body-sm text-neutral-500 dark:text-neutral-400">
             {fromQuote ? (
               <Link
                 href={`/quote/${encodeURIComponent(fromQuote.ref.token)}`}

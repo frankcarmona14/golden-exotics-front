@@ -152,7 +152,7 @@ export default async function ResultPage({
       <main className="flex min-h-[calc(100vh-var(--site-header-height)-200px)] items-center justify-center px-5 py-16">
         {isRentalSuccess ? (
           <div className="w-full max-w-lg">
-            <div className="relative overflow-hidden rounded-3xl border border-neutral-200/80 bg-white p-8 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10 lg:p-12">
+            <div className="relative overflow-hidden rounded-card border border-neutral-200/80 bg-white p-8 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10 lg:p-12">
               {/* Background decoration */}
               <div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-green-500/5 blur-3xl" />
               <div className="pointer-events-none absolute -bottom-12 -left-12 size-36 rounded-full bg-accent/5 blur-3xl" />
@@ -163,10 +163,10 @@ export default async function ResultPage({
                   <CheckIcon className="size-9 text-green-500 sm:size-10" />
                 </div>
 
-                <h1 className="mt-7 text-[22px] font-bold tracking-tight sm:text-2xl lg:text-[26px]">
+                <h1 className="mt-7 text-heading-sm sm:text-heading">
                   Reservation confirmed!
                 </h1>
-                <p className="mt-2.5 max-w-sm text-balance text-[15px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+                <p className="mt-2.5 max-w-sm text-balance text-body leading-relaxed text-neutral-500 dark:text-neutral-400">
                   {carName
                     ? `Your ${carName} is ready for you.`
                     : "Your car rental has been successfully booked."}
@@ -175,19 +175,19 @@ export default async function ResultPage({
 
                 {/* Rental details card */}
                 {(carName || startDate) && (
-                  <div className="mt-8 w-full overflow-hidden rounded-2xl border border-neutral-100 dark:border-neutral-800">
+                  <div className="mt-8 w-full overflow-hidden rounded-card border border-neutral-100 dark:border-neutral-800">
                     {/* Car info header */}
                     {carName && (
                       <div className="flex items-center gap-3 border-b border-neutral-100 bg-neutral-50 px-4 py-3.5 dark:border-neutral-800 dark:bg-neutral-800/50">
-                        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-accent/10">
+                        <div className="flex size-10 shrink-0 items-center justify-center rounded-tight bg-accent/10">
                           <CarIcon className="size-5 text-accent" />
                         </div>
                         <div className="min-w-0 text-left">
-                          <p className="truncate text-[15px] font-semibold text-neutral-900 dark:text-neutral-50">
+                          <p className="truncate text-body font-semibold text-neutral-900 dark:text-neutral-50">
                             {carName}
                           </p>
                           {variantName && variantName !== carName && (
-                            <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+                            <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
                               {variantName}
                             </p>
                           )}
@@ -201,22 +201,22 @@ export default async function ResultPage({
                         <div className="px-4 py-3.5">
                           <div className="flex items-center gap-1.5">
                             <CalendarIcon className="size-3 text-neutral-400 dark:text-neutral-500" />
-                            <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                            <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                               {delivery ? "Delivery" : "Pick-up"}
                             </p>
                           </div>
-                          <p className="mt-1 text-[14px] font-medium text-neutral-900 dark:text-neutral-100">
+                          <p className="mt-1 text-body-sm font-medium text-neutral-900 dark:text-neutral-100">
                             {formatDate(startDate)}
                           </p>
                         </div>
                         <div className="px-4 py-3.5">
                           <div className="flex items-center gap-1.5">
                             <CalendarIcon className="size-3 text-neutral-400 dark:text-neutral-500" />
-                            <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                            <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                               Return
                             </p>
                           </div>
-                          <p className="mt-1 text-[14px] font-medium text-neutral-900 dark:text-neutral-100">
+                          <p className="mt-1 text-body-sm font-medium text-neutral-900 dark:text-neutral-100">
                             {formatDate(endDate)}
                           </p>
                         </div>
@@ -226,10 +226,10 @@ export default async function ResultPage({
                     {/* Delivery (P0-3). La dirección solo llega al dueño con sesión. */}
                     {delivery && (
                       <div className="border-t border-neutral-100 px-4 py-3.5 text-left dark:border-neutral-800">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                        <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                           Delivery{delivery.zone_label ? ` · ${delivery.zone_label}` : ""}
                         </p>
-                        <p className="mt-1 text-[14px] font-medium text-neutral-900 dark:text-neutral-100">
+                        <p className="mt-1 text-body-sm font-medium text-neutral-900 dark:text-neutral-100">
                           {delivery.address
                             ? `${[delivery.address.address_1, delivery.address.address_2]
                                 .filter(Boolean)
@@ -243,7 +243,7 @@ export default async function ResultPage({
                     {rentalDays && rentalDays > 0 && (
                       <div className="flex items-center gap-2 border-t border-neutral-100 px-4 py-3 dark:border-neutral-800">
                         <ClockIcon className="size-3.5 text-neutral-400 dark:text-neutral-500" />
-                        <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+                        <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
                           {rentalDays} day{rentalDays > 1 ? "s" : ""} rental
                         </p>
                       </div>
@@ -253,14 +253,14 @@ export default async function ResultPage({
                     {depositAmount != null && depositAmount > 0 && (
                       <div className="border-t border-neutral-100 px-4 py-3.5 dark:border-neutral-800">
                         <div className="flex items-center justify-between">
-                          <p className="text-[13px] font-semibold text-neutral-700 dark:text-neutral-200">
+                          <p className="text-body-sm font-semibold text-neutral-700 dark:text-neutral-200">
                             Deposit paid
                           </p>
-                          <p className="text-[14px] font-semibold text-neutral-900 dark:text-neutral-50">
+                          <p className="text-body-sm font-semibold text-neutral-900 dark:text-neutral-50">
                             {formatAmountForDisplay(depositAmount, depositCurrency)}
                           </p>
                         </div>
-                        <p className="mt-1 text-[12px] text-neutral-400 dark:text-neutral-500">
+                        <p className="mt-1 text-caption text-neutral-400 dark:text-neutral-500">
                           {delivery
                             ? "Remaining balance due when we deliver the car"
                             : "Remaining balance due at vehicle pickup"}
@@ -276,15 +276,15 @@ export default async function ResultPage({
                 <div className="mt-4 w-full space-y-3">
                   {/* Reservation ID */}
                   {rental_id && (
-                    <div className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-neutral-50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-800/50">
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-neutral-200/50 dark:bg-neutral-700/50">
+                    <div className="flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-800/50">
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-neutral-200/50 dark:bg-neutral-700/50">
                         <span className="text-[10px] font-bold text-neutral-500 dark:text-neutral-400">#</span>
                       </div>
                       <div className="min-w-0 text-left">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                        <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                           Reservation ID
                         </p>
-                        <p className="mt-0.5 truncate font-mono text-[12px] font-medium text-neutral-600 dark:text-neutral-300">
+                        <p className="mt-0.5 truncate font-mono text-caption font-medium text-neutral-600 dark:text-neutral-300">
                           {rental_id}
                         </p>
                       </div>
@@ -292,12 +292,12 @@ export default async function ResultPage({
                   )}
 
                   {/* Email notification */}
-                  <div className="flex items-center gap-3 rounded-xl border border-neutral-100 bg-neutral-50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-800/50">
-                    <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-blue-500/10">
+                  <div className="flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-800/50">
+                    <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-blue-500/10">
                       <MailIcon className="size-3.5 text-blue-500" />
                     </div>
                     <div className="text-left">
-                      <p className="text-[13px] text-neutral-600 dark:text-neutral-300">
+                      <p className="text-body-sm text-neutral-600 dark:text-neutral-300">
                         Check your inbox for booking details
                       </p>
                     </div>
@@ -306,7 +306,7 @@ export default async function ResultPage({
 
                 {/* Contact channels */}
                 <div className="mt-5 w-full">
-                  <p className="mb-2.5 text-left text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                  <p className="mb-2.5 text-left text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                     Need help? Reach us on
                   </p>
                   <div className="grid grid-cols-2 gap-2.5">
@@ -314,16 +314,16 @@ export default async function ResultPage({
                       href={contactWhatsAppUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-xl border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-[#25D366]/40 hover:bg-[#25D366]/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-[#25D366]/40 dark:hover:bg-[#25D366]/10"
+                      className="group flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-[#25D366]/40 hover:bg-[#25D366]/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-[#25D366]/40 dark:hover:bg-[#25D366]/10"
                     >
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#25D366]/10">
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-[#25D366]/10">
                         <WhatsAppIcon className="size-4 text-[#25D366]" />
                       </div>
                       <div className="min-w-0 text-left">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                        <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                           WhatsApp
                         </p>
-                        <p className="truncate text-[13px] font-medium text-neutral-700 dark:text-neutral-200">
+                        <p className="truncate text-body-sm font-medium text-neutral-700 dark:text-neutral-200">
                           {siteConfig.contact.whatsapp.display}
                         </p>
                       </div>
@@ -333,16 +333,16 @@ export default async function ResultPage({
                       href={siteConfig.contact.instagram.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-xl border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-pink-500/40 hover:bg-pink-500/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-pink-500/40 dark:hover:bg-pink-500/10"
+                      className="group flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-pink-500/40 hover:bg-pink-500/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-pink-500/40 dark:hover:bg-pink-500/10"
                     >
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-pink-500/10">
+                      <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-pink-500/10">
                         <InstagramIcon className="size-4 text-pink-500" />
                       </div>
                       <div className="min-w-0 text-left">
-                        <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                        <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                           Instagram
                         </p>
-                        <p className="truncate text-[13px] font-medium text-neutral-700 dark:text-neutral-200">
+                        <p className="truncate text-body-sm font-medium text-neutral-700 dark:text-neutral-200">
                           @{siteConfig.contact.instagram.handle}
                         </p>
                       </div>
@@ -353,7 +353,7 @@ export default async function ResultPage({
                 {/* Security note */}
                 <div className="mt-6 flex items-center justify-center gap-1.5">
                   <ShieldIcon className="size-3.5 text-green-500" />
-                  <p className="text-[12px] text-neutral-400 dark:text-neutral-500">
+                  <p className="text-caption text-neutral-400 dark:text-neutral-500">
                     Payment secured &middot; Free cancellation available
                   </p>
                 </div>
@@ -363,7 +363,7 @@ export default async function ResultPage({
                   {isLoggedIn ? (
                     <Button
                       asChild
-                      className="flex-1 rounded-xl bg-accent py-5 text-[14px] font-semibold text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.15)] transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.25)]"
+                      className="flex-1 rounded-card bg-accent py-5 text-body-sm font-semibold text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.15)] transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.25)]"
                     >
                       <Link
                         href={
@@ -381,7 +381,7 @@ export default async function ResultPage({
                   ) : (
                     <Button
                       asChild
-                      className="flex-1 rounded-xl bg-[#25D366] py-5 text-[14px] font-semibold text-white shadow-[0_0_20px_rgba(37,211,102,0.2)] transition-all hover:bg-[#20BA5A] hover:shadow-[0_0_30px_rgba(37,211,102,0.3)]"
+                      className="flex-1 rounded-card bg-[#25D366] py-5 text-body-sm font-semibold text-white shadow-[0_0_20px_rgba(37,211,102,0.2)] transition-all hover:bg-[#20BA5A] hover:shadow-[0_0_30px_rgba(37,211,102,0.3)]"
                     >
                       <a
                         href={documentsWhatsAppUrl}
@@ -398,7 +398,7 @@ export default async function ResultPage({
                   <Button
                     asChild
                     variant="outline"
-                    className="flex-1 rounded-xl border-neutral-200 py-5 text-[14px] dark:border-neutral-700"
+                    className="flex-1 rounded-card border-neutral-200 py-5 text-body-sm dark:border-neutral-700"
                   >
                     <Link href="/">Go home</Link>
                   </Button>
@@ -408,7 +408,7 @@ export default async function ResultPage({
           </div>
         ) : (
           <div className="w-full max-w-lg">
-            <div className="relative overflow-hidden rounded-3xl border border-neutral-200/80 bg-white p-8 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10 lg:p-12">
+            <div className="relative overflow-hidden rounded-card border border-neutral-200/80 bg-white p-8 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10 lg:p-12">
               <div className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-red-500/5 blur-3xl" />
 
               <div className="relative flex flex-col items-center text-center">
@@ -418,27 +418,27 @@ export default async function ResultPage({
                   </svg>
                 </div>
 
-                <h1 className="mt-7 text-[22px] font-bold tracking-tight sm:text-2xl lg:text-[26px]">
+                <h1 className="mt-7 text-heading-sm sm:text-heading">
                   Something went wrong
                 </h1>
-                <p className="mt-2.5 max-w-sm text-balance text-[15px] leading-relaxed text-neutral-500 dark:text-neutral-400">
+                <p className="mt-2.5 max-w-sm text-balance text-body leading-relaxed text-neutral-500 dark:text-neutral-400">
                   We couldn&apos;t confirm your reservation.
                   Please try again or contact support if the issue persists.
                 </p>
 
                 {rental_id && (
-                  <div className="mt-6 w-full rounded-xl border border-red-100 bg-red-50/50 px-4 py-3 dark:border-red-900/30 dark:bg-red-950/10">
-                    <p className="font-mono text-[12px] text-red-600/70 dark:text-red-400/70">
+                  <div className="mt-6 w-full rounded-card border border-red-100 bg-red-50/50 px-4 py-3 dark:border-red-900/30 dark:bg-red-950/10">
+                    <p className="font-mono text-caption text-red-600/70 dark:text-red-400/70">
                       Ref: {rental_id}
                     </p>
                   </div>
                 )}
 
                 <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
-                  <Button asChild className="flex-1 rounded-xl py-5 text-[14px] font-semibold">
+                  <Button asChild className="flex-1 rounded-card py-5 text-body-sm font-semibold">
                     <Link href="/cars">Try again</Link>
                   </Button>
-                  <Button asChild variant="outline" className="flex-1 rounded-xl border-neutral-200 py-5 text-[14px] dark:border-neutral-700">
+                  <Button asChild variant="outline" className="flex-1 rounded-card border-neutral-200 py-5 text-body-sm dark:border-neutral-700">
                     <Link href="/">Go home</Link>
                   </Button>
                 </div>

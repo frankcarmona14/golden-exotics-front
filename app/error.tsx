@@ -25,7 +25,7 @@ export default function Error({
           id="main-content"
           className="flex w-full flex-col items-center justify-center gap-4 py-52"
         >
-          <h2 className="text-center text-2xl font-bold">
+          <h2 className="text-center text-heading-sm">
             Something went wrong!
           </h2>
           <p className="mb-4 max-w-prose text-center text-neutral-600 dark:text-neutral-400">
@@ -34,7 +34,7 @@ export default function Error({
             understanding.
           </p>
           <Button
-            className="text-[15px] xl:hidden"
+            className="text-body xl:hidden"
             onClick={
               // Attempt to recover by trying to re-render the current route
               () => reset()
@@ -44,7 +44,7 @@ export default function Error({
           </Button>
           <Button
             size="lg"
-            className="hidden text-[15px] xl:flex"
+            className="hidden text-body xl:flex"
             onClick={
               // Attempt to recover by trying to re-render the current route
               () => reset()

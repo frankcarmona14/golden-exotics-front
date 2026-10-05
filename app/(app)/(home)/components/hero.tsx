@@ -23,11 +23,11 @@ export async function Hero() {
           {/* <div className="mb-5 h-px w-12 bg-accent sm:mb-6 sm:w-16" /> */}
 
           {/* Subtitle */}
-          {/* <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.3em] text-white/70 sm:mb-4 sm:text-xs sm:tracking-[0.35em]">
+          {/* <p className="mb-3 text-caption font-semibold uppercase tracking-[0.3em] text-white/70 sm:mb-4 sm:text-xs sm:tracking-[0.35em]">
             Premium Car Rental
           </p> */}
 
-          <h1 className="text-center text-3xl font-bold tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
+          <h1 className="text-balance text-center text-heading font-semibold text-white sm:text-heading-lg lg:text-display xl:text-display-xl">
             Your Road Trip
             <span className="block bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
               Starts Here
@@ -35,7 +35,7 @@ export async function Hero() {
           </h1>
 
           {/* Description */}
-          <p className="mt-4 max-w-lg text-center text-sm leading-relaxed text-white/60 sm:mt-5 sm:text-base lg:max-w-xl">
+          <p className="mt-5 max-w-lg text-pretty text-center text-body-sm text-white/70 sm:mt-6 sm:text-body lg:max-w-xl">
             Discover luxury vehicles from the world&apos;s most iconic brands.
             Book seamlessly, drive confidently.
           </p>
@@ -48,7 +48,7 @@ export async function Hero() {
         </div>
 
         {/* Soft join into the page — dark only. In light it reads as a haze. */}
-        <div className="absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-neutral-950 from-5% via-neutral-950/80 to-transparent dark:block sm:h-44" />
+        <div className="absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-background from-5% via-background/80 to-transparent dark:block sm:h-44" />
       </div>
     </section>
   )

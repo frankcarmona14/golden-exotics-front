@@ -23,11 +23,11 @@ export function GuestNotes({
     <section
       aria-labelledby="guest-notes-heading"
       className={cn(
-        "rounded-xl border border-neutral-200 p-4 dark:border-neutral-800",
+        "rounded-card border border-neutral-200 p-4 dark:border-neutral-800",
         className
       )}
     >
-      <h3 id="guest-notes-heading" className="text-[15px] font-semibold">
+      <h3 id="guest-notes-heading" className="text-body font-semibold">
         Good to know
       </h3>
       <ul className="mt-3 space-y-3">

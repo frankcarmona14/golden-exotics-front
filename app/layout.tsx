@@ -7,7 +7,7 @@ import { Toaster } from "@/components/ui/toaster"
 import "../styles/globals.css"
 
 import { siteConfig } from "@/config/site"
-import { fontSans } from "@/lib/fonts"
+import { fontDisplay, fontSans } from "@/lib/fonts"
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -54,7 +54,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: dark)", color: "#13110e" },
   ],
 }
 
@@ -64,7 +64,11 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html lang="en" className={fontSans.variable} suppressHydrationWarning>
+    <html
+      lang="en"
+      className={`${fontSans.variable} ${fontDisplay.variable}`}
+      suppressHydrationWarning
+    >
       <head>
         {/* Scroll-reveal wrappers ship with opacity:0 and are revealed by JS.
             Without JS they would never appear. */}
@@ -80,9 +84,15 @@ export default function RootLayout({ children }: RootLayoutProps) {
           disableTransitionOnChange
         >
           <MotionProvider>
+            {/* Dark-only ambient wash. Sits below every stacking context but
+                above the page background, so content is unaffected. */}
+            <div
+              aria-hidden
+              className="ambient-canvas pointer-events-none fixed inset-0 -z-10 hidden dark:block"
+            />
             <a
               href="#main-content"
-              className="sr-only rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[200] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="sr-only rounded-tight bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground focus-visible:not-sr-only focus-visible:fixed focus-visible:left-4 focus-visible:top-4 focus-visible:z-[200] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Skip to main content
             </a>

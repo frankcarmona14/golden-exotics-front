@@ -99,20 +99,20 @@ export default async function QuotePage({
     <main id="main-content" className="px-5 pb-16 pt-8 md:py-16">
       <div className="mx-auto max-w-none sm:max-w-[90%] sm:px-0 xl:max-w-4xl">
         <header>
-          <p className="text-[15px] text-neutral-500 dark:text-neutral-400">
+          <p className="text-body text-neutral-500 dark:text-neutral-400">
             Your quote
           </p>
-          <h1 className="mt-1 text-2xl font-semibold tracking-tight md:text-3xl">
+          <h1 className="mt-1 text-heading-sm md:text-heading">
             {quote.first_name ? `Hi ${quote.first_name},` : "Hi,"} here is your
             price
           </h1>
           {quote.message && (
-            <p className="mt-4 max-w-prose whitespace-pre-line text-[15px] leading-relaxed">
+            <p className="mt-4 max-w-prose whitespace-pre-line text-body leading-relaxed">
               {quote.message}
             </p>
           )}
           {quote.status === "sent" && (
-            <p className="mt-4 text-[15px] text-neutral-600 dark:text-neutral-400">
+            <p className="mt-4 text-body text-neutral-600 dark:text-neutral-400">
               Valid until{" "}
               <strong className="font-medium text-neutral-900 dark:text-neutral-100">
                 {formatValidUntil(quote.expires_at)}
@@ -124,7 +124,7 @@ export default async function QuotePage({
         {notice && (
           <div
             role="status"
-            className="mt-8 rounded-xl border border-border bg-muted p-4 text-[15px]"
+            className="mt-8 rounded-card border border-border bg-muted p-4 text-body"
           >
             <p className="font-medium">{notice.title}</p>
             <p className="mt-1 text-neutral-600 dark:text-neutral-400">
@@ -149,13 +149,13 @@ export default async function QuotePage({
         {quote.items.length > 1 && (
           <section
             aria-labelledby="quote-totals"
-            className="mt-10 rounded-xl border border-border p-6"
+            className="mt-10 rounded-card border border-border p-6"
           >
             <h2 id="quote-totals" className="text-xl font-semibold">
               Quote total
             </h2>
             <div className="mt-5 grid grid-cols-1 gap-3 tabular-nums">
-              <div className="flex items-center justify-between text-[15px]">
+              <div className="flex items-center justify-between text-body">
                 <span>
                   {quote.items.length} cars ({currency.toUpperCase()})
                 </span>
@@ -169,7 +169,7 @@ export default async function QuotePage({
                   {formatAmountForDisplay(quote.totals.upfront, currency)}
                 </strong>
               </div>
-              <div className="flex items-center justify-between text-[15px]">
+              <div className="flex items-center justify-between text-body">
                 <span>Balance</span>
                 <span>
                   {formatAmountForDisplay(
@@ -180,7 +180,7 @@ export default async function QuotePage({
                   )}
                 </span>
               </div>
-              <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+              <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
                 Each car is booked and paid on its own.
               </p>
             </div>
@@ -206,7 +206,7 @@ function QuoteItemCard({
   const days = item.rental_days
 
   return (
-    <article className="grid grid-cols-1 gap-8 rounded-xl border border-border p-6 md:grid-cols-[minmax(0,1fr)_minmax(260px,380px)]">
+    <article className="grid grid-cols-1 gap-8 rounded-card border border-border p-6 md:grid-cols-[minmax(0,1fr)_minmax(260px,380px)]">
       <div>
         <div className="flex items-start gap-5">
           {imageUrl && (
@@ -214,7 +214,7 @@ function QuoteItemCard({
               <CldImage
                 src={imageUrl}
                 alt={item.vehicle}
-                className="rounded-xl object-cover"
+                className="rounded-card object-cover"
                 fill
                 sizes="176px"
               />
@@ -225,7 +225,7 @@ function QuoteItemCard({
               <h2 className="text-xl font-semibold">{item.vehicle}</h2>
               {item.booked && <Badge variant="secondary">Booked</Badge>}
             </div>
-            <p className="mt-1 text-[15px] tabular-nums">
+            <p className="mt-1 text-body tabular-nums">
               <DailyRate
                 rate={{ price: item.daily_price, list: item.list_daily_price }}
                 currency={currency}
@@ -234,7 +234,7 @@ function QuoteItemCard({
           </div>
         </div>
 
-        <dl className="mt-6 grid grid-cols-1 gap-4 text-[15px]">
+        <dl className="mt-6 grid grid-cols-1 gap-4 text-body">
           <div>
             <dt className="font-medium">Pickup</dt>
             <dd className="text-neutral-600 dark:text-neutral-400">
@@ -269,7 +269,7 @@ function QuoteItemCard({
 
         <div className="mt-8">
           {item.booked ? null : blocker ? (
-            <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+            <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
               {blocker}
             </p>
           ) : (

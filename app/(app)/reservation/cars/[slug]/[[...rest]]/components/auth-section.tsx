@@ -40,7 +40,7 @@ export function AuthSection({
         </div>
         <div>
           <h2 className="text-lg font-semibold">Logged in</h2>
-          <p className="text-[15px] text-neutral-600 dark:text-neutral-400">
+          <p className="text-body text-neutral-600 dark:text-neutral-400">
             {customerName || customerEmail || "Ready to reserve"}
           </p>
         </div>
@@ -56,7 +56,7 @@ export function AuthSection({
         </div>
         <div className="flex-1">
           <h2 className="text-lg font-semibold">Reserving as guest</h2>
-          <p className="text-[15px] text-neutral-600 dark:text-neutral-400">
+          <p className="text-body text-neutral-600 dark:text-neutral-400">
             {`${guest.first_name} ${guest.last_name}`.trim()} &middot; {guest.email}
           </p>
           <button
@@ -109,7 +109,7 @@ export function AuthSection({
   if (showGuestForm) {
     return (
       <div>
-        <h2 className="text-[22px] font-semibold">Continue as guest</h2>
+        <h2 className="text-heading-sm">Continue as guest</h2>
         <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
           You can reserve without creating an account. We&apos;ll use your email
           to send you the booking details.
@@ -157,7 +157,7 @@ export function AuthSection({
               value={phone}
               onChange={setPhone}
             />
-            <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+            <p className="text-caption text-neutral-500 dark:text-neutral-400">
               Include the country code so we can reach you on WhatsApp if
               needed.
             </p>
@@ -172,7 +172,7 @@ export function AuthSection({
               type="button"
               variant="outline"
               size="lg"
-              className="text-[15px]"
+              className="text-body"
               onClick={() => {
                 setShowGuestForm(false)
                 setFormError(null)
@@ -180,7 +180,7 @@ export function AuthSection({
             >
               Back
             </Button>
-            <Button type="submit" size="lg" className="text-[15px]">
+            <Button type="submit" size="lg" className="text-body">
               Continue
             </Button>
           </div>
@@ -191,12 +191,12 @@ export function AuthSection({
 
   return (
     <>
-      <h2 className="text-[22px] font-semibold">
+      <h2 className="text-heading-sm">
         Log in, sign up or reserve as guest
       </h2>
       <div className="pt-10">
         <div className="grid grid-cols-1 items-center justify-center gap-4">
-          <Button className="w-full text-[15px]" size={"lg"} asChild>
+          <Button className="w-full text-body" size={"lg"} asChild>
             <Link
               href={
                 redirectTo
@@ -209,7 +209,7 @@ export function AuthSection({
           </Button>
           <Button
             variant={"outline"}
-            className="w-full text-[15px]"
+            className="w-full text-body"
             size={"lg"}
             asChild
           >
@@ -225,7 +225,7 @@ export function AuthSection({
           </Button>
           <Button
             variant={"ghost"}
-            className="w-full text-[15px]"
+            className="w-full text-body"
             size={"lg"}
             onClick={() => setShowGuestForm(true)}
           >

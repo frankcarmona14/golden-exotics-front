@@ -190,7 +190,7 @@ function CheckoutForm({
             <Button
               type="submit"
               size={"lg"}
-              className="w-44 text-[16px]"
+              className="w-44 text-body"
               disabled={
                 !["initial", "succeeded", "error"].includes(payment.status) ||
                 !stripe

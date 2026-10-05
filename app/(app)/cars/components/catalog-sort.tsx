@@ -18,7 +18,7 @@ export function CatalogSort() {
   const sort = searchParams.get(SearchParams.SORT) ?? "featured"
 
   return (
-    <label className="inline-flex h-11 items-center gap-2 text-[13px] text-muted-foreground">
+    <label className="inline-flex h-11 items-center gap-2 text-body-sm text-muted-foreground">
       <span className="hidden sm:inline">Sort</span>
       <select
         value={sort}
@@ -31,7 +31,7 @@ export function CatalogSort() {
           }
           router.push(constructUrlWithParams("/cars", params))
         }}
-        className="h-11 rounded-full border border-input bg-background px-3 text-[13px] font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="h-11 rounded-pill border border-input bg-background px-4 text-body-sm font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>

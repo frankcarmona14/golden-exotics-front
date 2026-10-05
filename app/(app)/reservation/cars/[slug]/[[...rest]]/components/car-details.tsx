@@ -26,7 +26,7 @@ export function CarDetails({
         <CldImage
           src={car.imageUrl}
           alt={car.name}
-          className="rounded-xl object-cover"
+          className="rounded-card object-cover"
           fill
           sizes="200px"
           priority
@@ -34,19 +34,19 @@ export function CarDetails({
       </div>
       <div className="flex flex-col gap-1 text-balance capitalize">
         <strong className="font-medium leading-5">{car.name}</strong>
-        <span className="text-[14px] leading-5">{car.transmission}</span>
-        <span className="text-[14px] leading-5">{car.powertrain}</span>
+        <span className="text-body-sm leading-5">{car.transmission}</span>
+        <span className="text-body-sm leading-5">{car.powertrain}</span>
         {Number(car.rating) > 0 && (
-          <div className="flex flex-row items-center gap-0.5 text-[15px] tabular-nums">
+          <div className="flex flex-row items-center gap-0.5 text-body tabular-nums">
             <FilledStarIcon className="size-3 shrink-0" />
             <strong className="font-medium">{car.rating}</strong>
             {Number(car.reviewCount) > 0 && (
-              <span className="text-[14px]">({car.reviewCount} reviews)</span>
+              <span className="text-body-sm">({car.reviewCount} reviews)</span>
             )}
           </div>
         )}
         {isRentable && checkinDate && checkoutDate && (
-          <span className="mt-1 text-[13px] normal-case text-neutral-500 dark:text-neutral-400">
+          <span className="mt-1 text-body-sm normal-case text-neutral-500 dark:text-neutral-400">
             Rental:{" "}
             {checkinDate.toLocaleDateString("en-US", {
               month: "short",

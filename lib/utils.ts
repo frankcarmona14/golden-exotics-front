@@ -1,7 +1,42 @@
 import { ReadonlyURLSearchParams } from "next/navigation"
 import clsx, { ClassValue } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { extendTailwindMerge } from "tailwind-merge"
 import { format, isValid, parseISO } from "date-fns"
+
+/* tailwind-merge has to be told about the design-system tokens, because it
+   decides which classes conflict by parsing the class name itself.
+   Left unconfigured it reads `text-body` as a *colour* — "body" is not a size
+   it recognises — and so drops any `text-*` colour merged alongside it. That
+   is how `text-primary-foreground` silently disappeared from buttons. */
+const twMerge = extendTailwindMerge({
+  extend: {
+    theme: {
+      // Covers rounded-*, including the directional rounded-l-pill variants.
+      borderRadius: ["tight", "card", "pill"],
+      // Covers every spacing-based utility at once: p-, m-, gap-, space-…
+      spacing: ["section", "section-lg"],
+    },
+    classGroups: {
+      "font-size": [
+        {
+          text: [
+            "caption",
+            "body-sm",
+            "body",
+            "subheading",
+            "heading-sm",
+            "heading",
+            "heading-lg",
+            "display",
+            "display-xl",
+          ],
+        },
+      ],
+      shadow: [{ shadow: ["lift", "floating"] }],
+      "max-w": [{ "max-w": ["page"] }],
+    },
+  },
+})
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

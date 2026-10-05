@@ -123,10 +123,10 @@ export default async function CarReservationPage({
   ) {
     return (
       <main id="main-content" className="mx-auto w-full max-w-2xl px-5 py-20">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-heading-sm">
           Choose your dates
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+        <p className="mt-3 text-body leading-relaxed text-muted-foreground">
           This reservation is missing a check-in or check-out date. Pick your
           trip dates on the car page to continue.
         </p>
@@ -158,10 +158,10 @@ export default async function CarReservationPage({
   if (days <= 0) {
     return (
       <main id="main-content" className="mx-auto w-full max-w-2xl px-5 py-20">
-        <h1 className="text-2xl font-semibold tracking-tight">
+        <h1 className="text-heading-sm">
           Invalid date range
         </h1>
-        <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+        <p className="mt-3 text-body leading-relaxed text-muted-foreground">
           Check-out must be after check-in. Pick a new date range to continue.
         </p>
         <Button className="mt-8" asChild>
@@ -287,12 +287,12 @@ export default async function CarReservationPage({
       <main id="main-content">
         <div className="px-5 pb-16 md:py-16">
           <div className="mx-auto max-w-none sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
-            <header className="sticky top-[var(--site-header-height)] z-40 -mx-5 mb-2 border-b border-black/10 bg-white px-5 dark:border-neutral-800 dark:bg-neutral-950 md:static md:z-auto md:mx-0 md:mb-12 md:border-0 md:bg-transparent md:px-0 md:dark:bg-transparent">
+            <header className="sticky top-[var(--site-header-height)] z-40 -mx-5 mb-2 border-b border-black/10 bg-white px-5 backdrop-blur-md dark:border-border dark:bg-background/80 md:static md:z-auto md:mx-0 md:mb-12 md:border-0 md:bg-transparent md:px-0 md:dark:bg-transparent">
               <div className="relative flex h-[var(--site-header-height)] items-center md:h-auto">
                 <BackButton className="z-40 -ml-2 md:-ml-12 md:mr-2">
                   <ChevronLeftIcon className="size-5 shrink-0" />
                 </BackButton>
-                <h1 className="absolute inset-0 flex items-center justify-center text-base font-semibold md:static md:justify-start md:text-3xl">
+                <h1 className="absolute inset-0 flex items-center justify-center text-base font-semibold md:static md:justify-start md:text-heading">
                   Confirm and pay
                 </h1>
               </div>
@@ -306,7 +306,7 @@ export default async function CarReservationPage({
             )}
 
             <div className="grid grid-cols-1 md:grid-cols-[minmax(0,560px)_minmax(260px,465px)] md:items-start md:justify-between md:gap-x-14">
-              <aside className="md:sticky md:top-[calc(var(--site-header-height)+1.5rem)] md:col-start-2 md:row-span-2 md:rounded-xl md:border md:border-border">
+              <aside className="md:sticky md:top-[calc(var(--site-header-height)+1.5rem)] md:col-start-2 md:row-span-2 md:rounded-card md:border md:border-border">
                 <div className="py-3 md:p-6">
                   <CarDetails
                     car={car}
@@ -329,7 +329,7 @@ export default async function CarReservationPage({
                   {rentalAvailable && (
                     <div
                       role="status"
-                      className="mt-5 hidden rounded-lg bg-green-50 p-3 text-sm text-green-700 dark:bg-green-950/20 dark:text-green-400 md:block"
+                      className="mt-5 hidden rounded-tight bg-green-50 p-3 text-sm text-green-700 dark:bg-green-950/20 dark:text-green-400 md:block"
                     >
                       Available for your dates
                     </div>
@@ -355,7 +355,7 @@ export default async function CarReservationPage({
                 {!rentalAvailable && (
                   <div
                     role="alert"
-                    className="rounded-lg border border-red-500/50 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300"
+                    className="rounded-tight border border-red-500/50 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300"
                   >
                     <p className="font-medium">Not available</p>
                     <p className="mt-1">

@@ -635,7 +635,7 @@ export default function RentalDocumentsClient(
       </div>
 
       {/* Help */}
-      <div className="relative overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50/80 p-5 text-sm dark:border-neutral-800 dark:bg-neutral-900/60">
+      <div className="relative overflow-hidden rounded-card border border-neutral-200 bg-neutral-50/80 p-5 text-sm dark:border-neutral-800 dark:bg-neutral-900/60">
         <div className="absolute inset-y-0 left-0 w-[3px] bg-gradient-to-b from-neutral-300 to-neutral-200 dark:from-neutral-700 dark:to-neutral-800" />
         <p className="mb-2.5 font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
           Why we ask for these documents
@@ -745,12 +745,12 @@ function SummaryCard({ group }: { group: GroupStatus }) {
   }[tone]
 
   return (
-    <div className="group/card relative overflow-hidden rounded-xl border border-neutral-200 bg-white p-3.5 transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900/70 dark:hover:border-neutral-700">
-      <div className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
+    <div className="group/card relative overflow-hidden rounded-card border border-neutral-200 bg-white p-3.5 transition-colors hover:border-neutral-300 dark:border-neutral-800 dark:bg-neutral-900/70 dark:hover:border-neutral-700">
+      <div className="flex items-center gap-2 text-caption font-medium uppercase tracking-wide text-neutral-500 dark:text-neutral-400">
         <span className={`size-1.5 shrink-0 rounded-full ${dotClass}`} />
         <span className="truncate">{translateGroupLabel(group)}</span>
       </div>
-      <div className={`mt-2 inline-flex items-center gap-1.5 text-[13px] font-semibold ${labelClass}`}>
+      <div className={`mt-2 inline-flex items-center gap-1.5 text-body-sm font-semibold ${labelClass}`}>
         <Icon className={`size-3.5 ${iconClass}`} />
         {label}
       </div>
@@ -788,16 +788,16 @@ function GroupSection({
       identityChoice === "dni" ? dniAlt?.types ?? [] : passportAlt?.types ?? []
 
     const tabBase =
-      "relative flex-1 inline-flex items-center justify-center min-h-[40px] px-4 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:focus-visible:ring-white"
+      "relative flex-1 inline-flex items-center justify-center min-h-[40px] px-4 rounded-tight text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:focus-visible:ring-white"
     const tabActive =
       "bg-white text-neutral-900 shadow-sm ring-1 ring-black/5 dark:bg-neutral-900 dark:text-neutral-50 dark:ring-white/10"
     const tabInactive =
       "text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
 
     return (
-      <section className="overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900/70">
+      <section className="overflow-hidden rounded-card border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900/70">
         <div className="border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
-          <h2 className="text-[15px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+          <h2 className="text-body font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
             {translatedLabel}
           </h2>
           <p className="mt-0.5 text-xs text-neutral-500 dark:text-neutral-400">
@@ -809,7 +809,7 @@ function GroupSection({
           role="radiogroup"
           aria-label="Identity document type"
         >
-          <div className="flex gap-1 rounded-lg bg-neutral-100/80 p-1 dark:bg-neutral-800/60">
+          <div className="flex gap-1 rounded-tight bg-neutral-100/80 p-1 dark:bg-neutral-800/60">
             <button
               type="button"
               role="radio"
@@ -849,9 +849,9 @@ function GroupSection({
     )
   }
   return (
-    <section className="overflow-hidden rounded-xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900/70">
+    <section className="overflow-hidden rounded-card border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900/70">
       <div className="border-b border-neutral-200 px-5 py-4 dark:border-neutral-800">
-        <h2 className="text-[15px] font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+        <h2 className="text-body font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
           {translatedLabel}
         </h2>
       </div>
@@ -908,7 +908,7 @@ function UploadSlot({
 
   const badge = status && (
     <span
-      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-medium ${statusStyles}`}
+      className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-caption font-medium ${statusStyles}`}
     >
       {status === "approved" ? (
         <CircleCheckIcon className="size-3" />
@@ -948,7 +948,7 @@ function UploadSlot({
         onDragLeave={() => setDragOver(false)}
         onDrop={onDrop}
         aria-busy={uploading}
-        className={`rounded-lg border border-dashed p-4 transition-colors ${
+        className={`rounded-tight border border-dashed p-4 transition-colors ${
           dragOver
             ? "border-neutral-900 bg-neutral-100/70 dark:border-neutral-200 dark:bg-neutral-800/60"
             : "border-neutral-300 bg-neutral-50/50 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-950/40 dark:hover:border-neutral-600"
@@ -964,7 +964,7 @@ function UploadSlot({
         />
         {doc ? (
           <div className="flex flex-wrap items-center gap-3 text-sm">
-            <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-md bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+            <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-tight bg-neutral-100 text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
               <FileIcon className="size-4" />
             </span>
             <a
@@ -1020,7 +1020,7 @@ function UploadSlot({
                 "Choose file"
               )}
             </Button>
-            <p className="text-[11px] text-neutral-500 dark:text-neutral-400">
+            <p className="text-caption text-neutral-500 dark:text-neutral-400">
               PDF, JPG, or PNG · max 25 MB
             </p>
           </div>

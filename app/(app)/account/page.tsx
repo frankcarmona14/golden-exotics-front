@@ -18,15 +18,15 @@ function StatCard({
   hint?: string
 }) {
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900/60">
-      <p className="text-[12px] font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+    <div className="rounded-card border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900/60">
+      <p className="text-caption font-medium uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
         {label}
       </p>
-      <p className="mt-2 text-3xl font-bold tabular-nums tracking-tight">
+      <p className="mt-2 text-heading tabular-nums">
         {value}
       </p>
       {hint && (
-        <p className="mt-1 text-[12px] text-neutral-400 dark:text-neutral-500">
+        <p className="mt-1 text-caption text-neutral-400 dark:text-neutral-500">
           {hint}
         </p>
       )}
@@ -64,13 +64,13 @@ export default async function AccountOverviewPage() {
   return (
     <AccountShell>
       <header className="mb-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text">
+        <p className="text-caption font-semibold uppercase tracking-[0.2em] text-subtle">
           Overview
         </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+        <h1 className="mt-1 text-heading-sm sm:text-heading">
           {firstName ? `Welcome back, ${firstName}` : "Welcome back"}
         </h1>
-        <p className="mt-1.5 text-[15px] text-neutral-500 dark:text-neutral-400">
+        <p className="mt-1.5 text-body text-neutral-500 dark:text-neutral-400">
           Manage your reservations and account details.
         </p>
       </header>
@@ -79,20 +79,20 @@ export default async function AccountOverviewPage() {
       {needsDocuments > 0 && (
         <Link
           href="/account/documents"
-          className="mb-6 flex items-center justify-between gap-4 rounded-2xl border border-amber-300/70 bg-amber-50 px-5 py-4 transition-colors duration-150 ease-out hover:bg-amber-100/70 dark:border-amber-800/50 dark:bg-amber-950/20 dark:hover:bg-amber-950/30"
+          className="mb-6 flex items-center justify-between gap-4 rounded-card border border-amber-300/70 bg-amber-50 px-5 py-4 transition-colors duration-150 ease-out hover:bg-amber-100/70 dark:border-amber-800/50 dark:bg-amber-950/20 dark:hover:bg-amber-950/30"
         >
           <div>
-            <p className="text-[14px] font-semibold text-amber-900 dark:text-amber-200">
+            <p className="text-body-sm font-semibold text-amber-900 dark:text-amber-200">
               {needsDocuments === 1
                 ? "1 reservation needs your documents"
                 : `${needsDocuments} reservations need your documents`}
             </p>
-            <p className="mt-0.5 text-[13px] text-amber-700 dark:text-amber-300/80">
+            <p className="mt-0.5 text-body-sm text-amber-700 dark:text-amber-300/80">
               Upload your license, ID and insurance once — they apply to all
               bookings.
             </p>
           </div>
-          <span className="shrink-0 text-[13px] font-semibold text-amber-800 dark:text-amber-300">
+          <span className="shrink-0 text-body-sm font-semibold text-amber-800 dark:text-amber-300">
             Upload →
           </span>
         </Link>
@@ -112,7 +112,7 @@ export default async function AccountOverviewPage() {
       {/* Next reservation */}
       {nextReservation && (
         <section className="mt-10">
-          <h2 className="mb-3 text-[15px] font-semibold tracking-tight">
+          <h2 className="mb-3 text-body font-semibold tracking-tight">
             Your next trip
           </h2>
           <ReservationCard reservation={nextReservation} />
@@ -122,13 +122,13 @@ export default async function AccountOverviewPage() {
       {/* Recent reservations */}
       <section className="mt-10">
         <div className="mb-3 flex items-center justify-between">
-          <h2 className="text-[15px] font-semibold tracking-tight">
+          <h2 className="text-body font-semibold tracking-tight">
             Recent reservations
           </h2>
           {reservations.length > 0 && (
             <Link
               href="/account/reservations"
-              className="text-[13px] font-medium text-neutral-500 underline-offset-4 hover:text-neutral-900 hover:underline dark:text-neutral-400 dark:hover:text-neutral-100"
+              className="text-body-sm font-medium text-neutral-500 underline-offset-4 hover:text-neutral-900 hover:underline dark:text-neutral-400 dark:hover:text-neutral-100"
             >
               View all
             </Link>
@@ -142,11 +142,11 @@ export default async function AccountOverviewPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-neutral-300 bg-white p-10 text-center dark:border-neutral-700 dark:bg-neutral-900/40">
-            <p className="text-[15px] font-medium text-neutral-900 dark:text-neutral-100">
+          <div className="rounded-card border border-dashed border-neutral-300 bg-white p-10 text-center dark:border-neutral-700 dark:bg-neutral-900/40">
+            <p className="text-body font-medium text-neutral-900 dark:text-neutral-100">
               No reservations yet
             </p>
-            <p className="mx-auto mt-1 max-w-sm text-[13px] text-neutral-500 dark:text-neutral-400">
+            <p className="mx-auto mt-1 max-w-sm text-body-sm text-neutral-500 dark:text-neutral-400">
               Browse our fleet and book your first car — it&apos;ll show up here.
             </p>
             <Button asChild className="mt-5">

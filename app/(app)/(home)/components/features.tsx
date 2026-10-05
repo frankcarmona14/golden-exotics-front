@@ -43,10 +43,10 @@ export function Features() {
       <div className="mx-auto max-w-none px-5 sm:max-w-[90%] sm:px-0 2xl:max-w-7xl">
         <FadeUp>
           <div className="text-center">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text sm:text-xs">
+            <p className="mb-2 text-caption font-semibold uppercase tracking-[0.2em] text-subtle">
               Why Choose Us
             </p>
-            <h2 className="text-balance text-[21px] font-bold tracking-tight sm:text-[24px] lg:text-[28px]">
+            <h2 className="text-balance text-heading-sm sm:text-heading lg:text-heading-lg">
               Discover What Sets Us Apart
             </h2>
           </div>
@@ -58,7 +58,7 @@ export function Features() {
           >
             {features.map(({ icon: Icon, title, description, accent }, index) => (
               <StaggerItem key={index}>
-                <div className="group relative overflow-hidden rounded-2xl border border-neutral-100 bg-white p-7 transition-[transform,border-color] duration-300 hover:-translate-y-1 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)]">
+                <div className="group relative overflow-hidden rounded-card border border-neutral-100 bg-white p-7 transition-[transform,border-color] duration-300 hover:-translate-y-1 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)]">
                   {/* Accent glow on hover */}
                   <div
                     className="absolute -right-6 -top-6 size-24 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-20"
@@ -66,15 +66,15 @@ export function Features() {
                   />
 
                   <div
-                    className="mb-4 inline-flex size-10 items-center justify-center rounded-xl"
+                    className="mb-4 inline-flex size-10 items-center justify-center rounded-tight"
                     style={{ background: `${accent}15` }}
                   >
                     <Icon className="size-[18px] shrink-0" style={{ color: accent }} />
                   </div>
-                  <h3 className="mb-2 text-[15px] font-semibold tracking-tight text-neutral-950 dark:text-neutral-50">
+                  <h3 className="mb-2 text-body font-semibold tracking-tight text-neutral-950 dark:text-neutral-50">
                     {title}
                   </h3>
-                  <p className="text-[14px] leading-[22px] text-neutral-500 dark:text-neutral-400">
+                  <p className="text-body-sm leading-[22px] text-neutral-500 dark:text-neutral-400">
                     {description}
                   </p>
                 </div>

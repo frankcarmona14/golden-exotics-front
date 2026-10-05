@@ -188,12 +188,12 @@ function StripePaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Card input container */}
-      <div className="relative overflow-hidden rounded-xl border border-neutral-200 bg-neutral-50 shadow-sm transition-all focus-within:border-neutral-300 focus-within:shadow-md dark:border-neutral-700 dark:bg-neutral-800/50 dark:shadow-none dark:focus-within:border-neutral-500 dark:focus-within:shadow-none">
+      <div className="relative overflow-hidden rounded-card border border-neutral-200 bg-neutral-50 shadow-sm transition-all focus-within:border-neutral-300 focus-within:shadow-md dark:border-neutral-700 dark:bg-neutral-800/50 dark:shadow-none dark:focus-within:border-neutral-500 dark:focus-within:shadow-none">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200/80 bg-white px-4 py-3 dark:border-neutral-700/50 dark:bg-transparent">
           <div className="flex items-center gap-2">
             <LockIcon className="size-3.5 text-neutral-400 dark:text-neutral-500" />
-            <span className="text-[13px] font-medium text-neutral-500 dark:text-neutral-400">
+            <span className="text-body-sm font-medium text-neutral-500 dark:text-neutral-400">
               Card details
             </span>
           </div>
@@ -243,7 +243,7 @@ function StripePaymentForm({
 
       {/* Error message */}
       {error && (
-        <div className="flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2.5 dark:bg-red-950/20">
+        <div className="flex items-start gap-2 rounded-tight bg-red-50 px-3 py-2.5 dark:bg-red-950/20">
           <svg
             viewBox="0 0 16 16"
             fill="currentColor"
@@ -255,7 +255,7 @@ function StripePaymentForm({
               clipRule="evenodd"
             />
           </svg>
-          <p className="text-[13px] leading-snug text-red-600 dark:text-red-400">
+          <p className="text-body-sm leading-snug text-red-600 dark:text-red-400">
             {error}
           </p>
         </div>
@@ -267,7 +267,7 @@ function StripePaymentForm({
         tarjeta sin haberlo advertido aquí es una disputa perdida.
       */}
       {disclosure && (
-        <div className="space-y-1.5 rounded-lg border border-neutral-200 bg-neutral-50 p-3 text-[13px] leading-relaxed text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
+        <div className="space-y-1.5 rounded-tight border border-neutral-200 bg-neutral-50 p-3 text-body-sm leading-relaxed text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900 dark:text-neutral-400">
           <p>{disclosure}</p>
           {canSaveCard && (
             <p>
@@ -285,7 +285,7 @@ function StripePaymentForm({
       <Button
         type="submit"
         size="lg"
-        className="w-full rounded-xl bg-accent py-6 text-[15px] font-semibold text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.2)] transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.3)] disabled:opacity-50 disabled:shadow-none"
+        className="w-full rounded-pill bg-accent py-6 text-body font-semibold text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.2)] transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.3)] disabled:opacity-50 disabled:shadow-none"
         disabled={
           !stripe || !elements || !ready || loading || !complete || !termsAccepted
         }
@@ -307,7 +307,7 @@ function StripePaymentForm({
 
       {/* Deposit note */}
       {hasDeposit && (
-        <p className="text-center text-[13px] text-neutral-500 dark:text-neutral-400">
+        <p className="text-center text-body-sm text-neutral-500 dark:text-neutral-400">
           {isDelivered
             ? "The remaining balance will be charged when we deliver the car."
             : "The remaining balance will be charged at vehicle pickup."}
@@ -317,7 +317,7 @@ function StripePaymentForm({
       {/* Security badge */}
       <div className="flex items-center justify-center gap-1.5 pt-1">
         <ShieldIcon className="size-3.5 text-green-600 dark:text-green-500" />
-        <p className="text-[12px] text-neutral-400 dark:text-neutral-500">
+        <p className="text-caption text-neutral-400 dark:text-neutral-500">
           Secured by <span className="font-semibold text-neutral-500 dark:text-neutral-400">Stripe</span> &middot; 256-bit SSL encryption
         </p>
       </div>
@@ -376,12 +376,12 @@ export function StripePayment({
 
   if (!hasKey) {
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-50/50 p-4 dark:bg-amber-950/10">
+      <div className="rounded-card border border-amber-500/30 bg-amber-50/50 p-4 dark:bg-amber-950/10">
         <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
           Stripe not configured
         </p>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-amber-700 dark:text-amber-300">
-          Add <code className="rounded bg-amber-200/50 px-1.5 py-0.5 text-[12px] dark:bg-amber-800/30">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code> to your .env file and restart the server.
+        <p className="mt-1.5 text-body-sm leading-relaxed text-amber-700 dark:text-amber-300">
+          Add <code className="rounded bg-amber-200/50 px-1.5 py-0.5 text-caption dark:bg-amber-800/30">NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY</code> to your .env file and restart the server.
         </p>
       </div>
     )
@@ -389,11 +389,11 @@ export function StripePayment({
 
   if (!hasSecret) {
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-50/50 p-4 dark:bg-amber-950/10">
+      <div className="rounded-card border border-amber-500/30 bg-amber-50/50 p-4 dark:bg-amber-950/10">
         <p className="text-sm font-medium text-amber-800 dark:text-amber-200">
           Payment session unavailable
         </p>
-        <p className="mt-1.5 text-[13px] leading-relaxed text-amber-700 dark:text-amber-300">
+        <p className="mt-1.5 text-body-sm leading-relaxed text-amber-700 dark:text-amber-300">
           The backend did not return a valid client_secret. Check Stripe configuration in Medusa (region and STRIPE_API_KEY).
         </p>
       </div>
@@ -402,7 +402,7 @@ export function StripePayment({
 
   if (!stripePromise) {
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-50/50 p-4 dark:bg-amber-950/10">
+      <div className="rounded-card border border-amber-500/30 bg-amber-50/50 p-4 dark:bg-amber-950/10">
         <p className="text-sm text-amber-600 dark:text-amber-400">
           Failed to load Stripe. Check NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY.
         </p>

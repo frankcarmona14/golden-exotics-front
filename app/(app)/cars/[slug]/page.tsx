@@ -69,14 +69,16 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
       />
       <div className="mx-auto w-full max-w-none p-0 md:max-w-[90%] xl:max-w-6xl">
         <div className="px-5 pt-6 md:px-0 md:pt-8">
-          <h1 className="text-balance text-2xl font-semibold">{car.name}</h1>
+          <h1 className="text-balance text-heading-sm md:text-heading">
+            {car.name}
+          </h1>
         </div>
         <div className="md:pt-4">
           <div className="relative grid h-80 grid-cols-1 grid-rows-1 gap-3 md:h-[34rem] md:grid-cols-4 md:grid-rows-2">
             <ShowAllPhotosButton images={images} carName={car.name} />
             {/* Imagen principal. Los sizes siguen la rejilla (3/4 del contenedor,
                 que en xl se fija en max-w-6xl) para no servir el doble de píxeles. */}
-            <div className="relative overflow-hidden md:col-span-3 md:row-span-2 md:rounded-l-2xl">
+            <div className="relative overflow-hidden md:col-span-3 md:row-span-2 md:rounded-l-card">
               {mainImage ? (
                 <Image
                   src={mainImage}
@@ -94,7 +96,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
             </div>
             {/* Segunda imagen (arriba-derecha). Sin priority: está oculta en
                 móvil y precargarla competiría con la principal, que es el LCP. */}
-            <div className="relative col-span-1 row-span-1 hidden overflow-hidden rounded-tr-2xl md:block">
+            <div className="relative col-span-1 row-span-1 hidden overflow-hidden rounded-tr-card md:block">
               {secondImage ? (
                 <Image
                   src={secondImage}
@@ -116,7 +118,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
               )}
             </div>
             {/* Tercera imagen (abajo-derecha) */}
-            <div className="relative col-span-1 row-span-1 hidden overflow-hidden rounded-br-2xl md:block">
+            <div className="relative col-span-1 row-span-1 hidden overflow-hidden rounded-br-card md:block">
               {thirdImage ? (
                 <Image
                   src={thirdImage}
@@ -144,7 +146,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
         <div className="mx-auto w-full max-w-none px-5 sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
           <div className="grid w-full grid-cols-1 gap-24 md:grid-cols-[1fr_auto]">
             <div className="text-balance">
-              <div className="flex flex-wrap items-center gap-1 text-[13px] capitalize text-neutral-800 dark:text-neutral-200 lg:text-[15px]">
+              <div className="flex flex-wrap items-center gap-1 text-body-sm capitalize text-neutral-800 dark:text-neutral-200 lg:text-body">
                 <span>{car.seats} seats</span>
                 <span className="text-xl">·</span>
                 <span>{car.powertrain}</span>
@@ -159,7 +161,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
               </div>
               {Number(car.rating) > 0 && (
                 <div className="pt-1">
-                  <div className="flex items-center gap-1 text-[15px] font-medium lg:text-[16px]">
+                  <div className="flex items-center gap-1 text-body font-medium lg:text-body">
                     <div className="flex items-center gap-1">
                       <FilledStarIcon className="inline-flex size-[15px] shrink-0" />
                       <span className="tabular-nums">{car.rating}</span>
@@ -188,7 +190,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                   <NavigationIcon className="size-6 shrink-0" />
                   <div className="flex flex-col">
                     <p className="font-semibold">Onboard Navigation System</p>
-                    <p className="mt-0.5 text-[14px] leading-5 text-muted-foreground">
+                    <p className="mt-0.5 text-body-sm leading-5 text-muted-foreground">
                       A car equipped with a GPS navigation system to help you
                       find your way with ease.
                     </p>
@@ -198,7 +200,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                   <HeadsetIcon className="size-6 shrink-0" />
                   <div className="flex flex-col">
                     <p className="font-semibold">24/7 Roadside Assistance</p>
-                    <p className="mt-0.5 text-[14px] leading-5 text-muted-foreground">
+                    <p className="mt-0.5 text-body-sm leading-5 text-muted-foreground">
                       Access to round-the-clock roadside support for any
                       emergencies or breakdowns.
                     </p>
@@ -208,7 +210,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                   <WifiIcon className="size-6 shrink-0" />
                   <div className="flex flex-col">
                     <p className="font-semibold">Free Wi-Fi in the Car</p>
-                    <p className="mt-0.5 text-[14px] leading-5 text-muted-foreground">
+                    <p className="mt-0.5 text-body-sm leading-5 text-muted-foreground">
                       Enjoy complimentary Wi-Fi access during your drive to stay
                       connected on the go.
                     </p>
@@ -220,7 +222,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                     <p className="font-semibold">
                       Child Safety Seats Available
                     </p>
-                    <p className="mt-0.5 text-[14px] leading-5 text-muted-foreground">
+                    <p className="mt-0.5 text-body-sm leading-5 text-muted-foreground">
                       Optional child safety seats are available to ensure the
                       safety of your little ones.
                     </p>

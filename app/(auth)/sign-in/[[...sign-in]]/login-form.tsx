@@ -20,7 +20,7 @@ function SubmitButton() {
   return (
     <Button
       type="submit"
-      className="w-full text-[15px]"
+      className="w-full text-body"
       size="lg"
       disabled={pending}
     >
@@ -53,7 +53,7 @@ export function LoginForm() {
   return (
     <div className="w-full max-w-[440px]">
       {/* Card container */}
-      <div className="rounded-2xl border border-neutral-200 bg-white px-8 pb-8 pt-10 shadow-none dark:border-neutral-800 dark:bg-neutral-950">
+      <div className="rounded-card border border-neutral-200 bg-white px-8 pb-8 pt-10 shadow-none dark:border-neutral-800 dark:bg-card">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
           <Link href="/" aria-label="Back to home">
@@ -66,7 +66,7 @@ export function LoginForm() {
           <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
             Log in
           </h1>
-          <p className="mt-1.5 text-[13px] text-neutral-500 dark:text-neutral-400">
+          <p className="mt-1.5 text-body-sm text-neutral-500 dark:text-neutral-400">
             Enter your credentials to access your account
           </p>
         </div>
@@ -76,14 +76,14 @@ export function LoginForm() {
           {state.error && (
             <div
               role="alert"
-              className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400"
+              className="rounded-tight border border-red-200 bg-red-50 px-4 py-3 text-body-sm text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400"
             >
               {state.error}
             </div>
           )}
 
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-[13px]">
+            <Label htmlFor="email" className="text-body-sm">
               Email
             </Label>
             <Input
@@ -100,12 +100,12 @@ export function LoginForm() {
 
           <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-[13px]">
+              <Label htmlFor="password" className="text-body-sm">
                 Password
               </Label>
               <a
                 href={`mailto:${siteConfig.contact.email}?subject=Password%20reset`}
-                className="text-[12px] font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                className="text-caption font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
               >
                 Forgot password?
               </a>
@@ -128,7 +128,7 @@ export function LoginForm() {
         <Separator className="my-6" />
 
         {/* Footer links */}
-        <p className="text-center text-[13px] text-neutral-500 dark:text-neutral-400">
+        <p className="text-center text-body-sm text-neutral-500 dark:text-neutral-400">
           Don&apos;t have an account?{" "}
           <Link
             href={redirectTo !== "/" ? `/sign-up?redirectTo=${encodeURIComponent(redirectTo)}` : "/sign-up"}
@@ -143,7 +143,7 @@ export function LoginForm() {
       <div className="mt-6 text-center">
         <Link
           href="/"
-          className="text-[13px] text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+          className="text-body-sm text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
         >
           &larr; Back to home
         </Link>

@@ -68,13 +68,13 @@ export function FiltersSidebar({
   }, [searchParams, selectedFilters, initialMinPrice, initialMaxPrice, router])
 
   return (
-    <div className="flex max-h-[calc(100dvh-var(--site-header-height)-var(--cars-toolbar-h)-3rem)] flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900/60">
+    <div className="flex max-h-[calc(100dvh-var(--site-header-height)-var(--cars-toolbar-h)-3rem)] flex-col overflow-hidden rounded-card border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900/60">
       {/* Header */}
       <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-800">
         <div className="flex items-center gap-2">
           <h2 className="text-base font-semibold tracking-tight">Filters</h2>
           {totalSelectedFilters > 0 && (
-            <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-[11px] font-bold tabular-nums text-accent-foreground">
+            <span className="inline-flex min-w-5 items-center justify-center rounded-full bg-accent px-1.5 py-0.5 text-caption font-bold tabular-nums text-accent-foreground">
               {totalSelectedFilters}
             </span>
           )}
@@ -83,7 +83,7 @@ export function FiltersSidebar({
           <button
             type="button"
             onClick={handleReset}
-            className="text-[13px] font-medium text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-900 hover:underline dark:text-neutral-400 dark:hover:text-neutral-100"
+            className="text-body-sm font-medium text-neutral-500 underline-offset-4 transition-colors hover:text-neutral-900 hover:underline dark:text-neutral-400 dark:hover:text-neutral-100"
           >
             Clear all
           </button>
@@ -102,7 +102,7 @@ export function FiltersSidebar({
 
       {/* Apply */}
       <div className="border-t border-neutral-200 p-4 dark:border-neutral-800">
-        <Button onClick={handleApply} size="lg" className="w-full text-[15px]">
+        <Button onClick={handleApply} size="lg" className="w-full text-body">
           Show cars
         </Button>
       </div>

@@ -15,18 +15,18 @@ export default async function ProfilePage() {
   return (
     <AccountShell>
       <header className="mb-8">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text">
+        <p className="text-caption font-semibold uppercase tracking-[0.2em] text-subtle">
           Account
         </p>
-        <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+        <h1 className="mt-1 text-heading-sm sm:text-heading">
           Profile
         </h1>
-        <p className="mt-1.5 text-[15px] text-neutral-500 dark:text-neutral-400">
+        <p className="mt-1.5 text-body text-neutral-500 dark:text-neutral-400">
           Update your personal details.
         </p>
       </header>
 
-      <div className="max-w-xl rounded-2xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900/60 sm:p-7">
+      <div className="max-w-xl rounded-card border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900/60 sm:p-7">
         <ProfileForm
           email={customer.email ?? ""}
           firstName={customer.first_name ?? ""}

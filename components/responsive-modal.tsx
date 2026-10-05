@@ -46,7 +46,7 @@ export function ResponsiveModal({
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogTrigger asChild>{trigger}</DialogTrigger>
-        <DialogContent className="max-w-[568px] gap-0 !rounded-xl p-0">
+        <DialogContent className="max-w-[568px] gap-0 !rounded-card p-0">
           <DialogHeader className="flex items-center justify-center border-b border-black/10 px-6 py-5 dark:border-neutral-800">
             <DialogTitle className="text-center text-base tracking-normal">
               {title}

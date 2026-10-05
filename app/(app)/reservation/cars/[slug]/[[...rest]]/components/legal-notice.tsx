@@ -16,7 +16,7 @@ export function LegalNotice({ className }: LegalNoticeProps) {
   return (
     <p
       className={cn(
-        "text-[12px] leading-relaxed text-neutral-500 dark:text-neutral-400",
+        "text-caption leading-relaxed text-neutral-500 dark:text-neutral-400",
         className,
       )}
     >

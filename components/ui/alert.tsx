@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils"
  * surfaces.
  */
 const alertVariants = cva(
-  "relative flex w-full gap-3 rounded-xl border p-4 [&>svg]:mt-0.5 [&>svg]:size-5 [&>svg]:shrink-0",
+  "relative flex w-full gap-3 rounded-card border p-4 [&>svg]:mt-0.5 [&>svg]:size-5 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -67,7 +67,7 @@ const AlertTitle = React.forwardRef<
   <h5
     ref={ref}
     className={cn(
-      "text-[15px] font-semibold leading-tight tracking-tight",
+      "text-body font-semibold leading-tight tracking-tight",
       className,
     )}
     {...props}

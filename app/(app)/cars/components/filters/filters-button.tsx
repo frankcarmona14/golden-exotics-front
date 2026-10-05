@@ -109,7 +109,7 @@ export function FiltersButton({
       <Button
         variant="outline"
         className={cn(
-          "relative flex h-[46px] items-center justify-center gap-x-2.5 rounded-[10px] px-4 text-[13px] transition-shadow",
+          "relative flex h-[46px] items-center justify-center gap-x-2.5 rounded-[10px] px-4 text-body-sm transition-shadow",
           totalSelectedFilters > 0 && "ring-2 ring-accent"
         )}
       >
@@ -146,7 +146,7 @@ export function FiltersButton({
 
 export function ApplyFiltersButton({ onApply }: { onApply: () => void }) {
   return (
-    <Button size="lg" className="text-[16px]" onClick={onApply}>
+    <Button size="lg" className="text-body" onClick={onApply}>
       Show cars
     </Button>
   )
@@ -156,7 +156,7 @@ export function ResetFiltersButton({ onReset }: { onReset: () => void }) {
   return (
     <Button
       variant="ghost"
-      className="-ml-2.5 px-2.5 text-[16px]"
+      className="-ml-2.5 px-2.5 text-body"
       onClick={onReset}
     >
       Clear all

@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-white transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 motion-safe:active:scale-[0.97] dark:ring-offset-neutral-950 dark:focus-visible:ring-accent",
+  "inline-flex cursor-pointer items-center justify-center whitespace-nowrap rounded-pill text-sm font-medium ring-offset-white transition-[color,background-color,border-color,box-shadow,transform] duration-150 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 motion-safe:active:scale-[0.97] dark:ring-offset-neutral-950 dark:focus-visible:ring-accent",
   {
     variants: {
       variant: {
@@ -23,10 +23,12 @@ const buttonVariants = cva(
         unstyled:
           "rounded-none font-normal ring-0 focus-visible:outline focus-visible:ring-0",
       },
+      /* Horizontal padding sits in the 20–24px band a pill needs: at 100px
+         radius, tighter padding lets the curve eat into the label. */
       size: {
-        default: "h-10 px-4 py-2",
-        xs: "h-7 px-2",
-        sm: "h-9 px-3",
+        default: "h-10 px-5 py-2",
+        xs: "h-7 px-3",
+        sm: "h-9 px-4",
         lg: "h-12 px-6",
         icon: "size-10 rounded-full",
       },

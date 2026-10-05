@@ -70,7 +70,7 @@ function CardGlyph({ className }: { className?: string }) {
 function BrandMark({ brand }: { brand: string }) {
   const logo = BRAND_LOGOS[brand]
   return (
-    <div className="flex h-9 w-12 shrink-0 items-center justify-center rounded-md border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
+    <div className="flex h-9 w-12 shrink-0 items-center justify-center rounded-tight border border-neutral-200 bg-white dark:border-neutral-700 dark:bg-neutral-900">
       {logo ? (
         <Image src={logo} alt={brandLabel(brand)} className="h-6 w-auto" />
       ) : (
@@ -92,8 +92,8 @@ function Notice({
       role={tone === "error" ? "alert" : "status"}
       className={
         tone === "error"
-          ? "rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400"
-          : "rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[13px] text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-400"
+          ? "rounded-tight border border-red-200 bg-red-50 px-4 py-3 text-body-sm text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400"
+          : "rounded-tight border border-green-200 bg-green-50 px-4 py-3 text-body-sm text-green-700 dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-400"
       }
     >
       {children}
@@ -222,8 +222,8 @@ function AddCardPanel({
   }, [])
 
   return (
-    <div className="rounded-2xl border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900/60 sm:p-6">
-      <h2 className="mb-4 text-[15px] font-semibold tracking-tight">
+    <div className="rounded-card border border-neutral-200 bg-white p-5 dark:border-neutral-800 dark:bg-neutral-900/60 sm:p-6">
+      <h2 className="mb-4 text-body font-semibold tracking-tight">
         Add a card
       </h2>
       {error ? (
@@ -280,19 +280,19 @@ function CardRow({
         <BrandMark brand={card.brand} />
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <p className="text-[15px] font-medium text-neutral-900 dark:text-neutral-50">
+            <p className="text-body font-medium text-neutral-900 dark:text-neutral-50">
               {brandLabel(card.brand)}{" "}
               <span className="tabular-nums tracking-wider">
                 ···· {card.last4}
               </span>
             </p>
             {card.is_default && (
-              <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[11px] font-semibold text-accent-text">
+              <span className="rounded-full bg-accent/15 px-2 py-0.5 text-caption font-semibold text-accent-text">
                 Default
               </span>
             )}
           </div>
-          <p className="mt-0.5 text-[13px] text-neutral-500 dark:text-neutral-400">
+          <p className="mt-0.5 text-body-sm text-neutral-500 dark:text-neutral-400">
             Expires {expiry}
             {card.in_use && (
               <>
@@ -409,7 +409,7 @@ export function PaymentMethodsManager({
       {success && <Notice tone="success">{success}</Notice>}
 
       {cards.length > 0 ? (
-        <ul className="divide-y divide-neutral-200 overflow-hidden rounded-2xl border border-neutral-200 bg-white dark:divide-neutral-800 dark:border-neutral-800 dark:bg-neutral-900/60">
+        <ul className="divide-y divide-neutral-200 overflow-hidden rounded-card border border-neutral-200 bg-white dark:divide-neutral-800 dark:border-neutral-800 dark:bg-neutral-900/60">
           {cards.map((card) => (
             <CardRow
               key={card.id}
@@ -425,18 +425,18 @@ export function PaymentMethodsManager({
           ))}
         </ul>
       ) : (
-        <div className="rounded-2xl border border-dashed border-neutral-300 bg-white p-10 text-center dark:border-neutral-700 dark:bg-neutral-900/40">
-          <p className="text-[15px] font-medium text-neutral-900 dark:text-neutral-100">
+        <div className="rounded-card border border-dashed border-neutral-300 bg-white p-10 text-center dark:border-neutral-700 dark:bg-neutral-900/40">
+          <p className="text-body font-medium text-neutral-900 dark:text-neutral-100">
             No saved cards
           </p>
-          <p className="mx-auto mt-1 max-w-sm text-[13px] text-neutral-500 dark:text-neutral-400">
+          <p className="mx-auto mt-1 max-w-sm text-body-sm text-neutral-500 dark:text-neutral-400">
             Cards you save when you book, or add here, will show up in this
             list.
           </p>
         </div>
       )}
 
-      <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+      <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
         Cards can&apos;t be edited. To update one, add the new card and then
         remove the old one.
       </p>

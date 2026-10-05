@@ -20,7 +20,7 @@ interface ProfileFormProps {
 function SubmitButton() {
   const { pending } = useFormStatus()
   return (
-    <Button type="submit" size="lg" className="text-[15px]" disabled={pending}>
+    <Button type="submit" size="lg" className="text-body" disabled={pending}>
       {pending ? <LoadingDots variant="button" /> : "Save changes"}
     </Button>
   )
@@ -49,19 +49,19 @@ export function ProfileForm({
   return (
     <form action={formAction} className="space-y-5">
       {state.error && (
-        <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400">
+        <div className="rounded-tight border border-red-200 bg-red-50 px-4 py-3 text-body-sm text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400">
           {state.error}
         </div>
       )}
       {showSaved && (
-        <div className="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-[13px] text-green-700 duration-200 animate-in fade-in dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-400">
+        <div className="rounded-tight border border-green-200 bg-green-50 px-4 py-3 text-body-sm text-green-700 duration-200 animate-in fade-in dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-400">
           Your profile has been updated.
         </div>
       )}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
-          <Label htmlFor="first_name" className="text-[13px]">
+          <Label htmlFor="first_name" className="text-body-sm">
             First name
           </Label>
           <Input
@@ -74,7 +74,7 @@ export function ProfileForm({
           />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="last_name" className="text-[13px]">
+          <Label htmlFor="last_name" className="text-body-sm">
             Last name
           </Label>
           <Input
@@ -89,7 +89,7 @@ export function ProfileForm({
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="email" className="text-[13px]">
+        <Label htmlFor="email" className="text-body-sm">
           Email
         </Label>
         <Input
@@ -100,13 +100,13 @@ export function ProfileForm({
           disabled
           readOnly
         />
-        <p className="text-[12px] text-neutral-500 dark:text-neutral-400">
+        <p className="text-caption text-neutral-500 dark:text-neutral-400">
           Contact support to change the email on your account.
         </p>
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="phone" className="text-[13px]">
+        <Label htmlFor="phone" className="text-body-sm">
           Phone <span className="text-neutral-400">(optional)</span>
         </Label>
         {/* Hidden field carries the value into the server action */}

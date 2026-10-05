@@ -144,7 +144,7 @@ export function ShowAllPhotosButton({ images, carName }: ImageGalleryProps) {
           setActiveIndex(0)
           setOpen(true)
         }}
-        className="absolute bottom-4 right-4 z-10 flex items-center gap-1.5 rounded-lg border border-neutral-900 bg-white px-3.5 py-2 text-[13px] font-semibold text-neutral-900 shadow-sm transition-[transform,box-shadow] hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
+        className="absolute bottom-4 right-4 z-10 flex items-center gap-1.5 rounded-tight border border-neutral-900 bg-white px-3.5 py-2 text-body-sm font-semibold text-neutral-900 shadow-sm transition-[transform,box-shadow] hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
       >
         <GridIcon />
         Show all photos
@@ -161,14 +161,14 @@ export function ShowAllPhotosButton({ images, carName }: ImageGalleryProps) {
         >
           {/* Header */}
           <div className="flex shrink-0 items-center justify-between px-4 py-3 md:px-6">
-            <span className="text-[13px] font-medium tabular-nums text-white/70">
+            <span className="text-body-sm font-medium tabular-nums text-white/70">
               {activeIndex + 1} / {images.length}
             </span>
             <button
               ref={closeRef}
               type="button"
               onClick={() => setOpen(false)}
-              className="flex h-11 items-center gap-1.5 rounded-full bg-white/10 px-3 text-[13px] font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
+              className="flex h-11 items-center gap-1.5 rounded-full bg-white/10 px-3 text-body-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/20"
             >
               <XIcon className="size-4" />
               Close
@@ -221,7 +221,7 @@ export function ShowAllPhotosButton({ images, carName }: ImageGalleryProps) {
                   aria-current={i === activeIndex}
                   onClick={() => setActiveIndex(i)}
                   className={cn(
-                    "relative size-14 shrink-0 overflow-hidden rounded-lg transition-[opacity,box-shadow] md:size-16",
+                    "relative size-14 shrink-0 overflow-hidden rounded-tight transition-[opacity,box-shadow] md:size-16",
                     i === activeIndex
                       ? "ring-2 ring-white ring-offset-1 ring-offset-black"
                       : "opacity-50 hover:opacity-80"

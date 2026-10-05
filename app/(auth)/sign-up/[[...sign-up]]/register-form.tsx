@@ -20,7 +20,7 @@ function SubmitButton() {
   return (
     <Button
       type="submit"
-      className="w-full text-[15px]"
+      className="w-full text-body"
       size="lg"
       disabled={pending}
     >
@@ -53,7 +53,7 @@ export function RegisterForm() {
   return (
     <div className="w-full max-w-[440px]">
       {/* Card container */}
-      <div className="rounded-2xl border border-neutral-200 bg-white px-8 pb-8 pt-10 shadow-none dark:border-neutral-800 dark:bg-neutral-950">
+      <div className="rounded-card border border-neutral-200 bg-white px-8 pb-8 pt-10 shadow-none dark:border-neutral-800 dark:bg-card">
         {/* Logo */}
         <div className="mb-8 flex justify-center">
           <Link href="/" aria-label="Back to home">
@@ -66,7 +66,7 @@ export function RegisterForm() {
           <h1 className="text-xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
             Create account
           </h1>
-          <p className="mt-1.5 text-[13px] text-neutral-500 dark:text-neutral-400">
+          <p className="mt-1.5 text-body-sm text-neutral-500 dark:text-neutral-400">
             Fill in your details to sign up
           </p>
         </div>
@@ -76,7 +76,7 @@ export function RegisterForm() {
           {state.error && (
             <div
               role="alert"
-              className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-[13px] text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400"
+              className="rounded-tight border border-red-200 bg-red-50 px-4 py-3 text-body-sm text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400"
             >
               {state.error}
             </div>
@@ -84,7 +84,7 @@ export function RegisterForm() {
 
           <div className="grid grid-cols-2 gap-3">
             <div className="space-y-1.5">
-              <Label htmlFor="first_name" className="text-[13px]">
+              <Label htmlFor="first_name" className="text-body-sm">
                 First name
               </Label>
               <Input
@@ -98,7 +98,7 @@ export function RegisterForm() {
               />
             </div>
             <div className="space-y-1.5">
-              <Label htmlFor="last_name" className="text-[13px]">
+              <Label htmlFor="last_name" className="text-body-sm">
                 Last name
               </Label>
               <Input
@@ -114,7 +114,7 @@ export function RegisterForm() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="email" className="text-[13px]">
+            <Label htmlFor="email" className="text-body-sm">
               Email
             </Label>
             <Input
@@ -130,7 +130,7 @@ export function RegisterForm() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="phone" className="text-[13px]">
+            <Label htmlFor="phone" className="text-body-sm">
               Phone (optional)
             </Label>
             <PhoneInput
@@ -143,7 +143,7 @@ export function RegisterForm() {
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="password" className="text-[13px]">
+            <Label htmlFor="password" className="text-body-sm">
               Password
             </Label>
             <PasswordInput
@@ -160,7 +160,7 @@ export function RegisterForm() {
             <SubmitButton />
           </div>
 
-          <p className="text-center text-[11px] leading-relaxed text-neutral-500 dark:text-neutral-500">
+          <p className="text-center text-caption leading-relaxed text-neutral-500 dark:text-neutral-500">
             By creating an account, you agree to our{" "}
             <Link
               href="/terms"
@@ -186,7 +186,7 @@ export function RegisterForm() {
         <Separator className="my-6" />
 
         {/* Footer links */}
-        <p className="text-center text-[13px] text-neutral-500 dark:text-neutral-400">
+        <p className="text-center text-body-sm text-neutral-500 dark:text-neutral-400">
           Already have an account?{" "}
           <Link
             href={redirectTo !== "/" ? `/sign-in?redirectTo=${encodeURIComponent(redirectTo)}` : "/sign-in"}
@@ -201,7 +201,7 @@ export function RegisterForm() {
       <div className="mt-6 text-center">
         <Link
           href="/"
-          className="text-[13px] text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
+          className="text-body-sm text-neutral-400 transition-colors hover:text-neutral-600 dark:text-neutral-500 dark:hover:text-neutral-300"
         >
           &larr; Back to home
         </Link>

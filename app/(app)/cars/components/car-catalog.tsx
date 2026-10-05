@@ -109,8 +109,8 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
   if (!sortedCars.length)
     return (
       <div className="col-span-full text-balance">
-        <h1 className="text-xl font-semibold">No exact matches</h1>
-        <p className="mt-3 text-muted-foreground">
+        <h1 className="text-heading-sm">No exact matches</h1>
+        <p className="mt-3 text-body text-muted-foreground">
           {hasDateRange
             ? "No cars are available for the selected dates. Try different dates or adjust your filters."
             : "Try changing or removing some of your filters."}
@@ -125,14 +125,14 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
     <>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Available cars
-          </h1>
-          <p className="mt-1 text-[14px] text-muted-foreground">{countLabel}</p>
+          <h1 className="text-heading-sm sm:text-heading">Available cars</h1>
+          <p className="mt-1.5 text-body-sm text-muted-foreground">
+            {countLabel}
+          </p>
         </div>
         <CatalogSort />
       </div>
-      <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
+      <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
         {sortedCars.map((car, index) => (
           <CarCard key={car.id} car={car} priority={index < 2} />
         ))}

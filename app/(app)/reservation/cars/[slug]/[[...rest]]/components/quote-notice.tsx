@@ -16,7 +16,7 @@ export function QuoteLockedNote({
   return (
     <p
       role="note"
-      className={`rounded-lg border border-border bg-muted p-3 text-[13px] text-neutral-600 dark:text-neutral-400 ${className ?? ""}`}
+      className={`rounded-tight border border-border bg-muted p-3 text-body-sm text-neutral-600 dark:text-neutral-400 ${className ?? ""}`}
     >
       Prices and options from your quote. To change the dates, extras or
       delivery, ask us for a new quote.{" "}
@@ -40,10 +40,10 @@ export function QuoteUnavailable({
 }) {
   return (
     <main id="main-content" className="mx-auto w-full max-w-2xl px-5 py-20">
-      <h1 className="text-2xl font-semibold tracking-tight">
+      <h1 className="text-heading-sm">
         This quote can&apos;t be booked
       </h1>
-      <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
+      <p className="mt-3 text-body leading-relaxed text-muted-foreground">
         {message}
       </p>
       <div className="mt-8 flex flex-wrap gap-3">

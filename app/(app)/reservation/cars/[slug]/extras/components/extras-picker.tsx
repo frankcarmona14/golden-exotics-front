@@ -219,7 +219,7 @@ export function ExtrasPicker({
         {quoted && quoted.addons.length > 0 && (
           <div className="mt-12">
             <h2 className="text-xl font-semibold">Extras in your quote</h2>
-            <ul className="mt-4 grid grid-cols-1 gap-2 text-[15px]">
+            <ul className="mt-4 grid grid-cols-1 gap-2 text-body">
               {quoted.addons.map((addon) => (
                 <li key={addon.code} className="flex justify-between gap-4">
                   <span className="capitalize">{addon.name}</span>
@@ -235,7 +235,7 @@ export function ExtrasPicker({
         {!quoted && available.length > 0 && (
           <div className={deliveryZones.length > 0 ? "mt-12" : undefined}>
             <h2 className="text-xl font-semibold">Add extras</h2>
-            <p className="mt-1 text-[15px] text-neutral-500 dark:text-neutral-400">
+            <p className="mt-1 text-body text-neutral-500 dark:text-neutral-400">
               Optional. Charged with your deposit when you book.
             </p>
 
@@ -249,13 +249,13 @@ export function ExtrasPicker({
                     className="flex items-start justify-between gap-4 border-b border-border pb-5 last:border-0"
                   >
                     <div className="min-w-0">
-                      <p className="text-[15px] font-medium">{addon.name}</p>
+                      <p className="text-body font-medium">{addon.name}</p>
                       {addon.description && (
-                        <p className="mt-0.5 text-[13px] text-neutral-500 dark:text-neutral-400">
+                        <p className="mt-0.5 text-body-sm text-neutral-500 dark:text-neutral-400">
                           {addon.description}
                         </p>
                       )}
-                      <p className="mt-1 text-[13px] tabular-nums text-neutral-500 dark:text-neutral-400">
+                      <p className="mt-1 text-body-sm tabular-nums text-neutral-500 dark:text-neutral-400">
                         {formatAmountForDisplay(addon.price, currency)}
                         {addon.charge_type === "per_day" ? " per day" : " once"}
                       </p>
@@ -276,7 +276,7 @@ export function ExtrasPicker({
                       </button>
                       <span
                         aria-live="polite"
-                        className="w-4 text-center text-[15px] tabular-nums"
+                        className="w-4 text-center text-body tabular-nums"
                       >
                         {quantity}
                       </span>
@@ -309,7 +309,7 @@ export function ExtrasPicker({
               // esa se elige arriba, y perderla aquí sería una sorpresa.
               disabled={isBusy}
               onClick={() => goToCheckout(false)}
-              className="text-[15px] underline underline-offset-4 disabled:opacity-40"
+              className="text-body underline underline-offset-4 disabled:opacity-40"
             >
               Continue without extras
             </button>
@@ -317,7 +317,7 @@ export function ExtrasPicker({
         </div>
       </section>
 
-      <aside className="mt-10 md:col-start-2 md:row-start-1 md:mt-0 md:rounded-xl md:border md:border-border">
+      <aside className="mt-10 md:col-start-2 md:row-start-1 md:mt-0 md:rounded-card md:border md:border-border">
         <div className="md:p-6">
           <PriceDetails
             days={days}
@@ -406,7 +406,7 @@ function DeliveryPicker({
   }[] = [
     {
       code: null,
-      name: "Pick up at our location",
+      name: "Pick up at our location or Airport of Miami",
       description: "Collect and return the car at our office.",
       price: 0,
     },
@@ -426,7 +426,7 @@ function DeliveryPicker({
       <h2 className="text-xl font-semibold">
         {locked ? "Delivery" : "Delivery or pickup"}
       </h2>
-      <p className="mt-1 text-[15px] text-neutral-500 dark:text-neutral-400">
+      <p className="mt-1 text-body text-neutral-500 dark:text-neutral-400">
         {locked
           ? "Your quote includes delivery. Tell us where to bring the car: we drop it off and collect it at the same address."
           : "We can bring the car to you. Delivery is charged when you book and covers drop-off and collection at the same address."}
@@ -440,7 +440,7 @@ function DeliveryPicker({
           return (
             <label
               key={option.code ?? "pickup"}
-              className={`flex cursor-pointer items-start justify-between gap-4 rounded-xl border p-4 transition-colors ${
+              className={`flex cursor-pointer items-start justify-between gap-4 rounded-card border p-4 transition-colors ${
                 checked
                   ? "border-neutral-900 dark:border-neutral-100"
                   : "border-border hover:border-neutral-400"
@@ -455,17 +455,17 @@ function DeliveryPicker({
                   onChange={() => onZoneChange(option.code)}
                 />
                 <span className="min-w-0">
-                  <span className="block text-[15px] font-medium">
+                  <span className="block text-body font-medium">
                     {option.name}
                   </span>
                   {option.description && (
-                    <span className="mt-0.5 block text-[13px] text-neutral-500 dark:text-neutral-400">
+                    <span className="mt-0.5 block text-body-sm text-neutral-500 dark:text-neutral-400">
                       {option.description}
                     </span>
                   )}
                 </span>
               </span>
-              <span className="shrink-0 text-[15px] tabular-nums">
+              <span className="shrink-0 text-body tabular-nums">
                 {option.price > 0
                   ? formatAmountForDisplay(option.price, currency)
                   : "Free"}
@@ -524,7 +524,7 @@ function DeliveryPicker({
           {error && (
             <p
               role="alert"
-              className="text-[13px] text-red-600 dark:text-red-400"
+              className="text-body-sm text-red-600 dark:text-red-400"
             >
               {error}
             </p>

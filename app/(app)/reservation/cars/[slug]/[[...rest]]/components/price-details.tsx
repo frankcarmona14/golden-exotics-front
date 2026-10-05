@@ -88,7 +88,7 @@ export function PriceDetails({
             lines.map((line) => (
               <div
                 key={line.code}
-                className="flex flex-row items-center justify-between text-[15px]"
+                className="flex flex-row items-center justify-between text-body"
               >
                 <span>
                   {line.type === "base"
@@ -102,7 +102,7 @@ export function PriceDetails({
                     <DailyRate
                       rate={dailyRate}
                       currency={currency}
-                      className="ml-1.5 text-[13px] text-neutral-500 dark:text-neutral-400"
+                      className="ml-1.5 text-body-sm text-neutral-500 dark:text-neutral-400"
                     />
                   )}
                 </span>
@@ -122,7 +122,7 @@ export function PriceDetails({
               </div>
             ))
           ) : (
-            <div className="flex flex-row items-center justify-between text-[15px]">
+            <div className="flex flex-row items-center justify-between text-body">
               <span>
                 {days} {days === 1 ? "day" : "days"}
               </span>
@@ -131,14 +131,14 @@ export function PriceDetails({
           )}
 
           {taxes > 0 && (
-            <div className="flex flex-row items-center justify-between text-[15px]">
+            <div className="flex flex-row items-center justify-between text-body">
               <span>Taxes</span>
               <span>{formatAmountForDisplay(taxes, currency)}</span>
             </div>
           )}
 
           <Separator className="my-3" />
-          <div className="flex flex-row items-center justify-between text-[15px]">
+          <div className="flex flex-row items-center justify-between text-body">
             <span>Rental total ({currency.toUpperCase()})</span>
             <span>{formatAmountForDisplay(total, currency)}</span>
           </div>
@@ -150,11 +150,11 @@ export function PriceDetails({
                 <strong>Due now</strong>
                 <strong>{formatAmountForDisplay(dueNow, currency)}</strong>
               </div>
-              <div className="flex flex-row items-center justify-between text-[15px]">
+              <div className="flex flex-row items-center justify-between text-body">
                 <span>{isDelivered ? "Due at delivery" : "Due at pickup"}</span>
                 <span>{formatAmountForDisplay(balance, currency)}</span>
               </div>
-              <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+              <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
                 Your deposit, extras, delivery, fees and taxes are charged when
                 you book.{" "}
                 {isDelivered
@@ -236,7 +236,7 @@ function MileageTerms({
 }) {
   if (mileage.included_miles === null) {
     return (
-      <p className="text-[13px] text-neutral-500 dark:text-neutral-400">
+      <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
         Unlimited miles.
       </p>
     )
@@ -251,7 +251,7 @@ function MileageTerms({
   })
 
   return (
-    <div className="rounded-lg border border-border p-3 text-[13px]">
+    <div className="rounded-tight border border-border p-3 text-body-sm">
       <p className="font-medium">
         {mileage.included_miles.toLocaleString("en-US")} miles included
       </p>
@@ -276,7 +276,7 @@ function LateReturnTerms({
   currency: string
 }) {
   return (
-    <div className="rounded-lg border border-border p-3 text-[13px]">
+    <div className="rounded-tight border border-border p-3 text-body-sm">
       <p className="font-medium">Late returns</p>
       <p className="text-neutral-500 dark:text-neutral-400">
         {policy.grace_minutes} minutes of grace. After that,{" "}

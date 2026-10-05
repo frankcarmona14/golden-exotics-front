@@ -25,7 +25,7 @@ export function LegalPage({
       <div className="mb-8">
         <Link
           href="/"
-          className="inline-flex items-center gap-1.5 text-[13px] text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
+          className="inline-flex items-center gap-1.5 text-body-sm text-neutral-500 transition-colors hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-neutral-100"
         >
           <ChevronLeftIcon className="size-4" />
           Back to home
@@ -34,18 +34,18 @@ export function LegalPage({
 
       {/* Header */}
       <header className="mb-10 border-b border-neutral-200 pb-8 dark:border-neutral-800">
-        <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-accent-text">
+        <p className="mb-3 text-caption font-semibold uppercase tracking-[0.12em] text-subtle">
           Legal
         </p>
-        <h1 className="text-balance text-3xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 sm:text-4xl lg:text-5xl">
+        <h1 className="text-balance text-heading sm:text-heading-lg text-neutral-950 dark:text-neutral-50">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-4 max-w-2xl text-balance text-[15px] leading-relaxed text-neutral-600 dark:text-neutral-400">
+          <p className="mt-4 max-w-2xl text-balance text-body leading-relaxed text-neutral-600 dark:text-neutral-400">
             {subtitle}
           </p>
         )}
-        <p className="mt-6 text-[12px] text-neutral-500 dark:text-neutral-500">
+        <p className="mt-6 text-caption text-neutral-500 dark:text-neutral-500">
           Last updated:{" "}
           <time
             dateTime={lastUpdated.toISOString()}
@@ -66,10 +66,10 @@ export function LegalPage({
         {toc && toc.length > 0 && (
           <aside className="hidden lg:block">
             <nav className="sticky top-[calc(var(--site-header-height)+24px)]">
-              <p className="mb-3 text-[11px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+              <p className="mb-3 text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                 On this page
               </p>
-              <ul className="space-y-2 text-[13px]">
+              <ul className="space-y-2 text-body-sm">
                 {toc.map((item) => (
                   <li key={item.id}>
                     <a
@@ -87,7 +87,7 @@ export function LegalPage({
 
         <article
           className={cn(
-            "max-w-none text-[15px] leading-relaxed text-neutral-700 dark:text-neutral-300",
+            "max-w-none text-body leading-relaxed text-neutral-700 dark:text-neutral-300",
             "prose-headings:scroll-mt-[calc(var(--site-header-height)+16px)]"
           )}
         >
@@ -107,10 +107,10 @@ interface LegalSectionProps {
 export function LegalSection({ id, title, children }: LegalSectionProps) {
   return (
     <section id={id} className="mb-10 scroll-mt-[calc(var(--site-header-height)+16px)]">
-      <h2 className="mb-4 text-xl font-semibold tracking-tight text-neutral-950 dark:text-neutral-50 sm:text-2xl">
+      <h2 className="mb-4 text-subheading sm:text-heading-sm text-neutral-950 dark:text-neutral-50">
         {title}
       </h2>
-      <div className="space-y-4 text-[15px] leading-relaxed [&_a]:font-medium [&_a]:text-neutral-950 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-accent dark:[&_a]:text-neutral-50">
+      <div className="space-y-4 text-body leading-relaxed [&_a]:font-medium [&_a]:text-neutral-950 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-accent dark:[&_a]:text-neutral-50">
         {children}
       </div>
     </section>
@@ -141,7 +141,7 @@ export function LegalCallout({
   return (
     <div
       className={cn(
-        "my-6 rounded-xl border p-5 text-[14px] leading-relaxed",
+        "my-6 rounded-card border p-5 text-body-sm leading-relaxed",
         variant === "info" &&
           "border-neutral-200 bg-neutral-50 text-neutral-700 dark:border-neutral-800 dark:bg-neutral-900/50 dark:text-neutral-300",
         variant === "warning" &&

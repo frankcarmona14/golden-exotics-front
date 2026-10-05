@@ -30,7 +30,7 @@ export function LicenseConfirmation({
   return (
     <div
       className={cn(
-        "rounded-xl border border-neutral-200 bg-neutral-50/60 p-4 dark:border-neutral-800 dark:bg-neutral-900/40",
+        "rounded-card border border-neutral-200 bg-neutral-50/60 p-4 dark:border-neutral-800 dark:bg-neutral-900/40",
         className,
       )}
     >
@@ -43,7 +43,7 @@ export function LicenseConfirmation({
         />
         <label
           htmlFor={checkboxId}
-          className="cursor-pointer select-none text-[13px] leading-relaxed text-neutral-700 dark:text-neutral-300"
+          className="cursor-pointer select-none text-body-sm leading-relaxed text-neutral-700 dark:text-neutral-300"
         >
           I confirm that I hold a{" "}
           <span className="font-semibold text-neutral-900 dark:text-neutral-100">
@@ -58,7 +58,7 @@ export function LicenseConfirmation({
       </div>
 
       {hasError && (
-        <div className="mt-3 flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2 dark:bg-red-950/20">
+        <div className="mt-3 flex items-start gap-2 rounded-tight bg-red-50 px-3 py-2 dark:bg-red-950/20">
           <svg
             viewBox="0 0 16 16"
             fill="currentColor"
@@ -70,7 +70,7 @@ export function LicenseConfirmation({
               clipRule="evenodd"
             />
           </svg>
-          <p className="text-[12px] leading-snug text-red-600 dark:text-red-400">
+          <p className="text-caption leading-snug text-red-600 dark:text-red-400">
             You must confirm your driver&apos;s license and insurance before
             continuing with payment.
           </p>

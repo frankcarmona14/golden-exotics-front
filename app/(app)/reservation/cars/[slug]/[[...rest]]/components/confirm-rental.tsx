@@ -225,9 +225,9 @@ export function ConfirmRental({
   if (isPreparingCheckout) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-md duration-200 animate-in fade-in dark:bg-neutral-950/70">
-        <div className="flex flex-col items-center gap-6 rounded-3xl border border-neutral-200/80 bg-white p-12 shadow-2xl duration-300 animate-in fade-in zoom-in-95 dark:border-neutral-800 dark:bg-neutral-900 sm:px-16 sm:py-14 lg:px-20 lg:py-16">
+        <div className="flex flex-col items-center gap-6 rounded-card border border-neutral-200/80 bg-white p-12 shadow-2xl duration-300 animate-in fade-in zoom-in-95 dark:border-neutral-800 dark:bg-neutral-900 sm:px-16 sm:py-14 lg:px-20 lg:py-16">
           {/* Animated icon */}
-          <div className="flex size-16 items-center justify-center rounded-2xl bg-accent/10 sm:size-20 lg:size-24">
+          <div className="flex size-16 items-center justify-center rounded-card bg-accent/10 sm:size-20 lg:size-24">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-7 text-accent sm:size-8 lg:size-10">
               <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5V6h14V4.5A1.5 1.5 0 0 0 13.5 3h-11ZM15 7H1v4.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V7ZM3 10.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Zm5.75-.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" />
             </svg>
@@ -236,7 +236,7 @@ export function ConfirmRental({
             <p className="text-base font-semibold text-neutral-900 dark:text-neutral-50 sm:text-lg lg:text-xl">
               Preparing your checkout
             </p>
-            <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 sm:text-[15px]">
+            <p className="mt-2 text-sm text-neutral-500 dark:text-neutral-400 sm:text-body">
               Setting up secure payment...
             </p>
           </div>
@@ -259,7 +259,7 @@ export function ConfirmRental({
       )}
 
       {isIdentified && checkoutState.status === "error" && error && (
-        <div className="mt-6 rounded-xl border border-red-500/30 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300">
+        <div className="mt-6 rounded-card border border-red-500/30 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300">
           <p className="font-medium">Error preparing payment</p>
           <p className="mt-1">{error}</p>
           <Button
@@ -279,12 +279,12 @@ export function ConfirmRental({
       {isIdentified && checkoutState.status === "ready" && checkoutState.cartId && (
         <div className="mt-8">
           <div className="mb-4 flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-lg bg-accent/10">
+            <div className="flex size-7 items-center justify-center rounded-tight bg-accent/10">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" className="size-3.5 text-accent">
                 <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5V6h14V4.5A1.5 1.5 0 0 0 13.5 3h-11ZM15 7H1v4.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V7ZM3 10.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Zm5.75-.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" />
               </svg>
             </div>
-            <h3 className="text-[15px] font-semibold tracking-tight">
+            <h3 className="text-body font-semibold tracking-tight">
               Payment method
             </h3>
           </div>
@@ -339,7 +339,7 @@ export function ConfirmRental({
                 <div className="mb-4">{consent}</div>
                 <Button
                   size="lg"
-                  className="w-full text-[15px]"
+                  className="w-full text-body"
                   disabled={isCompleting || !termsAccepted}
                   onClick={handleConfirmWithoutStripe}
                 >

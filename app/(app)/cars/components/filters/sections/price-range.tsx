@@ -102,9 +102,9 @@ export function PriceRangeFilters({
 
   return (
     <section>
-      <h3 className="text-[15px] font-semibold">Price range</h3>
+      <h3 className="text-body font-semibold">Price range</h3>
       <div className="pt-0.5">
-        <p className="text-[15px] text-neutral-700 dark:text-neutral-300">
+        <p className="text-body text-neutral-700 dark:text-neutral-300">
           Daily prices before fees and taxes
         </p>
       </div>

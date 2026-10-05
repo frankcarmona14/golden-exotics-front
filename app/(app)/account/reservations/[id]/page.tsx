@@ -48,14 +48,14 @@ export default async function ReservationDetailPage({
 
   return (
     <div className="container mx-auto max-w-2xl px-4 py-10">
-      <h1 className="text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-50">
+      <h1 className="text-heading-sm text-neutral-900 dark:text-neutral-50">
         Your booking
       </h1>
       <p className="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
         Order reference · {params.id}
       </p>
 
-      <div className="mt-8 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900/60">
+      <div className="mt-8 overflow-hidden rounded-card border border-neutral-200 bg-white p-6 dark:border-neutral-800 dark:bg-neutral-900/60">
         <h2 className="text-lg font-medium text-neutral-900 dark:text-neutral-100">
           {carName}
         </h2>

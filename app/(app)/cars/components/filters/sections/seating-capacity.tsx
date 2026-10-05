@@ -42,7 +42,7 @@ export function SeatingCapacityFilters({
   return (
     <section>
       <div className="flex items-center justify-between">
-        <h3 className="text-[15px] font-semibold">Seats</h3>
+        <h3 className="text-body font-semibold">Seats</h3>
         <div className="flex flex-row items-center justify-center gap-x-4">
           <Button
             onClick={handleMinusClick}

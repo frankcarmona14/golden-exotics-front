@@ -53,7 +53,7 @@ export function ReservationStatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold capitalize",
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-caption font-semibold capitalize",
         config.className,
         className
       )}

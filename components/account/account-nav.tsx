@@ -77,7 +77,7 @@ export function AccountNav({ className }: { className?: string }) {
                 href={href}
                 aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-2.5 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors duration-150 ease-out",
+                  "flex items-center gap-2.5 whitespace-nowrap rounded-tight px-3 py-2 text-sm font-medium transition-colors duration-150 ease-out",
                   active
                     ? "bg-neutral-100 text-neutral-900 dark:bg-neutral-800 dark:text-neutral-50"
                     : "text-neutral-500 hover:bg-neutral-100/70 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-100"
@@ -97,7 +97,7 @@ export function AccountNav({ className }: { className?: string }) {
       </ul>
 
       <div className="mt-2 hidden border-t border-neutral-200 pt-2 dark:border-neutral-800 lg:block">
-        <LogoutButton className="w-full justify-start rounded-lg px-3 py-2 text-sm font-medium text-neutral-500 transition-colors hover:bg-neutral-100/70 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-100" />
+        <LogoutButton className="w-full justify-start rounded-tight px-3 py-2 text-sm font-medium text-neutral-500 transition-colors hover:bg-neutral-100/70 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800/60 dark:hover:text-neutral-100" />
       </div>
     </nav>
   )

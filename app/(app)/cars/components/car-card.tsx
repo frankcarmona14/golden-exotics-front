@@ -59,9 +59,9 @@ export function CarCard({ car, priority = false }: CarCardProps) {
 
   return (
     <Link href={href} className="group block outline-none">
-      <article className="relative flex items-start gap-4 overflow-hidden rounded-2xl border border-border bg-card p-4 transition-[border-color,transform] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:border-neutral-300 group-focus-visible:ring-2 group-focus-visible:ring-ring dark:group-hover:border-neutral-700 dark:group-hover:shadow-[0_16px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-5 sm:p-5">
+      <article className="relative flex items-start gap-4 overflow-hidden rounded-card border border-border bg-card p-4 transition-[border-color,transform] duration-200 ease-out group-hover:-translate-y-0.5 group-hover:border-neutral-300 group-focus-visible:ring-2 group-focus-visible:ring-ring dark:group-hover:border-neutral-700 dark:group-hover:shadow-[0_16px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-5 sm:p-5">
         {/* Image */}
-        <div className="relative aspect-[4/3] w-32 shrink-0 overflow-hidden rounded-xl bg-muted sm:w-40">
+        <div className="relative aspect-[4/3] w-32 shrink-0 overflow-hidden rounded-tight bg-muted sm:w-40">
           <CldImage
             src={car.imageUrl}
             alt={car.name}
@@ -71,7 +71,9 @@ export function CarCard({ car, priority = false }: CarCardProps) {
             priority={priority}
           />
           {isRentable && (
-            <span className="absolute left-2 top-2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-accent-foreground shadow-sm">
+            /* Neutral, not accent: in a full grid every card is available, so
+               tinting this turns the accent into background noise. */
+            <span className="absolute left-2 top-2 rounded-pill bg-black/55 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
               Available
             </span>
           )}
@@ -80,11 +82,11 @@ export function CarCard({ car, priority = false }: CarCardProps) {
         {/* Content */}
         <div className="flex min-w-0 flex-1 flex-col">
           <div className="flex items-start justify-between gap-3">
-            <h3 className="truncate text-base font-semibold leading-tight tracking-tight sm:text-[17px]">
+            <h3 className="truncate text-body font-semibold sm:text-subheading">
               {car.name}
             </h3>
             {hasRating && (
-              <div className="flex shrink-0 items-center gap-1 text-[13px] tabular-nums">
+              <div className="flex shrink-0 items-center gap-1 text-body-sm tabular-nums">
                 <FilledStarIcon className="size-3.5 shrink-0 text-accent" />
                 <span className="font-semibold">{car.rating}</span>
                 {Number(car.reviewCount) > 0 && (
@@ -96,12 +98,12 @@ export function CarCard({ car, priority = false }: CarCardProps) {
             )}
           </div>
 
-          <p className="mt-1 text-[13px] capitalize text-muted-foreground sm:text-sm">
+          <p className="mt-1.5 text-body-sm capitalize text-muted-foreground">
             {specs.join(" · ")}
           </p>
 
           {car.unlimitedMileage && (
-            <p className="mt-1.5 flex items-center gap-1 text-[12px] font-medium text-neutral-600 dark:text-neutral-300">
+            <p className="mt-2 flex items-center gap-1 text-caption font-medium text-neutral-600 dark:text-neutral-300">
               <CheckIcon className="size-3.5 shrink-0 text-green-600 dark:text-green-500" />
               Unlimited mileage
             </p>
@@ -110,17 +112,17 @@ export function CarCard({ car, priority = false }: CarCardProps) {
           {/* Footer: price + CTA */}
           <div className="mt-3 flex items-end justify-between gap-3">
             <div className="flex items-baseline gap-1">
-              <span className="text-[21px] font-bold tabular-nums leading-none tracking-tight sm:text-[24px]">
+              <span className="text-heading-sm font-semibold tabular-nums">
                 {formatAmountForDisplay(Number(car.pricePerDay), car.currency)}
               </span>
-              <span className="text-[12px] font-medium text-neutral-500 dark:text-neutral-400">
+              <span className="text-caption font-medium text-neutral-500 dark:text-neutral-400">
                 /day
               </span>
             </div>
 
             <span
               className={cn(
-                "hidden items-center gap-1.5 rounded-full border border-neutral-200 px-3.5 py-1.5 text-[12px] font-semibold transition-colors duration-150 ease-out group-hover:border-accent group-hover:bg-accent group-hover:text-accent-foreground dark:border-neutral-700 sm:inline-flex"
+                "hidden items-center gap-1.5 rounded-pill border border-neutral-200 px-4 py-2 text-caption font-semibold transition-colors duration-150 ease-out group-hover:border-accent group-hover:bg-accent group-hover:text-accent-foreground dark:border-neutral-700 sm:inline-flex"
               )}
             >
               View details

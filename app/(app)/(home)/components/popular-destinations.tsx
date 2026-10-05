@@ -20,10 +20,10 @@ export function PopularDestinations() {
         <FadeUp>
           <div className="flex items-end justify-between">
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.25em] text-accent-text sm:text-xs">
+              <p className="mb-2 text-caption font-semibold uppercase tracking-[0.2em] text-subtle">
                 Top Destinations
               </p>
-              <h2 className="text-balance text-[21px] font-bold tracking-tight sm:text-[24px] lg:text-[28px]">
+              <h2 className="text-balance text-heading-sm sm:text-heading lg:text-heading-lg">
                 Where to Rent Next
               </h2>
             </div>
@@ -69,7 +69,7 @@ export function PopularDestinations() {
                         className="absolute left-0 top-0 z-10 size-full"
                       />
                     </Button>
-                    <div className="relative aspect-square overflow-hidden rounded-2xl">
+                    <div className="relative aspect-square overflow-hidden rounded-card">
                       <Image
                         src={imageUrl}
                         alt={name}
@@ -77,21 +77,21 @@ export function PopularDestinations() {
                         priority
                         fill
                         sizes="(max-width: 550px) 50vw, (max-width: 950px) 33.33vw, 20vw"
-                        className="rounded-2xl object-cover transition-transform duration-500 ease-out group-hover:scale-105 group-hover:will-change-transform"
+                        className="rounded-card object-cover transition-transform duration-500 ease-out group-hover:scale-105 group-hover:will-change-transform"
                         placeholder="blur"
                       />
                       {/* Hover overlay */}
                       <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
                       {/* Price badge */}
-                      <div className="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-bold text-neutral-900 backdrop-blur-sm dark:bg-black/70 dark:text-white dark:shadow-lg">
+                      <div className="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-caption font-bold text-neutral-900 backdrop-blur-sm dark:bg-black/70 dark:text-white dark:shadow-lg">
                         from {formatAmountForDisplay(startingPrice, "usd")}
                       </div>
                     </div>
                     <div className="pt-3 sm:pt-3.5">
-                      <h3 className="truncate text-[14px] font-semibold leading-[22px] text-neutral-950 transition-colors group-hover:text-accent-hover dark:text-neutral-50 sm:text-[15px]">
+                      <h3 className="truncate text-body-sm font-semibold leading-[22px] text-neutral-950 transition-colors group-hover:text-accent-hover dark:text-neutral-50 sm:text-body">
                         {name}
                       </h3>
-                      <p className="truncate text-[13px] leading-[21px] text-neutral-500 dark:text-neutral-400 sm:text-[14px] sm:leading-[26px]">
+                      <p className="truncate text-body-sm leading-[21px] text-neutral-500 dark:text-neutral-400 sm:text-body-sm sm:leading-[26px]">
                         Luxury rentals available
                       </p>
                     </div>

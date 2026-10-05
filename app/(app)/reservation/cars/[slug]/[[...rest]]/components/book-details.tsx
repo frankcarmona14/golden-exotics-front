@@ -23,7 +23,7 @@ export function BookDetails({
 
   return (
     <>
-      <h2 className="text-[22px] font-semibold">Your trip</h2>
+      <h2 className="text-heading-sm">Your trip</h2>
       <div className="pt-5">
         <div className="space-y-1">
           <h3 className="text-base">

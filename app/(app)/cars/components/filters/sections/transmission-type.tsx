@@ -44,7 +44,7 @@ export function TransmissionTypeFilters({
 
   return (
     <section>
-      <h3 className="text-[15px] font-semibold">Transmission</h3>
+      <h3 className="text-body font-semibold">Transmission</h3>
       <div className="pt-4">
         <div className="flex flex-wrap items-center gap-2.5">
           {transmissions.map(({ slug, name, icon: Icon }) => (
@@ -56,7 +56,7 @@ export function TransmissionTypeFilters({
               onPressedChange={() => handleTransmissionToggle(slug)}
             >
               <Icon className="size-[22px] [stroke-width:1.5]" />
-              <span className="text-[13px] font-medium">{name}</span>
+              <span className="text-body-sm font-medium">{name}</span>
             </Toggle>
           ))}
         </div>

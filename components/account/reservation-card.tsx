@@ -50,13 +50,13 @@ export function ReservationCard({
   return (
     <div
       className={cn(
-        "group rounded-2xl border border-neutral-200 bg-white p-4 transition-[box-shadow,border-color] duration-200 ease-out hover:border-neutral-300 hover:shadow-[0_12px_32px_-16px_rgba(0,0,0,0.18)] dark:border-neutral-800 dark:bg-neutral-900/60 dark:hover:border-neutral-700 sm:p-5",
+        "group rounded-card border border-neutral-200 bg-white p-4 transition-[box-shadow,border-color] duration-200 ease-out hover:border-neutral-300 hover:shadow-[0_12px_32px_-16px_rgba(0,0,0,0.18)] dark:border-neutral-800 dark:bg-neutral-900/60 dark:hover:border-neutral-700 sm:p-5",
         className
       )}
     >
       <div className="flex gap-4">
         {/* Thumbnail */}
-        <div className="relative aspect-square size-20 shrink-0 overflow-hidden rounded-xl bg-neutral-100 dark:bg-neutral-800 sm:size-24">
+        <div className="relative aspect-square size-20 shrink-0 overflow-hidden rounded-card bg-neutral-100 dark:bg-neutral-800 sm:size-24">
           {thumbnail ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -76,11 +76,11 @@ export function ReservationCard({
         <div className="min-w-0 flex-1">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <h3 className="truncate text-[15px] font-semibold leading-tight tracking-tight">
+              <h3 className="truncate text-body font-semibold leading-tight tracking-tight">
                 {carName}
               </h3>
               {variantTitle && variantTitle !== carName && (
-                <p className="truncate text-[13px] text-neutral-500 dark:text-neutral-400">
+                <p className="truncate text-body-sm text-neutral-500 dark:text-neutral-400">
                   {variantTitle}
                 </p>
               )}
@@ -88,7 +88,7 @@ export function ReservationCard({
             <ReservationStatusBadge status={status} className="shrink-0" />
           </div>
 
-          <div className="mt-2 space-y-0.5 text-[13px] text-neutral-600 dark:text-neutral-400">
+          <div className="mt-2 space-y-0.5 text-body-sm text-neutral-600 dark:text-neutral-400">
             {dates && (
               <p className="tabular-nums">
                 {dates}
@@ -120,7 +120,7 @@ export function ReservationCard({
       </div>
 
       {/* Actions */}
-      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-neutral-100 pt-3 text-[13px] font-medium dark:border-neutral-800">
+      <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-neutral-100 pt-3 text-body-sm font-medium dark:border-neutral-800">
         <Link
           href={`/account/reservations/${orderId}`}
           className="text-neutral-900 underline-offset-4 hover:underline dark:text-neutral-100"

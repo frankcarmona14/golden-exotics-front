@@ -66,13 +66,13 @@ export default async function PaymentCollectionPage({
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-12">
-      <h1 className="text-2xl font-semibold tracking-tight">
+      <h1 className="text-heading-sm">
         {collection.paid ? heading.paid : heading.due}
       </h1>
 
-      <div className="mt-6 rounded-xl border border-neutral-200 p-4 dark:border-neutral-800">
+      <div className="mt-6 rounded-card border border-neutral-200 p-4 dark:border-neutral-800">
         {rental.vehicle && (
-          <p className="text-[15px] font-medium">{rental.vehicle}</p>
+          <p className="text-body font-medium">{rental.vehicle}</p>
         )}
         {from && to && (
           <p className="mt-1 text-sm text-neutral-500">

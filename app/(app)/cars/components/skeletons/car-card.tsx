@@ -2,9 +2,9 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 export function CarCardSkeleton() {
   return (
-    <article className="flex gap-4 overflow-hidden rounded-2xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900 sm:gap-6 sm:p-5">
-      <div className="aspect-[4/3] w-32 shrink-0 sm:w-48 lg:w-56">
-        <Skeleton className="size-full rounded-xl" />
+    <article className="flex gap-4 overflow-hidden rounded-card border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900 sm:gap-6 sm:p-5">
+      <div className="aspect-[4/3] w-32 shrink-0 sm:w-40">
+        <Skeleton className="size-full rounded-tight" />
       </div>
       <div className="flex min-w-0 flex-1 flex-col">
         <div className="flex items-start justify-between gap-3">

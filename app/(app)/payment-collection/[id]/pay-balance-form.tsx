@@ -32,7 +32,7 @@ function readRedirectStatus(): string | null {
 
 function PaymentReceived({ amountLabel }: { amountLabel: string }) {
   return (
-    <div className="mt-6 rounded-xl border border-green-500/30 bg-green-50 p-4 text-sm text-green-800 dark:bg-green-950/20 dark:text-green-300">
+    <div className="mt-6 rounded-card border border-green-500/30 bg-green-50 p-4 text-sm text-green-800 dark:bg-green-950/20 dark:text-green-300">
       <p className="font-medium">Payment received</p>
       <p className="mt-1">
         Thank you — your payment of {amountLabel} went through. You can close
@@ -93,7 +93,7 @@ function CardForm({ amountLabel }: { amountLabel: string }) {
 
   return (
     <div className="mt-6 space-y-4">
-      <div className="rounded-xl border border-neutral-200 p-4 dark:border-neutral-800">
+      <div className="rounded-card border border-neutral-200 p-4 dark:border-neutral-800">
         {!ready && (
           <div className="flex justify-center py-4">
             <LoadingDots variant="default" />
@@ -174,7 +174,7 @@ export function PayBalanceForm({
 
   if (error) {
     return (
-      <div className="mt-6 rounded-xl border border-red-500/30 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300">
+      <div className="mt-6 rounded-card border border-red-500/30 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300">
         <p className="font-medium">We could not open the payment</p>
         <p className="mt-1">{error}</p>
       </div>
