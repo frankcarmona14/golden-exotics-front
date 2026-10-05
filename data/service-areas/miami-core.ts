@@ -10,7 +10,7 @@ export const miamiArea: ServiceArea = {
     "You can collect the car from us or ask for delivery to your home, hotel or the airport, and we'll arrange it on request. Prices are shown per day when you book online, and availability is checked live, so what you see is what you can reserve. Choose a city below to see where to drive, where to park and how to get the car there.",
   ],
   deliveryZoneCode: "miami",
-  status: "draft",
+  status: "published",
 }
 
 export const miamiCoreCities: ServiceCity[] = [
@@ -55,7 +55,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["brickell", "downtown-miami", "miami-beach", "coral-gables", "miami-international-airport"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "miami-international-airport",
@@ -99,7 +99,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["doral", "miami", "coral-gables", "hialeah"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "miami-beach",
@@ -147,7 +147,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["south-beach", "surfside", "fisher-island", "downtown-miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "south-beach",
@@ -190,7 +190,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["miami-beach", "fisher-island", "downtown-miami", "brickell"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "brickell",
@@ -233,7 +233,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["downtown-miami", "coconut-grove", "key-biscayne", "miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "downtown-miami",
@@ -276,7 +276,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["brickell", "wynwood", "south-beach", "miami-beach"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "wynwood",
@@ -315,7 +315,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["downtown-miami", "miami-beach", "brickell", "miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "coconut-grove",
@@ -358,7 +358,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["coral-gables", "brickell", "key-biscayne", "pinecrest"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "coral-gables",
@@ -401,7 +401,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["coconut-grove", "miami-international-airport", "pinecrest", "kendall", "miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "key-biscayne",
@@ -440,7 +440,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["brickell", "coconut-grove", "downtown-miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "fisher-island",
@@ -479,7 +479,7 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["south-beach", "miami-beach", "downtown-miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "doral",
@@ -522,6 +522,6 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["miami-international-airport", "miami-lakes", "hialeah", "kendall", "miami"],
-    status: "draft",
+    status: "published",
   },
 ]

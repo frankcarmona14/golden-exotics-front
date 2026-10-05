@@ -80,7 +80,7 @@ export default async function BrandPage({ params }: BrandPageProps) {
           <p className="text-caption font-semibold uppercase tracking-[0.25em] text-white/60">
             {countLabel}
           </p>
-          <h1 className="mt-2 text-heading sm:text-heading-lg text-white">
+          <h1 className="mt-2 text-heading text-white sm:text-heading-lg">
             {brand.name}
           </h1>
           {brand.tagline && (

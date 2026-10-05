@@ -2,6 +2,20 @@
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
+  // NEXT_DIST_DIR permite un build de producción en local sin pisar el .next
+  // del servidor de desarrollo (p. ej. para medir con Lighthouse).
+  distDir: process.env.NEXT_DIST_DIR || ".next",
+  async redirects() {
+    return [
+      // La categoría se creó como "lamborgini"; corregida en Medusa con
+      // src/scripts/rename-lamborghini-category.ts del backend.
+      {
+        source: "/brands/lamborgini",
+        destination: "/brands/lamborghini",
+        permanent: true,
+      },
+    ]
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

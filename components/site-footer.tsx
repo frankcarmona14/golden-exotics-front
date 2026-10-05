@@ -83,8 +83,7 @@ export function SiteFooter() {
           <div className="col-span-full md:col-span-3">
             <LogoLink />
             <p className="mt-4 max-w-[220px] text-body-sm leading-relaxed text-neutral-500 dark:text-neutral-400">
-              Premium car rental service based in Miami, FL — for unforgettable
-              journeys.
+              Exotic and luxury car rental in Miami, FL.
             </p>
           </div>
           <nav className="col-span-full grid grid-cols-2 gap-x-6 gap-y-11 sm:grid-cols-3 md:col-span-9 lg:grid-cols-5">

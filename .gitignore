@@ -43,3 +43,6 @@ _tmp_*
 # Skills vendorizadas: se reinstalan desde skills-lock.json
 .agents/
 .claude/skills/
+
+# local production build (NEXT_DIST_DIR)
+/.next-prod/

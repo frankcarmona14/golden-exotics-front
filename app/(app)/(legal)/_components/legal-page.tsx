@@ -37,7 +37,7 @@ export function LegalPage({
         <p className="mb-3 text-caption font-semibold uppercase tracking-[0.12em] text-subtle">
           Legal
         </p>
-        <h1 className="text-balance text-heading sm:text-heading-lg text-neutral-950 dark:text-neutral-50">
+        <h1 className="text-balance text-heading text-neutral-950 dark:text-neutral-50 sm:text-heading-lg">
           {title}
         </h1>
         {subtitle && (
@@ -107,7 +107,7 @@ interface LegalSectionProps {
 export function LegalSection({ id, title, children }: LegalSectionProps) {
   return (
     <section id={id} className="mb-10 scroll-mt-[calc(var(--site-header-height)+16px)]">
-      <h2 className="mb-4 text-subheading sm:text-heading-sm text-neutral-950 dark:text-neutral-50">
+      <h2 className="mb-4 text-subheading text-neutral-950 dark:text-neutral-50 sm:text-heading-sm">
         {title}
       </h2>
       <div className="space-y-4 text-body leading-relaxed [&_a]:font-medium [&_a]:text-neutral-950 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-accent dark:[&_a]:text-neutral-50">

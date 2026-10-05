@@ -9,7 +9,7 @@ export const westPalmBeachArea: ServiceArea = {
     "Palm Beach County runs from Boca Raton in the south to Jupiter in the north, and it rewards a good car more than almost anywhere in South Florida. A1A hugs the ocean for long stretches, Worth Avenue and Atlantic Avenue are made for slow evening drives, and the polo grounds and golf clubs inland give you a reason to arrive in something special.",
     "Golden Exotics serves the whole county from our pick-up location at 1551 NW 79th Ave in Miami, just west of Miami International Airport. You can collect the car there and head north on I-95 or Florida's Turnpike, or ask us to arrange delivery to your home, hotel or Palm Beach International Airport. Booking is online with real daily prices, and availability is checked live, so the supercar, luxury SUV or convertible you see is the one you can reserve.",
   ],
-  status: "draft",
+  status: "published",
 }
 
 export const westPalmBeachCities: ServiceCity[] = [
@@ -56,7 +56,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["palm-beach", "palm-beach-airport", "lake-worth-beach", "palm-beach-gardens", "wellington"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "palm-beach",
@@ -97,7 +97,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["west-palm-beach", "lake-worth-beach", "palm-beach-gardens", "palm-beach-airport"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "palm-beach-airport",
@@ -134,7 +134,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["west-palm-beach", "palm-beach", "lake-worth-beach", "wellington"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "boca-raton",
@@ -175,7 +175,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["delray-beach", "boynton-beach", "deerfield-beach", "parkland", "coconut-creek"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "delray-beach",
@@ -216,7 +216,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["boca-raton", "boynton-beach", "lake-worth-beach", "wellington"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "boynton-beach",
@@ -253,7 +253,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["delray-beach", "lake-worth-beach", "boca-raton", "wellington"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "lake-worth-beach",
@@ -290,7 +290,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["west-palm-beach", "palm-beach", "boynton-beach", "palm-beach-airport", "wellington"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "wellington",
@@ -331,7 +331,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["west-palm-beach", "palm-beach-airport", "lake-worth-beach", "boynton-beach"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "palm-beach-gardens",
@@ -372,7 +372,7 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["jupiter", "west-palm-beach", "palm-beach", "wellington"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "jupiter",
@@ -413,6 +413,6 @@ export const westPalmBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["palm-beach-gardens", "west-palm-beach", "palm-beach"],
-    status: "draft",
+    status: "published",
   },
 ]

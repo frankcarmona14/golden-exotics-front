@@ -9,7 +9,7 @@ export const pompanoBeachArea: ServiceArea = {
     "Northern Broward is where the county slows down a little. On the coast, Pompano Beach, Lighthouse Point, Deerfield Beach and Lauderdale-by-the-Sea trade high-rise density for fishing piers, canal homes and long open stretches of A1A. Inland, Coconut Creek, Coral Springs, Parkland and Margate are leafy, planned suburbs laid out along the Sawgrass Expressway and Florida's Turnpike.",
     "Golden Exotics rents exotic and luxury cars across the whole stretch. Book online with real daily prices and live availability, then pick the car up at our location at 1551 NW 79th Ave in Miami, or ask us to arrange delivery to your home, hotel or the airport. Whether you want a convertible for the beach road or a luxury SUV for a weekend with family, the cities below are all within easy reach.",
   ],
-  status: "draft",
+  status: "published",
 }
 
 export const pompanoBeachCities: ServiceCity[] = [
@@ -56,7 +56,7 @@ export const pompanoBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["lighthouse-point", "deerfield-beach", "lauderdale-by-the-sea", "margate", "fort-lauderdale"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "lighthouse-point",
@@ -93,7 +93,7 @@ export const pompanoBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["pompano-beach", "deerfield-beach", "boca-raton", "lauderdale-by-the-sea"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "deerfield-beach",
@@ -130,7 +130,7 @@ export const pompanoBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["boca-raton", "lighthouse-point", "pompano-beach", "coconut-creek", "parkland"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "lauderdale-by-the-sea",
@@ -167,7 +167,7 @@ export const pompanoBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["pompano-beach", "fort-lauderdale", "lighthouse-point", "las-olas"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "coconut-creek",
@@ -204,7 +204,7 @@ export const pompanoBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["margate", "coral-springs", "parkland", "deerfield-beach", "pompano-beach"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "coral-springs",
@@ -241,7 +241,7 @@ export const pompanoBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["parkland", "coconut-creek", "margate", "sunrise"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "parkland",
@@ -278,7 +278,7 @@ export const pompanoBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["coral-springs", "coconut-creek", "boca-raton", "deerfield-beach"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "margate",
@@ -315,6 +315,6 @@ export const pompanoBeachCities: ServiceCity[] = [
       },
     ],
     nearby: ["coconut-creek", "coral-springs", "pompano-beach", "sunrise"],
-    status: "draft",
+    status: "published",
   },
 ]

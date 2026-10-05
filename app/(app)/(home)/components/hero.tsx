@@ -1,4 +1,6 @@
 import { Suspense } from "react"
+import Image from "next/image"
+import heroPoster from "@/public/assets/images/hero/hero-poster.jpg"
 
 import { SearchPanelWrapper } from "@/components/search-panel-wrapper"
 import { SearchPanelSkeleton } from "@/components/skeletons/search-panel"
@@ -10,6 +12,18 @@ export async function Hero() {
     <section className="relative">
       {/* Video background */}
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-neutral-900 sm:aspect-video lg:aspect-[21/9]">
+        {/* El primer fotograma del vídeo como imagen prioritaria: es lo que
+            Google mide como LCP. Sin ella, el LCP esperaba a que el vídeo
+            decodificara su primer fotograma (~3 s más en móvil). */}
+        <Image
+          src={heroPoster}
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          placeholder="blur"
+          className="scale-105 object-cover"
+        />
         <HeroVideo />
 
         {/* Multi-layer gradient overlays for cinematic feel */}
@@ -28,16 +42,17 @@ export async function Hero() {
           </p> */}
 
           <h1 className="text-balance text-center text-heading font-semibold text-white sm:text-heading-lg lg:text-display xl:text-display-xl">
-            Your Road Trip
+            Exotic &amp; Luxury Car Rental{" "}
             <span className="block bg-gradient-to-r from-white via-accent to-white bg-clip-text text-transparent">
-              Starts Here
+              in Miami
             </span>
           </h1>
 
           {/* Description */}
           <p className="mt-5 max-w-lg text-pretty text-center text-body-sm text-white/70 sm:mt-6 sm:text-body lg:max-w-xl">
-            Discover luxury vehicles from the world&apos;s most iconic brands.
-            Book seamlessly, drive confidently.
+            Pick up next to Miami International Airport or have the car
+            delivered, from Miami Beach to Palm Beach. Real daily prices,
+            booked online.
           </p>
 
           <div className="hidden w-full max-w-[860px] pt-8 md:block lg:pt-10">

@@ -40,7 +40,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["sunny-isles-beach", "north-miami-beach", "hallandale-beach", "bal-harbour"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "sunny-isles-beach",
@@ -81,7 +81,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["aventura", "bal-harbour", "north-miami-beach", "hallandale-beach"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "bal-harbour",
@@ -122,7 +122,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["surfside", "sunny-isles-beach", "miami-beach", "north-miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "surfside",
@@ -159,7 +159,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["bal-harbour", "miami-beach", "north-miami", "sunny-isles-beach"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "north-miami",
@@ -200,7 +200,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["north-miami-beach", "bal-harbour", "surfside", "miami-gardens", "miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "north-miami-beach",
@@ -237,7 +237,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["aventura", "north-miami", "sunny-isles-beach", "miami-gardens"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "miami-gardens",
@@ -274,7 +274,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["miami-lakes", "hialeah", "north-miami", "north-miami-beach", "miramar"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "hialeah",
@@ -315,7 +315,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["miami-lakes", "doral", "miami-gardens", "miami-international-airport", "miami"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "miami-lakes",
@@ -352,7 +352,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["hialeah", "miami-gardens", "doral", "miramar"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "kendall",
@@ -393,7 +393,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["pinecrest", "coral-gables", "doral", "homestead"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "pinecrest",
@@ -430,7 +430,7 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["kendall", "coral-gables", "coconut-grove"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "homestead",
@@ -471,6 +471,6 @@ export const miamiOuterCities: ServiceCity[] = [
       },
     ],
     nearby: ["kendall", "pinecrest", "coral-gables"],
-    status: "draft",
+    status: "published",
   },
 ]

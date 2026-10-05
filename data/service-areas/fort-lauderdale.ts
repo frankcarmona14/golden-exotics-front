@@ -9,7 +9,7 @@ export const fortLauderdaleArea: ServiceArea = {
     "Broward County runs from the beaches along A1A to the suburbs that stop at the edge of the Everglades, and an exotic car fits both ends of it. Spend a morning on Las Olas Boulevard, an afternoon on the coast road past Fort Lauderdale Beach, and an evening out west in Weston or Sunrise, all linked by I-95, I-595 and Florida's Turnpike.",
     "Golden Exotics rents supercars, luxury SUVs and convertibles from our location at 1551 NW 79th Ave in Miami, just south of the county line. You can collect the car there or ask us to arrange delivery to your home, hotel or Fort Lauderdale-Hollywood International Airport. Booking is online with real daily prices, and availability is checked live, so the car you choose is the car you get.",
   ],
-  status: "draft",
+  status: "published",
 }
 
 export const fortLauderdaleCities: ServiceCity[] = [
@@ -52,7 +52,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["las-olas", "fort-lauderdale-airport", "lauderdale-by-the-sea", "plantation", "dania-beach"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "las-olas",
@@ -89,7 +89,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["fort-lauderdale", "fort-lauderdale-airport", "dania-beach", "plantation"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "fort-lauderdale-airport",
@@ -130,7 +130,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["fort-lauderdale", "dania-beach", "hollywood", "las-olas"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "hollywood",
@@ -167,7 +167,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["hallandale-beach", "dania-beach", "fort-lauderdale-airport", "pembroke-pines", "miramar"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "hallandale-beach",
@@ -204,7 +204,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["hollywood", "aventura", "sunny-isles-beach", "miramar"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "dania-beach",
@@ -241,7 +241,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["fort-lauderdale-airport", "hollywood", "fort-lauderdale", "davie"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "weston",
@@ -278,7 +278,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["davie", "sunrise", "pembroke-pines", "plantation"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "plantation",
@@ -315,7 +315,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["fort-lauderdale", "sunrise", "davie", "weston"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "davie",
@@ -356,7 +356,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["plantation", "weston", "pembroke-pines", "hollywood", "dania-beach"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "pembroke-pines",
@@ -393,7 +393,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["miramar", "weston", "davie", "hollywood"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "miramar",
@@ -430,7 +430,7 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["pembroke-pines", "hollywood", "hallandale-beach", "miami-gardens", "miami-lakes"],
-    status: "draft",
+    status: "published",
   },
   {
     slug: "sunrise",
@@ -467,6 +467,6 @@ export const fortLauderdaleCities: ServiceCity[] = [
       },
     ],
     nearby: ["plantation", "weston", "davie", "coral-springs"],
-    status: "draft",
+    status: "published",
   },
 ]

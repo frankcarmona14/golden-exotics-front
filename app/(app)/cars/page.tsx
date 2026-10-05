@@ -77,7 +77,10 @@ export default async function CarsPage({
           </div>
         </div>
       </header>
-      <main id="main-content">
+      {/* Al menos una pantalla de alto: con pocos coches, lo que va debajo
+          (logos y pie) quedaba a la vista y saltaba al cambiar el esqueleto
+          por el catálogo (CLS 0.26 en móvil). */}
+      <main id="main-content" className="min-h-svh">
         <div className="mx-auto flex max-w-7xl gap-6 px-5 pb-12 pt-8 sm:px-6 lg:gap-8">
           {/* Filters rail — desktop only (≥ md). Mobile uses the modal above. */}
           <aside className="hidden w-[300px] shrink-0 md:block">
