@@ -33,6 +33,8 @@ const footerLinks: FooterSection[] = [
     // Un pie con todas las ciudades parece relleno de palabras clave.
     title: "Locations",
     links: [
+      // MIA primero: es el aeropuerto principal del cliente.
+      { label: "Miami Airport (MIA)", href: "/locations/miami-international-airport" },
       { label: "Miami", href: "/locations/miami-area" },
       { label: "Miami Beach", href: "/locations/miami-beach" },
       { label: "Fort Lauderdale", href: "/locations/fort-lauderdale-area" },

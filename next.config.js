@@ -7,7 +7,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "carhive.eduam.dev",
+        hostname: "goldenexoticsclub.com",
       },
       {
         protocol: "https",

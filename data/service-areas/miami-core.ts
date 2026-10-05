@@ -58,6 +58,50 @@ export const miamiCoreCities: ServiceCity[] = [
     status: "draft",
   },
   {
+    slug: "miami-international-airport",
+    name: "Miami International Airport",
+    areaSlug: "miami-area",
+    kind: "airport",
+    intro: [
+      "If you're flying into Miami, our location is about as convenient as it gets. Golden Exotics picks up and returns from 1551 NW 79th Ave, just west of Miami International Airport near Doral, so the trip between the terminal and the car is short. Land, collect your keys and be on the Dolphin Expressway toward downtown or the beaches.",
+      "Prefer to skip the extra stop? Ask for the car to be delivered to the airport when you book online and we'll arrange the handoff with you. It works well for business travelers with tight schedules and for anyone arriving late with luggage.",
+      "From MIA, the Dolphin Expressway runs east to downtown and the MacArthur Causeway to South Beach, LeJeune Road heads south into Coral Gables, and the Palmetto Expressway and Florida's Turnpike connect to the rest of South Florida, including Fort Lauderdale and the Palm Beaches.",
+    ],
+    highlights: [
+      {
+        title: "Dolphin Expressway (SR 836)",
+        text: "The main east-west route from the airport to downtown Miami and the causeways to Miami Beach.",
+      },
+      {
+        title: "LeJeune Road",
+        text: "Runs along the east side of the airport and south into Coral Gables.",
+      },
+      {
+        title: "Doral",
+        text: "The city directly west of the airport, home to golf resorts, restaurants and our pick-up location's neighborhood.",
+      },
+    ],
+    faqs: [
+      {
+        question: "How far is your location from Miami International Airport?",
+        answer:
+          "We're at 1551 NW 79th Ave, a short drive west of the airport near Doral.",
+      },
+      {
+        question: "Can you deliver the car to me at MIA?",
+        answer:
+          "Yes, airport delivery can be arranged on request. Add your flight details when you book so we can coordinate the handoff.",
+      },
+      {
+        question: "Can I return the car before my flight out?",
+        answer:
+          "Yes. Returning at our location keeps you close to the terminals, and an airport return can be requested when you book.",
+      },
+    ],
+    nearby: ["doral", "miami", "coral-gables", "hialeah"],
+    status: "draft",
+  },
+  {
     slug: "miami-beach",
     name: "Miami Beach",
     areaSlug: "miami-area",
@@ -435,50 +479,6 @@ export const miamiCoreCities: ServiceCity[] = [
       },
     ],
     nearby: ["south-beach", "miami-beach", "downtown-miami"],
-    status: "draft",
-  },
-  {
-    slug: "miami-international-airport",
-    name: "Miami International Airport",
-    areaSlug: "miami-area",
-    kind: "airport",
-    intro: [
-      "If you're flying into Miami, our location is about as convenient as it gets. Golden Exotics picks up and returns from 1551 NW 79th Ave, just west of Miami International Airport near Doral, so the trip between the terminal and the car is short. Land, collect your keys and be on the Dolphin Expressway toward downtown or the beaches.",
-      "Prefer to skip the extra stop? Ask for the car to be delivered to the airport when you book online and we'll arrange the handoff with you. It works well for business travelers with tight schedules and for anyone arriving late with luggage.",
-      "From MIA, the Dolphin Expressway runs east to downtown and the MacArthur Causeway to South Beach, LeJeune Road heads south into Coral Gables, and the Palmetto Expressway and Florida's Turnpike connect to the rest of South Florida, including Fort Lauderdale and the Palm Beaches.",
-    ],
-    highlights: [
-      {
-        title: "Dolphin Expressway (SR 836)",
-        text: "The main east-west route from the airport to downtown Miami and the causeways to Miami Beach.",
-      },
-      {
-        title: "LeJeune Road",
-        text: "Runs along the east side of the airport and south into Coral Gables.",
-      },
-      {
-        title: "Doral",
-        text: "The city directly west of the airport, home to golf resorts, restaurants and our pick-up location's neighborhood.",
-      },
-    ],
-    faqs: [
-      {
-        question: "How far is your location from Miami International Airport?",
-        answer:
-          "We're at 1551 NW 79th Ave, a short drive west of the airport near Doral.",
-      },
-      {
-        question: "Can you deliver the car to me at MIA?",
-        answer:
-          "Yes, airport delivery can be arranged on request. Add your flight details when you book so we can coordinate the handoff.",
-      },
-      {
-        question: "Can I return the car before my flight out?",
-        answer:
-          "Yes. Returning at our location keeps you close to the terminals, and an airport return can be requested when you book.",
-      },
-    ],
-    nearby: ["doral", "miami", "coral-gables", "hialeah"],
     status: "draft",
   },
   {
