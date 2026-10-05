@@ -9,6 +9,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata"
 import { buildOrganizationJsonLd } from "@/lib/seo/structured-data"
 import { JsonLd } from "@/components/json-ld"
 
+import { AreasWeServe } from "./components/areas-we-serve"
 import { BrowseCarTypes } from "./components/browse-car-types"
 import { CallToAction } from "./components/call-to-action"
 import { Hero } from "./components/hero"
@@ -45,6 +46,9 @@ export default async function HomePage() {
             80px from lg, and a wider 100px approach into the closing CTA. */}
         <div className="pt-14 lg:pt-section">
           <BrowseCarTypes brands={brands} carCounts={carCounts} />
+        </div>
+        <div className="pt-14 lg:pt-section">
+          <AreasWeServe />
         </div>
         <div className="pt-14 lg:pt-section">
           <Testimonials />

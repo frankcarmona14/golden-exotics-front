@@ -3,6 +3,11 @@ export interface CarBrand {
   slug: string
   name: string
   tagline: string
+  /**
+   * Texto de la página de la marca cuando su categoría en Medusa no tiene
+   * descripción. La del admin manda.
+   */
+  description?: string
   logoColor: string
   gradientFrom: string
   gradientTo: string
@@ -15,6 +20,8 @@ export const carBrands: CarBrand[] = [
     slug: "mercedes-benz",
     name: "Mercedes-Benz",
     tagline: "The Best or Nothing",
+    description:
+      "Mercedes-Benz covers both sides of a Miami trip: the comfort to cross town in traffic and the AMG performance for the open stretches. The G-Class is the one people recognize from across the street, boxy, loud and built like nothing else on the road, and it suits valet lines on Collins Avenue as well as a drive down to Key Biscayne. Every Mercedes we rent is listed here with its real daily price and live availability.",
     logoColor: "#00adef",
     gradientFrom: "#0f172a",
     gradientTo: "#1e293b",
@@ -25,6 +32,8 @@ export const carBrands: CarBrand[] = [
     slug: "lamborghini",
     name: "Lamborghini",
     tagline: "Expect the Unexpected",
+    description:
+      "Lamborghini is the name most people picture when they think of an exotic car in Miami. The Urus brings that sharp design and a twin-turbo V8 into an SUV with four real seats and room for luggage, so it works for an airport pick-up as well as a night out in South Beach. Every Lamborghini we rent is listed here with its real daily price and live availability.",
     logoColor: "#ddb321",
     gradientFrom: "#1a1a0a",
     gradientTo: "#2d2a10",

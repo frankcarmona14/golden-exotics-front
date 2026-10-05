@@ -7,8 +7,8 @@ import { slugify } from "@/lib/utils"
 
 /**
  * Una marca de la tienda. Nombre, handle y descripción salen de la categoría
- * de producto en Medusa; el lema y los colores de la tarjeta, de
- * `data/car-brands.ts`, que el admin de Medusa no tiene dónde guardar.
+ * de producto en Medusa; el lema, los colores de la tarjeta y una descripción
+ * de respaldo, de `data/car-brands.ts`, que el admin no tiene dónde guardar.
  */
 export interface Brand {
   handle: string
@@ -48,7 +48,7 @@ function toBrand(input: {
   return {
     handle: input.handle,
     name: input.name,
-    description: input.description ?? "",
+    description: input.description || style?.description || "",
     tagline: style?.tagline ?? null,
     logoColor: style?.logoColor ?? DEFAULT_STYLE.logoColor,
     gradientFrom: style?.gradientFrom ?? DEFAULT_STYLE.gradientFrom,

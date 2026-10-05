@@ -271,3 +271,55 @@ export function buildOrganizationJsonLd(input: OrganizationInput): JsonLd {
     ...(input.sameAs && input.sameAs.length > 0 && { sameAs: input.sameAs }),
   }
 }
+
+/** Home › Locations › <área> [› <ciudad>]. */
+export function buildLocationBreadcrumbJsonLd(
+  trail: { name: string; slug: string }[],
+  options: { baseUrl?: string } = {}
+): JsonLd {
+  return buildBreadcrumbJsonLd(
+    [
+      { name: "Home", path: "/" },
+      { name: "Locations", path: "/locations" },
+      ...trail.map((t) => ({ name: t.name, path: `/locations/${t.slug}` })),
+    ],
+    options.baseUrl ?? siteConfig.url
+  )
+}
+
+interface LocationServiceInput {
+  /** "Miami Beach", "Fort Lauderdale Area". */
+  name: string
+  slug: string
+  /** City para municipios; Place para barrios, aeropuertos y áreas. */
+  placeType: "City" | "Place" | "AdministrativeArea"
+  description: string
+}
+
+/**
+ * Página de ciudad como Service con su areaServed. No es un LocalBusiness:
+ * la única dirección física es la de Miami, y declarar un negocio local en
+ * cada ciudad sin oficina allí es lo que Google castiga como spam local.
+ */
+export function buildLocationServiceJsonLd(
+  input: LocationServiceInput,
+  options: { baseUrl?: string } = {}
+): JsonLd {
+  const baseUrl = options.baseUrl ?? siteConfig.url
+  const url = absoluteUrl(`/locations/${input.slug}`, baseUrl)
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name: `Exotic car rental in ${input.name}`,
+    serviceType: "Exotic and luxury car rental",
+    url,
+    description: input.description,
+    areaServed: {
+      "@type": input.placeType,
+      name: input.name,
+      containedInPlace: { "@type": "State", name: "Florida" },
+    },
+    provider: { "@id": `${baseUrl.replace(/\/+$/, "")}/#organization` },
+  }
+}

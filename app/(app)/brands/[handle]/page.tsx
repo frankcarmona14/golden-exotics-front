@@ -2,6 +2,7 @@ import { Suspense } from "react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { SERVICE_AREAS } from "@/data/service-areas"
 
 import {
   getBrandByHandle,
@@ -15,6 +16,7 @@ import { BrandNav } from "@/components/brand-nav"
 import { JsonLd } from "@/components/json-ld"
 
 import { CarCard } from "../../cars/components/car-card"
+import { LinkChips } from "../../locations/components"
 
 /** Las marcas y sus coches cambian desde el admin de Medusa. */
 export const revalidate = 3600
@@ -124,6 +126,15 @@ export default async function BrandPage({ params }: BrandPageProps) {
           </div>
         )}
       </section>
+      <div className="mt-12">
+        <LinkChips
+          label={`Rent a ${brand.name} across South Florida`}
+          links={SERVICE_AREAS.map((area) => ({
+            href: `/locations/${area.slug}`,
+            name: area.name,
+          }))}
+        />
+      </div>
     </main>
   )
 }

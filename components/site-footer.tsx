@@ -22,6 +22,7 @@ const footerLinks: FooterSection[] = [
     links: [
       { label: "Browse cars", href: "/cars" },
       { label: "Brands", href: "/brands" },
+      { label: "Locations", href: "/locations" },
       { label: "Driver requirements", href: "/driver-requirements" },
       { label: "Insurance options", href: "/driver-requirements#insurance" },
       { label: "Corporate rentals", href: "/" },

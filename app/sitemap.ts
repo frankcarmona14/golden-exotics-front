@@ -1,7 +1,12 @@
 import type { MetadataRoute } from "next"
 import { getBrands } from "@/db/queries/brand-repository"
 import { getCars } from "@/db/queries/car-repository"
+import { SERVICE_AREAS, SERVICE_CITIES } from "@/data/service-areas"
 
+import {
+  findLocationPage,
+  isIndexable,
+} from "@/lib/seo/service-areas"
 import { absoluteUrl } from "@/lib/seo/urls"
 
 /**
@@ -22,6 +27,7 @@ const STATIC_PAGES: {
   { path: "/", changeFrequency: "weekly", priority: 1 },
   { path: "/cars", changeFrequency: "daily", priority: 0.9 },
   { path: "/brands", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/locations", changeFrequency: "monthly", priority: 0.7 },
   { path: "/driver-requirements", changeFrequency: "yearly", priority: 0.4 },
   { path: "/cancellation-policy", changeFrequency: "yearly", priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
@@ -53,5 +59,23 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }))
 
-  return [...staticEntries, ...brandEntries, ...carEntries]
+  // Solo las ciudades publicadas: un borrador lleva noindex y no pinta nada
+  // en el sitemap (Search Console lo marcaría como contradicción).
+  const locationEntries = [...SERVICE_AREAS, ...SERVICE_CITIES]
+    .map(({ slug }) => findLocationPage(slug, SERVICE_AREAS, SERVICE_CITIES))
+    .filter((page) => page !== undefined && isIndexable(page))
+    .map((page) => ({
+      url: absoluteUrl(
+        `/locations/${page!.type === "area" ? page!.area.slug : page!.city.slug}`
+      ),
+      changeFrequency: "monthly" as const,
+      priority: page!.type === "area" ? 0.7 : 0.6,
+    }))
+
+  return [
+    ...staticEntries,
+    ...brandEntries,
+    ...locationEntries,
+    ...carEntries,
+  ]
 }
