@@ -103,12 +103,14 @@ export function LoginForm() {
               <Label htmlFor="password" className="text-body-sm">
                 Password
               </Label>
-              <a
-                href={`mailto:${siteConfig.contact.email}?subject=Password%20reset`}
-                className="text-caption font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-              >
-                Forgot password?
-              </a>
+              {siteConfig.contact.email && (
+                <a
+                  href={`mailto:${siteConfig.contact.email}?subject=Password%20reset`}
+                  className="text-caption font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                >
+                  Forgot password?
+                </a>
+              )}
             </div>
             <PasswordInput
               id="password"

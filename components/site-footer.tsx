@@ -58,7 +58,9 @@ const footerLinks: FooterSection[] = [
     title: "Company",
     links: [
       { label: "About", href: "/" },
-      { label: "Contact us", href: "mailto:support@carhive.com", external: true },
+      ...(siteConfig.contact.email
+        ? [{ label: "Contact us", href: `mailto:${siteConfig.contact.email}`, external: true }]
+        : []),
       { label: "Blog", href: "/" },
       { label: "Careers", href: "/" },
       { label: "Press", href: "/" },

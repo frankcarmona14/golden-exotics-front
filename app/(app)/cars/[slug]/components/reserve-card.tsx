@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { addDays, format, parseISO } from "date-fns"
 import type { DateRange } from "react-day-picker"
 
+import { getWhatsAppUrl, siteConfig } from "@/config/site"
 import { DESKTOP_MEDIA_QUERY } from "@/lib/constants"
 import { getRentalAvailability, getRentalBookedDates } from "@/lib/medusa/rental"
 import type { BookedRange } from "@/lib/medusa/rental"
@@ -34,6 +35,59 @@ import { LoadingDots } from "@/components/loading-dots"
 
 interface ReserveCardProps {
   car: SelectCar
+}
+
+/** Para coches que no se pueden reservar online: precio orientativo y contacto. */
+function NotBookableOnlineCard({
+  car,
+  pricePerDay,
+}: {
+  car: SelectCar
+  pricePerDay: number | null
+}) {
+  const whatsAppUrl = getWhatsAppUrl(
+    `Hi ${siteConfig.name}! I'd like to book the ${car.name}.`
+  )
+  const email = siteConfig.contact.email
+  const contactHref =
+    whatsAppUrl ??
+    (email
+      ? `mailto:${email}?subject=${encodeURIComponent(`Booking the ${car.name}`)}`
+      : null)
+
+  return (
+    <div className="overflow-hidden rounded-card border shadow-[0_6px_16px_rgba(0,0,0,0.12)] dark:border-neutral-800 dark:shadow-[0_6px_16px_rgba(0,0,0,0.4)]">
+      <div className="p-6">
+        {pricePerDay != null && (
+          <div className="mb-6">
+            <span className="block text-heading-sm tabular-nums">
+              {formatAmountForDisplay(pricePerDay, car.currency)}
+            </span>
+            <span className="text-body-sm text-neutral-500 dark:text-neutral-400">
+              Per day
+            </span>
+          </div>
+        )}
+        <p className="text-body-sm text-neutral-600 dark:text-neutral-300">
+          This car can&apos;t be booked online right now. Contact us and
+          we&apos;ll set up your reservation.
+        </p>
+        {contactHref && (
+          <div className="pt-5">
+            <Button size="lg" className="w-full text-body" asChild>
+              <a
+                href={contactHref}
+                target={whatsAppUrl ? "_blank" : undefined}
+                rel={whatsAppUrl ? "noopener noreferrer" : undefined}
+              >
+                {whatsAppUrl ? "Message us on WhatsApp" : "Email us to book"}
+              </a>
+            </Button>
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
 
 const DEFAULT_TIME = "10:00"
@@ -590,7 +644,8 @@ export function ReserveCard({ car }: ReserveCardProps) {
     checkoutDate != null &&
     !isCheckingAvailability &&
     !validationError &&
-    (!isRentable || availability?.available === true)
+    isRentable &&
+    availability?.available === true
 
   const hasDates = checkinDate != null && checkoutDate != null && days > 0
 
@@ -754,6 +809,14 @@ export function ReserveCard({ car }: ReserveCardProps) {
       </span>
     </button>
   )
+
+  // Sin configuración de alquiler activa el backend rechaza la reserva, así que
+  // ni fechas ni botón: se dejaba elegirlas todas y el "no" llegaba en el
+  // checkout. El coche sigue en el catálogo y en el sitemap; solo cambia cómo
+  // se reserva.
+  if (!isRentable) {
+    return <NotBookableOnlineCard car={car} pricePerDay={hasValidPrice ? pricePerDayNum : null} />
+  }
 
   return (
     <div className="overflow-hidden rounded-card border shadow-[0_6px_16px_rgba(0,0,0,0.12)] dark:border-neutral-800 dark:shadow-[0_6px_16px_rgba(0,0,0,0.4)]">

@@ -4,7 +4,7 @@ import { Metadata } from "next"
 import { format } from "date-fns"
 
 import { getCustomer } from "@/lib/medusa/customer"
-import { getGuestNotes, getOrderRentals } from "@/lib/medusa/rental"
+import { getGuestNotes, getOrderRentalsWithPayment } from "@/lib/medusa/rental"
 import { formatAmountForDisplay } from "@/lib/utils"
 import { getWhatsAppUrl, siteConfig } from "@/config/site"
 import { Button } from "@/components/ui/button"
@@ -107,14 +107,16 @@ export default async function ResultPage({
     currency?: string
   }
 }): Promise<JSX.Element> {
-  const { rental_id, status, deposit: depositParam, currency: currencyParam } = searchParams
-  const depositAmount = depositParam ? Number(depositParam) : null
-  const depositCurrency = currencyParam ?? "usd"
+  const { rental_id, status } = searchParams
   const isRentalSuccess = status === "success"
 
-  // Fetch rental details and auth state in parallel.
-  const [rentals, customer] = await Promise.all([
-    rental_id ? getOrderRentals(rental_id) : Promise.resolve([]),
+  // Fetch rental details and auth state in parallel. What was paid comes from
+  // the order itself, not from the URL: the checkout used to pass the deposit
+  // ($500) and the page called it "Deposit paid" after charging $610.
+  const [{ rentals, payment }, customer] = await Promise.all([
+    rental_id
+      ? getOrderRentalsWithPayment(rental_id)
+      : Promise.resolve({ rentals: [], payment: null }),
     getCustomer(),
   ])
   const rental = rentals[0] ?? null
@@ -135,17 +137,20 @@ export default async function ResultPage({
   // always include the reservation id when we have one so the support team
   // can match the chat to the booking.
   const documentsWhatsAppMessage = rental_id
-    ? `Hi Carhive! I'd like to send the documents for reservation #${rental_id}.`
-    : `Hi Carhive! I'd like to send the documents for my reservation.`
+    ? `Hi ${siteConfig.name}! I'd like to send the documents for reservation #${rental_id}.`
+    : `Hi ${siteConfig.name}! I'd like to send the documents for my reservation.`
   const documentsWhatsAppUrl = getWhatsAppUrl(documentsWhatsAppMessage)
 
   // General "questions?" WhatsApp CTA shown in the contact row (no
   // reservation-specific context, just open the chat).
   const contactWhatsAppUrl = getWhatsAppUrl(
     rental_id
-      ? `Hi Carhive! I have a question about reservation #${rental_id}.`
+      ? `Hi ${siteConfig.name}! I have a question about reservation #${rental_id}.`
       : undefined,
   )
+  // Only Golden Exotics' configured channels; none of the template's.
+  const { whatsapp, instagram, email } = siteConfig.contact
+  const hasContactChannels = Boolean(whatsapp || instagram || email)
 
   return (
     <div>
@@ -249,22 +254,33 @@ export default async function ResultPage({
                       </div>
                     )}
 
-                    {/* Deposit paid */}
-                    {depositAmount != null && depositAmount > 0 && (
+                    {/* What was charged, and what's left */}
+                    {payment && payment.paid_total > 0 && (
                       <div className="border-t border-neutral-100 px-4 py-3.5 dark:border-neutral-800">
                         <div className="flex items-center justify-between">
                           <p className="text-body-sm font-semibold text-neutral-700 dark:text-neutral-200">
-                            Deposit paid
+                            Paid
                           </p>
                           <p className="text-body-sm font-semibold text-neutral-900 dark:text-neutral-50">
-                            {formatAmountForDisplay(depositAmount, depositCurrency)}
+                            {formatAmountForDisplay(payment.paid_total, payment.currency_code)}
                           </p>
                         </div>
-                        <p className="mt-1 text-caption text-neutral-400 dark:text-neutral-500">
-                          {delivery
-                            ? "Remaining balance due when we deliver the car"
-                            : "Remaining balance due at vehicle pickup"}
-                        </p>
+                        {payment.balance_due > 0 ? (
+                          <div className="mt-1.5 flex items-center justify-between">
+                            <p className="text-caption text-neutral-500 dark:text-neutral-400">
+                              {delivery
+                                ? "Balance due when we deliver the car"
+                                : "Balance due at vehicle pickup"}
+                            </p>
+                            <p className="text-caption font-medium text-neutral-700 dark:text-neutral-200">
+                              {formatAmountForDisplay(payment.balance_due, payment.currency_code)}
+                            </p>
+                          </div>
+                        ) : (
+                          <p className="mt-1 text-caption text-neutral-400 dark:text-neutral-500">
+                            Paid in full
+                          </p>
+                        )}
                       </div>
                     )}
                   </div>
@@ -305,50 +321,75 @@ export default async function ResultPage({
                 </div>
 
                 {/* Contact channels */}
-                <div className="mt-5 w-full">
-                  <p className="mb-2.5 text-left text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-                    Need help? Reach us on
-                  </p>
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <a
-                      href={contactWhatsAppUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-[#25D366]/40 hover:bg-[#25D366]/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-[#25D366]/40 dark:hover:bg-[#25D366]/10"
-                    >
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-[#25D366]/10">
-                        <WhatsAppIcon className="size-4 text-[#25D366]" />
-                      </div>
-                      <div className="min-w-0 text-left">
-                        <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-                          WhatsApp
-                        </p>
-                        <p className="truncate text-body-sm font-medium text-neutral-700 dark:text-neutral-200">
-                          {siteConfig.contact.whatsapp.display}
-                        </p>
-                      </div>
-                    </a>
+                {hasContactChannels && (
+                  <div className="mt-5 w-full">
+                    <p className="mb-2.5 text-left text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                      Need help? Reach us on
+                    </p>
+                    <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
+                      {whatsapp && contactWhatsAppUrl && (
+                        <a
+                          href={contactWhatsAppUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-[#25D366]/40 hover:bg-[#25D366]/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-[#25D366]/40 dark:hover:bg-[#25D366]/10"
+                        >
+                          <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-[#25D366]/10">
+                            <WhatsAppIcon className="size-4 text-[#25D366]" />
+                          </div>
+                          <div className="min-w-0 text-left">
+                            <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                              WhatsApp
+                            </p>
+                            <p className="truncate text-body-sm font-medium text-neutral-700 dark:text-neutral-200">
+                              {whatsapp.display}
+                            </p>
+                          </div>
+                        </a>
+                      )}
 
-                    <a
-                      href={siteConfig.contact.instagram.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="group flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-pink-500/40 hover:bg-pink-500/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-pink-500/40 dark:hover:bg-pink-500/10"
-                    >
-                      <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-pink-500/10">
-                        <InstagramIcon className="size-4 text-pink-500" />
-                      </div>
-                      <div className="min-w-0 text-left">
-                        <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-                          Instagram
-                        </p>
-                        <p className="truncate text-body-sm font-medium text-neutral-700 dark:text-neutral-200">
-                          @{siteConfig.contact.instagram.handle}
-                        </p>
-                      </div>
-                    </a>
+                      {instagram && (
+                        <a
+                          href={instagram.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-pink-500/40 hover:bg-pink-500/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-pink-500/40 dark:hover:bg-pink-500/10"
+                        >
+                          <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-pink-500/10">
+                            <InstagramIcon className="size-4 text-pink-500" />
+                          </div>
+                          <div className="min-w-0 text-left">
+                            <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                              Instagram
+                            </p>
+                            <p className="truncate text-body-sm font-medium text-neutral-700 dark:text-neutral-200">
+                              @{instagram.handle}
+                            </p>
+                          </div>
+                        </a>
+                      )}
+
+                      {email && (
+                        <a
+                          href={`mailto:${email}`}
+                          className="group flex items-center gap-3 rounded-card border border-neutral-100 bg-neutral-50 px-4 py-3 transition-colors hover:border-blue-500/40 hover:bg-blue-500/5 dark:border-neutral-800 dark:bg-neutral-800/50 dark:hover:border-blue-500/40 dark:hover:bg-blue-500/10"
+                        >
+                          <div className="flex size-8 shrink-0 items-center justify-center rounded-tight bg-blue-500/10">
+                            <MailIcon className="size-3.5 text-blue-500" />
+                          </div>
+                          <div className="min-w-0 text-left">
+                            <p className="text-caption font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                              Email
+                            </p>
+                            <p className="truncate text-body-sm font-medium text-neutral-700 dark:text-neutral-200">
+                              {email}
+                            </p>
+                          </div>
+                        </a>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Security note */}
                 <div className="mt-6 flex items-center justify-center gap-1.5">
@@ -378,7 +419,7 @@ export default async function ResultPage({
                         </span>
                       </Link>
                     </Button>
-                  ) : (
+                  ) : documentsWhatsAppUrl ? (
                     <Button
                       asChild
                       className="flex-1 rounded-card bg-[#25D366] py-5 text-body-sm font-semibold text-white shadow-[0_0_20px_rgba(37,211,102,0.2)] transition-all hover:bg-[#20BA5A] hover:shadow-[0_0_30px_rgba(37,211,102,0.3)]"
@@ -394,7 +435,7 @@ export default async function ResultPage({
                         </span>
                       </a>
                     </Button>
-                  )}
+                  ) : null}
                   <Button
                     asChild
                     variant="outline"

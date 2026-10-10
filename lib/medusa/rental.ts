@@ -332,14 +332,35 @@ export interface OrderRentalDetails {
   }
 }
 
+/**
+ * What the order has paid and still owes, from the order's live summary in
+ * Medusa: deposit plus fees and taxes at booking, and the balance once
+ * collected. Not the deposit: the confirmation used to say "Deposit paid $500"
+ * after charging $610.
+ */
+export interface OrderPaymentSummary {
+  currency_code: string
+  paid_total: number
+  balance_due: number
+  total: number
+}
+
+export async function getOrderRentalsWithPayment(orderId: string): Promise<{
+  rentals: OrderRentalDetails[]
+  payment: OrderPaymentSummary | null
+}> {
+  const { ok, data } = await medusaFetch<{
+    rentals: OrderRentalDetails[]
+    payment?: OrderPaymentSummary | null
+  }>(`/store/orders/${orderId}/rentals`)
+  if (!ok) return { rentals: [], payment: null }
+  return { rentals: data.rentals ?? [], payment: data.payment ?? null }
+}
+
 export async function getOrderRentals(
   orderId: string
 ): Promise<OrderRentalDetails[]> {
-  const { ok, data } = await medusaFetch<{ rentals: OrderRentalDetails[] }>(
-    `/store/orders/${orderId}/rentals`
-  )
-  if (!ok) return []
-  return data.rentals ?? []
+  return (await getOrderRentalsWithPayment(orderId)).rentals
 }
 
 // ---------------------------------------------------------------------------

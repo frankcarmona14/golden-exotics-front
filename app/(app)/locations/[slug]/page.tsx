@@ -80,6 +80,7 @@ export default async function LocationPageView({ params }: LocationPageProps) {
 
   const { area } = page
   const placeName = page.type === "area" ? area.shortName : page.city.name
+  const messageUsUrl = getWhatsAppUrl(`Hi! I'd like to rent a car in ${placeName}.`)
   const heading = locationHeading(page)
   const intro = introOf(page)
   const zoneCode = deliveryZoneCodeFor(page)
@@ -159,17 +160,13 @@ export default async function LocationPageView({ params }: LocationPageProps) {
           <Button asChild>
             <Link href="/cars">Browse the fleet</Link>
           </Button>
-          <Button asChild variant="outline">
-            <a
-              href={getWhatsAppUrl(
-                `Hi! I'd like to rent a car in ${placeName}.`
-              )}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Message us
-            </a>
-          </Button>
+          {messageUsUrl && (
+            <Button asChild variant="outline">
+              <a href={messageUsUrl} target="_blank" rel="noopener noreferrer">
+                Message us
+              </a>
+            </Button>
+          )}
         </div>
       </header>
 
