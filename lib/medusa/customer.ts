@@ -4,6 +4,7 @@ import { cookies } from "next/headers"
 import { revalidateTag, unstable_noStore as noStore } from "next/cache"
 import { redirect } from "next/navigation"
 
+import { CONTACT_PHONE_ERROR, isValidContactPhone } from "@/lib/phone"
 import { sdk } from "./sdk"
 
 const AUTH_COOKIE_NAME = "_medusa_jwt"
@@ -108,10 +109,15 @@ export async function signup(
   const password = formData.get("password") as string
   const firstName = formData.get("first_name") as string
   const lastName = formData.get("last_name") as string
-  const phone = (formData.get("phone") as string) || undefined
+  const phone = ((formData.get("phone") as string) || "").trim()
 
-  if (!email || !password || !firstName || !lastName) {
+  if (!email || !password || !firstName || !lastName || !phone) {
     return { error: "All required fields must be filled in.", success: false }
+  }
+  // Required to book (the team reaches renters on WhatsApp), so it's asked
+  // once here instead of at every checkout.
+  if (!isValidContactPhone(phone)) {
+    return { error: CONTACT_PHONE_ERROR, success: false }
   }
 
   try {
@@ -186,13 +192,16 @@ export async function updateCustomer(
   if (!firstName || !lastName) {
     return { error: "First and last name are required.", success: false }
   }
+  if (!isValidContactPhone(phone)) {
+    return { error: CONTACT_PHONE_ERROR, success: false }
+  }
 
   try {
     await sdk.store.customer.update(
       {
         first_name: firstName,
         last_name: lastName,
-        phone: phone || undefined,
+        phone,
       },
       {},
       { authorization: `Bearer ${token}` }
@@ -204,6 +213,33 @@ export async function updateCustomer(
   }
 
   return { error: null, success: true }
+}
+
+// ---------------------------------------------------------------------------
+// Add the phone at checkout (accounts created when it was optional)
+// ---------------------------------------------------------------------------
+
+export async function saveCustomerPhone(
+  phone: string
+): Promise<{ error: string | null }> {
+  const token = await getAuthToken()
+  if (!token) return { error: "Please log in again." }
+
+  const value = phone.trim()
+  if (!isValidContactPhone(value)) return { error: CONTACT_PHONE_ERROR }
+
+  try {
+    await sdk.store.customer.update(
+      { phone: value },
+      {},
+      { authorization: `Bearer ${token}` }
+    )
+    revalidateTag("customer")
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error)
+    return { error: `Could not save your number: ${message}` }
+  }
+  return { error: null }
 }
 
 // ---------------------------------------------------------------------------

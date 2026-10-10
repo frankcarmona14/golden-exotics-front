@@ -6,6 +6,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 
 import { signup } from "@/lib/medusa/customer"
+import { CONTACT_PHONE_HINT } from "@/lib/phone"
 import { LoadingDots } from "@/components/loading-dots"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -131,15 +132,19 @@ export function RegisterForm() {
 
           <div className="space-y-1.5">
             <Label htmlFor="phone" className="text-body-sm">
-              Phone (optional)
+              Mobile phone
             </Label>
             <PhoneInput
               id="phone"
               name="phone"
               value={phone}
               onChange={setPhone}
+              required
               className="h-11"
             />
+            <p className="text-caption text-neutral-500 dark:text-neutral-400">
+              {CONTACT_PHONE_HINT}
+            </p>
           </div>
 
           <div className="space-y-1.5">

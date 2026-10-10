@@ -381,6 +381,7 @@ export default async function CarReservationPage({
                       isLoggedIn={isLoggedIn}
                       customerName={customerName}
                       customerEmail={customer?.email}
+                      customerPhone={customer?.phone}
                       redirectTo={redirectTo}
                     />
                     <Separator className="my-7" />
@@ -396,6 +397,7 @@ export default async function CarReservationPage({
                         isLoggedIn={isLoggedIn}
                         customerEmail={customer?.email}
                         customerName={customerName}
+                        customerPhone={customer?.phone}
                         deposit={depositAmount}
                         currency={currency}
                         addons={selectedAddons}

@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { prepareRentalCheckout, completeRentalCart } from "@/lib/medusa/rental"
+import { isValidContactPhone } from "@/lib/phone"
 
 import { Button } from "@/components/ui/button"
 import { LoadingDots } from "@/components/loading-dots"
@@ -24,6 +25,7 @@ interface ConfirmRentalProps {
   isLoggedIn: boolean
   customerEmail?: string | null
   customerName?: string | null
+  customerPhone?: string | null
   deposit?: number | null
   currency?: string
   /**
@@ -57,6 +59,7 @@ export function ConfirmRental({
   isLoggedIn,
   customerEmail,
   customerName,
+  customerPhone,
   deposit,
   currency,
   addons,
@@ -76,7 +79,9 @@ export function ConfirmRental({
   // and is communicated via the legal notice above the submit button.
   const termsAccepted = acceptedDriverLicense
 
-  const isIdentified = isLoggedIn || !!guest
+  // A logged-in renter without a valid phone adds it above first (the backend
+  // refuses the booking without one).
+  const isIdentified = (isLoggedIn && isValidContactPhone(customerPhone)) || !!guest
   const effectiveEmail = customerEmail ?? guest?.email ?? ""
   const effectiveName =
     customerName ??
@@ -254,7 +259,9 @@ export function ConfirmRental({
 
       {!isIdentified && (
         <p className="mt-6 text-center text-sm text-neutral-500">
-          Please log in or continue as guest above to confirm your reservation
+          {isLoggedIn
+            ? "Add your mobile number above to confirm your reservation"
+            : "Please log in or continue as guest above to confirm your reservation"}
         </p>
       )}
 

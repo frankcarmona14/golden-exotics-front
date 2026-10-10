@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { PhoneInput } from "@/components/ui/phone-input"
+import { CONTACT_PHONE_HINT } from "@/lib/phone"
 import { LoadingDots } from "@/components/loading-dots"
 
 interface ProfileFormProps {
@@ -107,11 +108,14 @@ export function ProfileForm({
 
       <div className="space-y-1.5">
         <Label htmlFor="phone" className="text-body-sm">
-          Phone <span className="text-neutral-400">(optional)</span>
+          Mobile phone
         </Label>
         {/* Hidden field carries the value into the server action */}
         <input type="hidden" name="phone" value={phone} />
-        <PhoneInput id="phone" value={phone} onChange={setPhone} />
+        <PhoneInput id="phone" value={phone} onChange={setPhone} required />
+        <p className="text-caption text-neutral-500 dark:text-neutral-400">
+          {CONTACT_PHONE_HINT}
+        </p>
       </div>
 
       <div className="pt-1">

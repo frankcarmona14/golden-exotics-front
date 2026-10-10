@@ -1,7 +1,15 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useTransition } from "react"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
+
+import { saveCustomerPhone } from "@/lib/medusa/customer"
+import {
+  CONTACT_PHONE_ERROR,
+  CONTACT_PHONE_HINT,
+  isValidContactPhone,
+} from "@/lib/phone"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,6 +23,8 @@ interface AuthSectionProps {
   isLoggedIn: boolean
   customerName?: string | null
   customerEmail?: string | null
+  /** The account's phone; a logged-in renter without a valid one must add it. */
+  customerPhone?: string | null
   redirectTo?: string
 }
 
@@ -22,6 +32,7 @@ export function AuthSection({
   isLoggedIn,
   customerName,
   customerEmail,
+  customerPhone,
   redirectTo,
 }: AuthSectionProps) {
   const { guest, setGuest } = useGuest()
@@ -31,6 +42,15 @@ export function AuthSection({
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [phone, setPhone] = useState("")
+
+  if (isLoggedIn && !isValidContactPhone(customerPhone)) {
+    return (
+      <AddPhoneToAccount
+        who={customerName || customerEmail || null}
+        initialPhone={customerPhone ?? ""}
+      />
+    )
+  }
 
   if (isLoggedIn) {
     return (
@@ -87,8 +107,8 @@ export function AuthSection({
     const trimmedLast = lastName.trim()
     const trimmedPhone = phone.trim()
 
-    if (!trimmedEmail || !trimmedFirst || !trimmedLast) {
-      setFormError("Email, first name and last name are required.")
+    if (!trimmedEmail || !trimmedFirst || !trimmedLast || !trimmedPhone) {
+      setFormError("Email, first name, last name and mobile phone are required.")
       return
     }
 
@@ -98,11 +118,16 @@ export function AuthSection({
       return
     }
 
+    if (!isValidContactPhone(trimmedPhone)) {
+      setFormError(CONTACT_PHONE_ERROR)
+      return
+    }
+
     setGuest({
       email: trimmedEmail,
       first_name: trimmedFirst,
       last_name: trimmedLast,
-      ...(trimmedPhone ? { phone: trimmedPhone } : {}),
+      phone: trimmedPhone,
     })
   }
 
@@ -149,17 +174,15 @@ export function AuthSection({
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="guest-phone">
-              Phone <span className="text-neutral-400">(optional)</span>
-            </Label>
+            <Label htmlFor="guest-phone">Mobile phone</Label>
             <PhoneInput
               id="guest-phone"
               value={phone}
               onChange={setPhone}
+              required
             />
             <p className="text-caption text-neutral-500 dark:text-neutral-400">
-              Include the country code so we can reach you on WhatsApp if
-              needed.
+              {CONTACT_PHONE_HINT}
             </p>
           </div>
 
@@ -234,5 +257,70 @@ export function AuthSection({
         </div>
       </div>
     </>
+  )
+}
+
+/**
+ * Accounts created while the phone was optional have none. It's required to
+ * book, so it's asked here, saved on the account, and never asked again.
+ */
+function AddPhoneToAccount({
+  who,
+  initialPhone,
+}: {
+  who: string | null
+  initialPhone: string
+}) {
+  const router = useRouter()
+  const [phone, setPhone] = useState(initialPhone)
+  const [error, setError] = useState<string | null>(null)
+  const [pending, startTransition] = useTransition()
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    setError(null)
+    if (!isValidContactPhone(phone)) {
+      setError(CONTACT_PHONE_ERROR)
+      return
+    }
+    startTransition(async () => {
+      const result = await saveCustomerPhone(phone)
+      if (result.error) {
+        setError(result.error)
+        return
+      }
+      // Re-renders the page with the saved number, which unlocks payment.
+      router.refresh()
+    })
+  }
+
+  return (
+    <div>
+      <h2 className="text-heading-sm">Add your mobile number</h2>
+      <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
+        {who ? `Logged in as ${who}. ` : ""}We need a mobile number to reach
+        you about this rental. We&apos;ll save it to your account.
+      </p>
+      <form onSubmit={handleSubmit} className="mt-6 space-y-4">
+        <div className="space-y-2">
+          <Label htmlFor="account-phone">Mobile phone</Label>
+          <PhoneInput
+            id="account-phone"
+            value={phone}
+            onChange={setPhone}
+            required
+          />
+          <p className="text-caption text-neutral-500 dark:text-neutral-400">
+            {CONTACT_PHONE_HINT}
+          </p>
+        </div>
+        {error && (
+          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        )}
+        <Button type="submit" size="lg" className="text-body" disabled={pending}>
+          {pending ? "Saving…" : "Save and continue"}
+        </Button>
+      </form>
+    </div>
   )
 }
