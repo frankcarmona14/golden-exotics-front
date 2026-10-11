@@ -58,9 +58,7 @@ const footerLinks: FooterSection[] = [
     title: "Company",
     links: [
       { label: "About", href: "/" },
-      ...(siteConfig.contact.email
-        ? [{ label: "Contact us", href: `mailto:${siteConfig.contact.email}`, external: true }]
-        : []),
+      { label: "Contact us", href: "/contact" },
       { label: "Blog", href: "/" },
       { label: "Careers", href: "/" },
       { label: "Press", href: "/" },

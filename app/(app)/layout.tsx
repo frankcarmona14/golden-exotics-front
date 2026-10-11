@@ -2,6 +2,7 @@ import { LogoSlider } from "@/app/(app)/(home)/components/logo-slider"
 import { getBrands } from "@/db/queries/brand-repository"
 import { AppChromeHeader } from "@/components/app-chrome-header"
 import { SiteFooter } from "@/components/site-footer"
+import { ContactLauncher } from "@/components/contact/contact-launcher"
 
 export default async function AppLayout({
   children,
@@ -32,6 +33,7 @@ export default async function AppLayout({
         </div>
       </section>
       <SiteFooter />
+      <ContactLauncher />
     </div>
   )
 }

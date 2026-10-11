@@ -28,6 +28,7 @@ const STATIC_PAGES: {
   { path: "/cars", changeFrequency: "daily", priority: 0.9 },
   { path: "/brands", changeFrequency: "weekly", priority: 0.7 },
   { path: "/locations", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/contact", changeFrequency: "yearly", priority: 0.5 },
   { path: "/driver-requirements", changeFrequency: "yearly", priority: 0.4 },
   { path: "/cancellation-policy", changeFrequency: "yearly", priority: 0.3 },
   { path: "/terms", changeFrequency: "yearly", priority: 0.2 },
