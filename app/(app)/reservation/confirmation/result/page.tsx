@@ -178,6 +178,59 @@ export default async function ResultPage({
                   {" "}We&apos;ll send you a confirmation with all the details.
                 </p>
 
+                {/*
+                  Next step, first (P1-14): without the license and insurance
+                  documents the car can't be handed over, so this is the most
+                  prominent action on the page, above the trip details.
+                */}
+                {isLoggedIn ? (
+                  <div className="mt-7 w-full rounded-card border border-accent/40 bg-accent/10 p-4 text-left">
+                    <p className="text-body-sm font-semibold text-neutral-900 dark:text-neutral-50">
+                      Next step: upload your documents
+                    </p>
+                    <p className="mt-1 text-caption leading-snug text-neutral-600 dark:text-neutral-300">
+                      Your driver&apos;s license and insurance. We need them before we hand over the car.
+                    </p>
+                    <Button
+                      asChild
+                      className="mt-3 w-full rounded-card bg-accent py-6 text-body font-semibold text-accent-foreground shadow-[0_0_24px_rgba(248,227,63,0.25)] transition-[background-color,box-shadow] duration-150 ease-out hover:bg-accent-hover hover:shadow-[0_0_32px_rgba(248,227,63,0.35)]"
+                    >
+                      <Link
+                        href={
+                          rental_id
+                            ? `/account/reservations/${rental_id}/documents`
+                            : `/account/documents`
+                        }
+                      >
+                        <span className="inline-flex items-center gap-2">
+                          <UploadIcon className="size-5" />
+                          Upload documents
+                        </span>
+                      </Link>
+                    </Button>
+                  </div>
+                ) : documentsWhatsAppUrl ? (
+                  <div className="mt-7 w-full rounded-card border border-[#25D366]/40 bg-[#25D366]/10 p-4 text-left">
+                    <p className="text-body-sm font-semibold text-neutral-900 dark:text-neutral-50">
+                      Next step: send us your documents
+                    </p>
+                    <p className="mt-1 text-caption leading-snug text-neutral-600 dark:text-neutral-300">
+                      Your driver&apos;s license and insurance. We need them before we hand over the car.
+                    </p>
+                    <Button
+                      asChild
+                      className="mt-3 w-full rounded-card bg-[#25D366] py-6 text-body font-semibold text-white shadow-[0_0_24px_rgba(37,211,102,0.25)] transition-[background-color,box-shadow] duration-150 ease-out hover:bg-[#20BA5A] hover:shadow-[0_0_32px_rgba(37,211,102,0.35)]"
+                    >
+                      <a href={documentsWhatsAppUrl} target="_blank" rel="noopener noreferrer">
+                        <span className="inline-flex items-center gap-2">
+                          <WhatsAppIcon className="size-5" />
+                          Send documents via WhatsApp
+                        </span>
+                      </a>
+                    </Button>
+                  </div>
+                ) : null}
+
                 {/* Rental details card */}
                 {(carName || startDate) && (
                   <div className="mt-8 w-full overflow-hidden rounded-card border border-neutral-100 dark:border-neutral-800">
@@ -401,41 +454,6 @@ export default async function ResultPage({
 
                 {/* Actions */}
                 <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
-                  {isLoggedIn ? (
-                    <Button
-                      asChild
-                      className="flex-1 rounded-card bg-accent py-5 text-body-sm font-semibold text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.15)] transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.25)]"
-                    >
-                      <Link
-                        href={
-                          rental_id
-                            ? `/account/reservations/${rental_id}/documents`
-                            : `/account/documents`
-                        }
-                      >
-                        <span className="inline-flex items-center gap-2">
-                          <UploadIcon className="size-4" />
-                          Upload documents
-                        </span>
-                      </Link>
-                    </Button>
-                  ) : documentsWhatsAppUrl ? (
-                    <Button
-                      asChild
-                      className="flex-1 rounded-card bg-[#25D366] py-5 text-body-sm font-semibold text-white shadow-[0_0_20px_rgba(37,211,102,0.2)] transition-all hover:bg-[#20BA5A] hover:shadow-[0_0_30px_rgba(37,211,102,0.3)]"
-                    >
-                      <a
-                        href={documentsWhatsAppUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <span className="inline-flex items-center gap-2">
-                          <WhatsAppIcon className="size-4" />
-                          Send documents via WhatsApp
-                        </span>
-                      </a>
-                    </Button>
-                  ) : null}
                   <Button
                     asChild
                     variant="outline"
