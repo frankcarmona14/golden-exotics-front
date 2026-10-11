@@ -5,6 +5,7 @@ import type {
 } from "@/lib/types/rental"
 import { formatAmountForDisplay } from "@/lib/utils"
 import { Separator } from "@/components/ui/separator"
+import { PriceBreakdownDialog } from "@/components/price-breakdown-dialog"
 
 /**
  * Desglose del precio.
@@ -166,6 +167,18 @@ export function PriceDetails({
             <div className="flex flex-row items-center justify-between">
               <strong>Due now ({currency.toUpperCase()})</strong>
               <strong>{formatAmountForDisplay(total, currency)}</strong>
+            </div>
+          )}
+
+          {/* Explicación línea a línea (P1-12), sobre los mismos números. */}
+          {breakdown && breakdown.lines.length > 0 && (
+            <div>
+              <PriceBreakdownDialog
+                breakdown={breakdown}
+                currency={currency}
+                mileage={mileage}
+                lateReturn={lateReturn}
+              />
             </div>
           )}
 

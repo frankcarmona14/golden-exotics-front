@@ -86,6 +86,8 @@ export interface RentalPriceLine {
   amount: number
   /** Impuesto de esta línea. Ausente cuando no le aplica ninguno. */
   tax_amount?: number
+  /** Cargo obligatorio que no eligió el cliente (state fees). Ver P1-12. */
+  mandatory?: boolean
 }
 
 /**
