@@ -13,8 +13,10 @@ import { useRouter } from "next/navigation"
 
 import { completeRentalCart } from "@/lib/medusa/rental"
 import {
-  CARD_ONLY_PAYMENT_ELEMENT_OPTIONS,
-  NON_CARD_METHOD_MESSAGE,
+  RENTAL_PAYMENT_ELEMENT_OPTIONS,
+  UNSUPPORTED_METHOD_MESSAGE,
+  isAcceptedPaymentMethod,
+  knownBillingDetails,
   STRIPE_LOCALE,
   stripePromise,
   stripePublishableKey,
@@ -36,6 +38,8 @@ interface StripePaymentFormProps {
   disclosure?: string | null
   customerEmail: string
   customerName?: string | null
+  /** Already collected (account or guest form): not asked again. */
+  customerPhone?: string | null
   deposit?: number | null
   currency?: string
   /** Con entrega no hay recogida: el balance se cobra al entregar el coche. */
@@ -87,6 +91,7 @@ function StripePaymentForm({
   disclosure,
   customerEmail,
   customerName,
+  customerPhone,
   deposit,
   currency,
   isDelivered = false,
@@ -131,8 +136,8 @@ function StripePaymentForm({
       setError("Payment form is not ready.")
       return
     }
-    if (methodType !== "card") {
-      setError(NON_CARD_METHOD_MESSAGE)
+    if (!isAcceptedPaymentMethod(methodType)) {
+      setError(UNSUPPORTED_METHOD_MESSAGE)
       return
     }
 
@@ -150,10 +155,11 @@ function StripePaymentForm({
           ? {}
           : {
               payment_method_data: {
-                billing_details: {
-                  email: customerEmail || undefined,
-                  name: customerName || undefined,
-                },
+                billing_details: knownBillingDetails({
+                  email: customerEmail,
+                  name: customerName,
+                  phone: customerPhone,
+                }),
               },
             }),
       },
@@ -194,7 +200,7 @@ function StripePaymentForm({
           <div className="flex items-center gap-2">
             <LockIcon className="size-3.5 text-neutral-400 dark:text-neutral-500" />
             <span className="text-body-sm font-medium text-neutral-500 dark:text-neutral-400">
-              Card details
+              Payment details
             </span>
           </div>
           <div className="flex items-center gap-1.5">
@@ -218,12 +224,15 @@ function StripePaymentForm({
           <div className={ready ? "block" : "hidden"}>
             <PaymentElement
               options={{
-                ...CARD_ONLY_PAYMENT_ELEMENT_OPTIONS,
+                ...RENTAL_PAYMENT_ELEMENT_OPTIONS,
+                // Lo que ya sabemos no se vuelve a pedir: ni en la tarjeta ni en
+                // el alta de Link, que pedía otra vez email y teléfono.
                 defaultValues: {
-                  billingDetails: {
-                    email: customerEmail || undefined,
-                    name: customerName || undefined,
-                  },
+                  billingDetails: knownBillingDetails({
+                    email: customerEmail,
+                    name: customerName,
+                    phone: customerPhone,
+                  }),
                 },
               }}
               onReady={() => setReady(true)}
@@ -338,6 +347,8 @@ interface StripePaymentProps {
   cartId: string
   customerEmail: string
   customerName?: string | null
+  /** Already collected (account or guest form): not asked again. */
+  customerPhone?: string | null
   deposit?: number | null
   currency?: string
   isDelivered?: boolean
@@ -362,6 +373,7 @@ export function StripePayment({
   cartId,
   customerEmail,
   customerName,
+  customerPhone,
   deposit,
   currency,
   isDelivered,
@@ -431,6 +443,7 @@ export function StripePayment({
         disclosure={disclosure}
         customerEmail={customerEmail}
         customerName={customerName}
+        customerPhone={customerPhone}
         deposit={deposit}
         currency={currency}
         isDelivered={isDelivered}

@@ -70,20 +70,52 @@ export function usePaymentElementAppearance(): Appearance {
 }
 
 /**
- * Solo tarjeta en el Payment Element.
+ * Métodos con los que se paga un alquiler en la tienda: checkout y pago del
+ * balance por link.
  *
- * Los PaymentIntent los crea el provider de Stripe de Medusa sin
- * `payment_method_types`, así que Stripe ofrece lo que esté activado en el
- * dashboard. El flujo de después (holds, completar el carrito, cobrar el
- * balance off-session) solo está probado con tarjeta: con el `clientSecret`
- * no se puede filtrar desde aquí, así que se pone la tarjeta primero, se
- * quitan los wallets y se bloquea el envío con cualquier otro método.
+ * Tienen que poder **guardarse y cobrarse después sin el cliente delante**: el
+ * balance, las millas y el retraso se cobran así (F0-7). Los fija el backend
+ * en el PaymentIntent (`payment_method_types: ["card", "link"]`, P1-15); Apple
+ * Pay y Google Pay son pagos con tarjeta desde el monedero, así que entran por
+ * `card`. PayPal no: por Stripe solo existe para cuentas europeas, y fuera de
+ * ellas va por la cuenta de PayPal del negocio, sin cobro diferido posible.
+ *
+ * Apple Pay, Google Pay y Link solo aparecen en dominios registrados en Stripe
+ * (Settings → Payment method domains). Apple Pay, además, nunca en localhost.
  */
-export const CARD_ONLY_PAYMENT_ELEMENT_OPTIONS: StripePaymentElementOptions = {
-  layout: "tabs",
-  paymentMethodOrder: ["card"],
-  wallets: { applePay: "never", googlePay: "never" },
+export const ACCEPTED_PAYMENT_METHOD_TYPES = [
+  "card",
+  "apple_pay",
+  "google_pay",
+  "link",
+] as const
+
+export function isAcceptedPaymentMethod(type: string): boolean {
+  return (ACCEPTED_PAYMENT_METHOD_TYPES as readonly string[]).includes(type)
 }
 
-export const NON_CARD_METHOD_MESSAGE =
-  "We take cards only. Please choose Card to continue."
+export const UNSUPPORTED_METHOD_MESSAGE =
+  "This payment method can't be used for rentals. Please pay by card, Apple Pay, Google Pay or Link."
+
+export const RENTAL_PAYMENT_ELEMENT_OPTIONS: StripePaymentElementOptions = {
+  layout: "tabs",
+  paymentMethodOrder: ["card", "apple_pay", "google_pay", "link"],
+  wallets: { applePay: "auto", googlePay: "auto" },
+}
+
+/**
+ * Lo que la tienda ya sabe del cliente (cuenta o datos de invitado). Se pasa al
+ * Payment Element para que no lo pregunte otra vez: sin esto, el alta de Link
+ * dentro del formulario pedía de nuevo email y teléfono.
+ */
+export function knownBillingDetails(contact: {
+  email?: string | null
+  name?: string | null
+  phone?: string | null
+}) {
+  return {
+    ...(contact.email ? { email: contact.email } : {}),
+    ...(contact.name ? { name: contact.name } : {}),
+    ...(contact.phone ? { phone: contact.phone } : {}),
+  }
+}

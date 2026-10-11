@@ -342,6 +342,7 @@ export function ConfirmRental({
                 cartId={checkoutState.cartId}
                 customerEmail={effectiveEmail}
                 customerName={effectiveName}
+                customerPhone={customerPhone ?? guest?.phone ?? null}
                 deposit={deposit}
                 currency={currency}
                 isDelivered={Boolean(deliveryZone)}

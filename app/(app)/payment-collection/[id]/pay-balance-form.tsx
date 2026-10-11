@@ -10,8 +10,9 @@ import {
 
 import { startPaymentCollectionSession } from "@/lib/medusa/payment-collection"
 import {
-  CARD_ONLY_PAYMENT_ELEMENT_OPTIONS,
-  NON_CARD_METHOD_MESSAGE,
+  RENTAL_PAYMENT_ELEMENT_OPTIONS,
+  UNSUPPORTED_METHOD_MESSAGE,
+  isAcceptedPaymentMethod,
   STRIPE_LOCALE,
   stripePromise,
   PAYMENT_ELEMENT_FONTS,
@@ -57,8 +58,8 @@ function CardForm({ amountLabel }: { amountLabel: string }) {
       setError("Payment form is not ready.")
       return
     }
-    if (methodType !== "card") {
-      setError(NON_CARD_METHOD_MESSAGE)
+    if (!isAcceptedPaymentMethod(methodType)) {
+      setError(UNSUPPORTED_METHOD_MESSAGE)
       return
     }
 
@@ -101,7 +102,7 @@ function CardForm({ amountLabel }: { amountLabel: string }) {
         )}
         <div className={ready ? "block" : "hidden"}>
           <PaymentElement
-            options={CARD_ONLY_PAYMENT_ELEMENT_OPTIONS}
+            options={RENTAL_PAYMENT_ELEMENT_OPTIONS}
             onReady={() => setReady(true)}
             onChange={(e) => {
               setMethodType(e.value.type)
