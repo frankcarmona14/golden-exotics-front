@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { prepareRentalCheckout, completeRentalCart } from "@/lib/medusa/rental"
 import { isValidContactPhone } from "@/lib/phone"
+import { saveRentalDeclarations } from "@/lib/medusa/rental-declarations"
 
 import { Button } from "@/components/ui/button"
 import { LoadingDots } from "@/components/loading-dots"
@@ -71,6 +72,10 @@ export function ConfirmRental({
   const [error, setError] = useState<string | null>(null)
   const [isCompleting, setIsCompleting] = useState(false)
   const [acceptedDriverLicense, setAcceptedDriverLicense] = useState(false)
+  // Optional (P1-13): unchecked means "no own insurance", which the team's
+  // Slack notice flags. Saved on the cart as soon as it exists or changes, so
+  // it is there whichever way the payment completes.
+  const [ownInsurance, setOwnInsurance] = useState(false)
   const [showTermsError, setShowTermsError] = useState(false)
 
   // Only the driver license/insurance self-declaration is an explicit
@@ -187,6 +192,11 @@ export function ConfirmRental({
     preparedRef.current = true
     prepare()
   }, [isIdentified, prepare])
+
+  useEffect(() => {
+    if (!checkoutState.cartId) return
+    saveRentalDeclarations(checkoutState.cartId, ownInsurance)
+  }, [checkoutState.cartId, ownInsurance])
 
   const handleConfirmWithoutStripe = async () => {
     if (!checkoutState.cartId) return
@@ -314,6 +324,8 @@ export function ConfirmRental({
                     setAcceptedDriverLicense(checked)
                     if (checked) setShowTermsError(false)
                   }}
+                  ownInsurance={ownInsurance}
+                  onOwnInsuranceChange={setOwnInsurance}
                   showError={showTermsError}
                 />
                 <LegalNotice />
