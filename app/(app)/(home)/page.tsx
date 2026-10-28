@@ -12,6 +12,7 @@ import { JsonLd } from "@/components/json-ld"
 import { BrowseCarTypes } from "./components/browse-car-types"
 import { CallToAction } from "./components/call-to-action"
 import { Hero } from "./components/hero"
+import { Testimonials } from "./components/testimonials"
 
 export const metadata: Metadata = buildPageMetadata({
   title: "Golden Exotics | Exotic & Luxury Car Rental in Miami",
@@ -44,6 +45,9 @@ export default async function HomePage() {
             80px from lg, and a wider 100px approach into the closing CTA. */}
         <div className="pt-14 lg:pt-section">
           <BrowseCarTypes brands={brands} carCounts={carCounts} />
+        </div>
+        <div className="pt-14 lg:pt-section">
+          <Testimonials />
         </div>
         <div className="pb-14 pt-section sm:pb-section sm:pt-section-lg">
           <CallToAction />
