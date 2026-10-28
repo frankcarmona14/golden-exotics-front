@@ -7,7 +7,11 @@ import {
   setRentalCartId,
 } from "./rental-cart"
 import { serializeAddonSelection } from "./addons"
-import { clearDeliveryAddress, getDeliveryAddress } from "./rental-delivery"
+import { DELIVERY_REQUESTED } from "./delivery"
+import {
+  clearDeliveryAddress,
+  getDeliveryRequest,
+} from "./rental-delivery"
 import { translateRentalError } from "./rental-errors"
 import { getMedusaDefaultRegion } from "./store"
 import type {
@@ -320,6 +324,10 @@ export interface OrderRentalDetails {
   delivery: {
     zone_label: string | null
     address: DeliveryAddress | null
+    description: string | null
+    /** `pending`: el coste se añade después. `included`: ya iba en la reserva. */
+    fee_status: "included" | "pending" | "awaiting_payment" | "paid"
+    fee_amount: number | null
   } | null
   product_variant?: {
     id: string
@@ -449,16 +457,41 @@ export interface CreateRentalInput {
 async function resolveCartDelivery(
   zoneCode: string | null | undefined
 ): Promise<
-  | { ok: true; delivery?: { zone_code: string; address: DeliveryAddress } }
+  | {
+      ok: true
+      delivery?: {
+        zone_code?: string
+        address?: DeliveryAddress
+        description?: string
+      }
+    }
   | { ok: false; error: string }
 > {
   if (!zoneCode) {
     return { ok: true }
   }
 
-  const address = await getDeliveryAddress()
+  const saved = await getDeliveryRequest()
 
-  if (!address) {
+  if (zoneCode === DELIVERY_REQUESTED) {
+    if (!saved?.address && !saved?.description) {
+      return {
+        ok: false,
+        error:
+          "We need the delivery details again. Go back and tell us where to bring the car.",
+      }
+    }
+
+    return {
+      ok: true,
+      delivery: {
+        ...(saved.address ? { address: saved.address } : {}),
+        ...(saved.description ? { description: saved.description } : {}),
+      },
+    }
+  }
+
+  if (!saved?.address) {
     return {
       ok: false,
       error:
@@ -466,7 +499,7 @@ async function resolveCartDelivery(
     }
   }
 
-  return { ok: true, delivery: { zone_code: zoneCode, address } }
+  return { ok: true, delivery: { zone_code: zoneCode, address: saved.address } }
 }
 
 export interface GuestInfo {

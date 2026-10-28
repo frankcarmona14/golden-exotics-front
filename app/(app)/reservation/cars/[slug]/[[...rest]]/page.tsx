@@ -7,7 +7,8 @@ import { getCarBySlug } from "@/db/queries/car-repository"
 import { getCustomer } from "@/lib/medusa/customer"
 import { getGuestNotes, getRentalAvailability } from "@/lib/medusa/rental"
 import { isDateRuleMinimum } from "@/lib/medusa/rental-errors"
-import { getDeliveryAddress } from "@/lib/medusa/rental-delivery"
+import { DELIVERY_REQUESTED } from "@/lib/medusa/delivery"
+import { getDeliveryRequest } from "@/lib/medusa/rental-delivery"
 import { differenceInDays, isValid } from "date-fns"
 
 import { SearchParams } from "@/lib/types"
@@ -203,12 +204,16 @@ export default async function CarReservationPage({
    * se vuelve al paso de extras en vez de cobrar una entrega que no se puede
    * hacer.
    */
-  const deliveryAddress = deliveryZone ? await getDeliveryAddress() : null
+  const deliveryRequested = deliveryZone === DELIVERY_REQUESTED && !fromQuote
+  const pricedZone = deliveryRequested ? undefined : deliveryZone
+  const savedDelivery =
+    pricedZone || deliveryRequested ? await getDeliveryRequest() : null
 
-  if (deliveryZone && !deliveryAddress) {
+  if ((pricedZone && !savedDelivery?.address) || (deliveryRequested && !savedDelivery)) {
     const back = new URLSearchParams(checkoutParams)
     if (addonsParam) back.set("addons", addonsParam)
-    if (fromQuote) back.set("delivery", deliveryZone)
+    if (fromQuote && pricedZone) back.set("delivery", pricedZone)
+    if (deliveryRequested) back.set("delivery", DELIVERY_REQUESTED)
     redirect(`/reservation/cars/${params.slug}/extras?${back}`)
   }
 
@@ -231,7 +236,7 @@ export default async function CarReservationPage({
       endTime: checkoutTime,
       currencyCode: car.currency,
       addons: selectedAddons,
-      deliveryZone,
+      deliveryZone: pricedZone,
     })
 
     rentalAvailable = availability.available
@@ -345,7 +350,17 @@ export default async function CarReservationPage({
                   checkoutDate={checkoutDate}
                   checkinTime={checkinTime}
                   checkoutTime={checkoutTime}
-                  deliveryAddress={deliveryAddress}
+                  feePending={deliveryRequested}
+                  delivery={
+                    deliveryRequested
+                      ? {
+                          address: savedDelivery?.address ?? null,
+                          description: savedDelivery?.description ?? null,
+                        }
+                      : savedDelivery?.address
+                        ? { address: savedDelivery.address, description: null }
+                        : null
+                  }
                 />
               </section>
 
@@ -401,7 +416,9 @@ export default async function CarReservationPage({
                         deposit={depositAmount}
                         currency={currency}
                         addons={selectedAddons}
-                        deliveryZone={deliveryZone ?? null}
+                        deliveryZone={
+                          deliveryRequested ? DELIVERY_REQUESTED : pricedZone ?? null
+                        }
                         quote={fromQuote?.ref ?? null}
                       />
                     ) : (

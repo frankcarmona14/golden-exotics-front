@@ -29,6 +29,10 @@ const HEADINGS = {
     due: "Pay for your late return",
     paid: "Your late return is already paid",
   },
+  delivery: {
+    due: "Pay for your delivery",
+    paid: "Your delivery is already paid",
+  },
 } as const
 
 function formatRentalDate(value: string | null): string | null {

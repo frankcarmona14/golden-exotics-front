@@ -292,8 +292,40 @@ export default async function ResultPage({
                             ? `${[delivery.address.address_1, delivery.address.address_2]
                                 .filter(Boolean)
                                 .join(", ")}, ${delivery.address.city} ${delivery.address.postal_code}`
-                            : "We'll bring the car to the address you gave us."}
+                            : delivery.description ||
+                              "We'll bring the car to the place you described."}
                         </p>
+                        {delivery.address && delivery.description && (
+                          <p className="mt-1 text-body-sm text-neutral-600 dark:text-neutral-300">
+                            {delivery.description}
+                          </p>
+                        )}
+                        {delivery.fee_status === "pending" && (
+                          <p className="mt-1 text-body-sm text-neutral-500 dark:text-neutral-400">
+                            Delivery fee to be confirmed. We&apos;ll add it to this order.
+                          </p>
+                        )}
+                        {delivery.fee_status === "awaiting_payment" &&
+                          delivery.fee_amount != null && (
+                            <p className="mt-1 text-body-sm text-neutral-500 dark:text-neutral-400">
+                              Delivery fee{" "}
+                              {formatAmountForDisplay(
+                                delivery.fee_amount,
+                                payment?.currency_code ?? "usd"
+                              )}{" "}
+                              — payment requested.
+                            </p>
+                          )}
+                        {delivery.fee_status === "paid" && delivery.fee_amount != null && (
+                          <p className="mt-1 text-body-sm text-neutral-500 dark:text-neutral-400">
+                            Delivery fee{" "}
+                            {formatAmountForDisplay(
+                              delivery.fee_amount,
+                              payment?.currency_code ?? "usd"
+                            )}{" "}
+                            paid.
+                          </p>
+                        )}
                       </div>
                     )}
 

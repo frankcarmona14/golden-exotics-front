@@ -51,3 +51,55 @@ export function validateDeliveryAddress(
     },
   }
 }
+
+export type DeliveryRequest = {
+  address?: DeliveryAddress
+  description?: string
+}
+
+/** Marca en la URL de que el cliente pidió entrega, sin zona ni precio. */
+export const DELIVERY_REQUESTED = "need-delivery"
+
+/**
+ * "Need delivery?" (P1-11).
+ *
+ * La dirección es opcional. Si no hay una completa, hace falta una descripción
+ * de dónde es. Si el cliente empieza una dirección y la deja a medias, se
+ * avisa: una calle sin ciudad no se puede usar.
+ */
+export function validateDeliveryRequest(
+  input: { address?: Partial<DeliveryAddress> | null; description?: string | null }
+): { ok: true; request: DeliveryRequest } | { ok: false; error: string } {
+  const description = (input.description ?? "").trim()
+  const addressInput = input.address ?? {}
+  const started = ["address_1", "address_2", "city", "postal_code", "notes"].some(
+    (key) => (addressInput[key as keyof DeliveryAddress] ?? "").toString().trim()
+  )
+
+  if (description.length > 500) {
+    return { ok: false, error: "The description is too long." }
+  }
+
+  if (started) {
+    const address = validateDeliveryAddress(addressInput)
+    if (!address.ok) {
+      return address
+    }
+    return {
+      ok: true,
+      request: {
+        address: address.address,
+        ...(description ? { description } : {}),
+      },
+    }
+  }
+
+  if (!description) {
+    return {
+      ok: false,
+      error: "Add an address, or describe where to bring the car.",
+    }
+  }
+
+  return { ok: true, request: { description } }
+}

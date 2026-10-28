@@ -5,12 +5,13 @@ import { getCarBySlug } from "@/db/queries/car-repository"
 import { isValid } from "date-fns"
 
 import { parseAddonSelection } from "@/lib/medusa/addons"
+import { DELIVERY_REQUESTED } from "@/lib/medusa/delivery"
 import {
   getDeliveryZones,
   getRentalAddons,
   getRentalAvailability,
 } from "@/lib/medusa/rental"
-import { getDeliveryAddress } from "@/lib/medusa/rental-delivery"
+import { getDeliveryRequest } from "@/lib/medusa/rental-delivery"
 import { resolveQuoteBooking } from "@/lib/quote-booking"
 import type { RentalDeliveryZone } from "@/lib/types/rental"
 import { SearchParams } from "@/lib/types"
@@ -197,10 +198,13 @@ export default async function CarExtrasPage({
     : parseAddonSelection(addonsParam).filter((selected) =>
         addons.some((addon) => addon.code === selected.code)
       )
-  const initialZone = deliveryZones.some((zone) => zone.code === deliveryParam)
-    ? deliveryParam!
-    : null
-  const initialAddress = initialZone ? await getDeliveryAddress() : null
+  const deliveryRequested = !fromQuote && deliveryParam === DELIVERY_REQUESTED
+  const initialZone =
+    !deliveryRequested && deliveryZones.some((zone) => zone.code === deliveryParam)
+      ? deliveryParam!
+      : null
+  const savedDelivery =
+    initialZone || deliveryRequested ? await getDeliveryRequest() : null
 
   const availability = await getRentalAvailability({
     productId: car.medusaProductId,
@@ -214,8 +218,12 @@ export default async function CarExtrasPage({
     deliveryZone: initialZone,
   })
 
-  // Nada que elegir, ninguna pantalla que enseñar.
-  if ((!addons.length && !deliveryZones.length) || !availability.available) {
+  // Sin coche libre no hay paso. Con presupuesto sin extras ni zona tampoco.
+  // En una reserva normal el paso siempre se enseña: ahí está "Need delivery?".
+  if (
+    !availability.available ||
+    (fromQuote && !addons.length && !deliveryZones.length)
+  ) {
     redirect(checkoutHref)
   }
 
@@ -270,7 +278,10 @@ export default async function CarExtrasPage({
             deliveryZones={deliveryZones}
             initialAddons={initialAddons}
             initialZone={initialZone}
-            initialAddress={initialAddress}
+            initialAddress={savedDelivery?.address ?? null}
+            requestDelivery={!fromQuote}
+            initialRequested={deliveryRequested}
+            initialDescription={savedDelivery?.description ?? null}
             mileage={availability.mileage ?? null}
             lateReturn={availability.late_return ?? null}
             quoteArgs={{

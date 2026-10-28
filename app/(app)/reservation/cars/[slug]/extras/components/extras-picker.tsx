@@ -4,9 +4,16 @@ import { useCallback, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 
 import { serializeAddonSelection } from "@/lib/medusa/addons"
-import { validateDeliveryAddress } from "@/lib/medusa/delivery"
+import {
+  DELIVERY_REQUESTED,
+  validateDeliveryAddress,
+  validateDeliveryRequest,
+} from "@/lib/medusa/delivery"
 import { getRentalAvailability } from "@/lib/medusa/rental"
-import { saveDeliveryAddress } from "@/lib/medusa/rental-delivery"
+import {
+  saveDeliveryAddress,
+  saveDeliveryRequest,
+} from "@/lib/medusa/rental-delivery"
 import type {
   DeliveryAddress,
   RentalAddon,
@@ -35,6 +42,13 @@ export interface ExtrasPickerProps {
   initialAddons?: { code: string; quantity?: number }[]
   initialZone?: string | null
   initialAddress?: DeliveryAddress | null
+  /**
+   * Reserva normal (P1-11): "Need delivery?" en vez de zonas con precio.
+   * El coste lo pone el admin después. Los presupuestos siguen con zona.
+   */
+  requestDelivery?: boolean
+  initialRequested?: boolean
+  initialDescription?: string | null
   /** Condiciones de millas (P0-2). No cambian con los extras ni la zona. */
   mileage?: RentalMileageTerms | null
   /** Devolución tardía (P1-6). Tampoco cambia con los extras ni la zona. */
@@ -85,6 +99,9 @@ export function ExtrasPicker({
   initialAddons = [],
   initialZone = null,
   initialAddress = null,
+  requestDelivery = false,
+  initialRequested = false,
+  initialDescription = null,
   mileage = null,
   lateReturn = null,
   quoted = null,
@@ -98,9 +115,15 @@ export function ExtrasPicker({
   )
   /** Zona elegida, o `null` para recoger en la oficina (lo de por defecto). */
   const [zoneCode, setZoneCode] = useState<string | null>(initialZone)
+  const [needsDelivery, setNeedsDelivery] = useState(initialRequested)
+  const [description, setDescription] = useState(initialDescription ?? "")
   const [address, setAddress] = useState<Partial<DeliveryAddress>>(
     initialAddress ?? {}
   )
+  /** Cómo nos dice dónde: dirección completa o una descripción. `null` = aún no eligió. */
+  const [deliveryDetail, setDeliveryDetail] = useState<
+    "address" | "description" | null
+  >(() => inferDeliveryDetail(initialAddress, initialDescription))
   const [addressError, setAddressError] = useState<string | null>(null)
   const [breakdown, setBreakdown] = useState(initialBreakdown)
   const [deposit, setDeposit] = useState(initialDeposit)
@@ -110,7 +133,14 @@ export function ExtrasPicker({
   /** Recotiza con la selección completa: extras y entrega van en la misma cuenta. */
   const requote = useCallback(
     (nextQuantities: Record<string, number>, nextZone: string | null) => {
-      rememberSelection(nextQuantities, nextZone)
+      rememberSelection(
+        nextQuantities,
+        requestDelivery
+          ? needsDelivery
+            ? DELIVERY_REQUESTED
+            : null
+          : nextZone
+      )
       startQuoting(async () => {
         const quote = await getRentalAvailability({
           ...quoteArgs,
@@ -126,7 +156,7 @@ export function ExtrasPicker({
         }
       })
     },
-    [quoteArgs]
+    [quoteArgs, requestDelivery, needsDelivery]
   )
 
   const setQuantity = useCallback(
@@ -171,7 +201,38 @@ export function ExtrasPicker({
       if (encoded) params.set("addons", encoded)
     }
 
-    if (zoneCode) {
+    if (requestDelivery && needsDelivery) {
+      if (!deliveryDetail) {
+        setAddressError("Choose how you want to tell us where to bring the car.")
+        return
+      }
+
+      if (deliveryDetail === "description" && !description.trim()) {
+        setAddressError("Describe where we should bring the car.")
+        return
+      }
+
+      const checked = validateDeliveryRequest(
+        deliveryDetail === "address"
+          ? { address }
+          : { description }
+      )
+      if (!checked.ok) {
+        setAddressError(checked.error)
+        return
+      }
+
+      setIsSaving(true)
+      const saved = await saveDeliveryRequest(checked.request)
+      setIsSaving(false)
+
+      if (!saved.ok) {
+        setAddressError(saved.error ?? "Could not save the delivery details. Try again.")
+        return
+      }
+
+      params.set("delivery", DELIVERY_REQUESTED)
+    } else if (zoneCode) {
       const checked = validateDeliveryAddress(address)
       if (!checked.ok) {
         setAddressError(checked.error)
@@ -199,7 +260,33 @@ export function ExtrasPicker({
   return (
     <div className="grid grid-cols-1 md:grid-cols-[minmax(0,560px)_minmax(260px,465px)] md:items-start md:justify-between md:gap-x-14">
       <section className="md:col-start-1">
-        {deliveryZones.length > 0 && (
+        {requestDelivery ? (
+          <NeedDelivery
+            needsDelivery={needsDelivery}
+            onNeedsDelivery={(next) => {
+              setNeedsDelivery(next)
+              setAddressError(null)
+              rememberSelection(quantities, next ? DELIVERY_REQUESTED : null)
+            }}
+            deliveryDetail={deliveryDetail}
+            onDeliveryDetail={(next) => {
+              setDeliveryDetail(next)
+              setAddressError(null)
+            }}
+            description={description}
+            onDescription={(next) => {
+              setDescription(next)
+              setAddressError(null)
+            }}
+            address={address}
+            onAddressChange={(next) => {
+              setAddress(next)
+              setAddressError(null)
+            }}
+            error={addressError}
+            disabled={isBusy}
+          />
+        ) : deliveryZones.length > 0 && (
           <DeliveryPicker
             zones={deliveryZones}
             currency={currency}
@@ -233,7 +320,7 @@ export function ExtrasPicker({
         )}
 
         {!quoted && available.length > 0 && (
-          <div className={deliveryZones.length > 0 ? "mt-12" : undefined}>
+          <div className={requestDelivery || deliveryZones.length > 0 ? "mt-12" : undefined}>
             <h2 className="text-xl font-semibold">Add extras</h2>
             <p className="mt-1 text-body text-neutral-500 dark:text-neutral-400">
               Optional. Charged with your deposit when you book.
@@ -367,6 +454,242 @@ function toSelection(quantities: Record<string, number>) {
     code,
     quantity,
   }))
+}
+
+function inferDeliveryDetail(
+  address: DeliveryAddress | null | undefined,
+  description: string | null | undefined
+): "address" | "description" | null {
+  if (address?.address_1 || address?.city || address?.postal_code) {
+    return "address"
+  }
+  if (description?.trim()) return "description"
+  return null
+}
+
+type DeliveryDetail = "address" | "description"
+
+/**
+ * "Need delivery?" (P1-11). No hay zonas ni precio: el coste se añade a la
+ * orden después. Primero elige si nos da una dirección o una descripción;
+ * solo entonces se pide lo que toca.
+ */
+function NeedDelivery({
+  needsDelivery,
+  onNeedsDelivery,
+  deliveryDetail,
+  onDeliveryDetail,
+  description,
+  onDescription,
+  address,
+  onAddressChange,
+  error,
+  disabled,
+}: {
+  needsDelivery: boolean
+  onNeedsDelivery: (next: boolean) => void
+  deliveryDetail: DeliveryDetail | null
+  onDeliveryDetail: (next: DeliveryDetail) => void
+  description: string
+  onDescription: (next: string) => void
+  address: Partial<DeliveryAddress>
+  onAddressChange: (next: Partial<DeliveryAddress>) => void
+  error: string | null
+  disabled: boolean
+}) {
+  const field = (key: keyof DeliveryAddress) => ({
+    id: `delivery-${key}`,
+    value: address[key] ?? "",
+    disabled,
+    onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+      onAddressChange({ ...address, [key]: event.target.value }),
+  })
+
+  const pickupOptions = [
+    {
+      value: false,
+      name: "Pick up at our location or Airport of Miami",
+      description: "Collect and return the car at our office.",
+      price: "Free",
+    },
+    {
+      value: true,
+      name: "Need delivery?",
+      description: "We'll bring the car to you and collect it at the same place.",
+      price: "Fee to be confirmed",
+    },
+  ]
+
+  const detailOptions: {
+    value: DeliveryDetail
+    name: string
+    description: string
+  }[] = [
+    {
+      value: "address",
+      name: "I have the address",
+      description: "Street, city and ZIP — we can find you without calling.",
+    },
+    {
+      value: "description",
+      name: "I'll describe the place",
+      description: "A hotel, terminal or building is enough if you don't have the address yet.",
+    },
+  ]
+
+  return (
+    <div>
+      <h2 className="text-xl font-semibold">Delivery or pickup</h2>
+      <p className="mt-1 text-body text-neutral-500 dark:text-neutral-400">
+        If you need the car brought to you, tell us where. The delivery fee is
+        confirmed after you book and added to your order.
+      </p>
+
+      <fieldset className="mt-6 grid grid-cols-1 gap-3" disabled={disabled}>
+        <legend className="sr-only">Need delivery?</legend>
+        {pickupOptions.map((option) => {
+          const checked = option.value === needsDelivery
+          return (
+            <label
+              key={option.name}
+              className={`flex cursor-pointer items-start justify-between gap-4 rounded-card border p-4 transition-colors ${
+                checked
+                  ? "border-neutral-900 dark:border-neutral-100"
+                  : "border-border hover:border-neutral-400"
+              }`}
+            >
+              <span className="flex items-start gap-3">
+                <input
+                  type="radio"
+                  name="need-delivery"
+                  className="mt-1 accent-neutral-900 dark:accent-neutral-100"
+                  checked={checked}
+                  onChange={() => onNeedsDelivery(option.value)}
+                />
+                <span className="min-w-0">
+                  <span className="block text-body font-medium">{option.name}</span>
+                  <span className="mt-0.5 block text-body-sm text-neutral-500 dark:text-neutral-400">
+                    {option.description}
+                  </span>
+                </span>
+              </span>
+              <span className="shrink-0 text-body tabular-nums">
+                {option.price}
+              </span>
+            </label>
+          )
+        })}
+      </fieldset>
+
+      {needsDelivery && (
+        <div className="mt-6">
+          <fieldset className="grid grid-cols-1 gap-3" disabled={disabled}>
+            <legend className="mb-3 text-body font-medium">
+              How should we find you?
+            </legend>
+            {detailOptions.map((option) => {
+              const checked = option.value === deliveryDetail
+              return (
+                <label
+                  key={option.value}
+                  className={`flex cursor-pointer items-start gap-3 rounded-card border p-4 transition-colors ${
+                    checked
+                      ? "border-neutral-900 dark:border-neutral-100"
+                      : "border-border hover:border-neutral-400"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name="delivery-detail"
+                    className="mt-1 accent-neutral-900 dark:accent-neutral-100"
+                    checked={checked}
+                    onChange={() => onDeliveryDetail(option.value)}
+                  />
+                  <span className="min-w-0">
+                    <span className="block text-body font-medium">{option.name}</span>
+                    <span className="mt-0.5 block text-body-sm text-neutral-500 dark:text-neutral-400">
+                      {option.description}
+                    </span>
+                  </span>
+                </label>
+              )
+            })}
+          </fieldset>
+
+          {deliveryDetail === "address" && (
+            <div className="mt-6 grid grid-cols-1 gap-4">
+              <div className="grid gap-2">
+                <Label htmlFor="delivery-address_1">Street address</Label>
+                <Input
+                  {...field("address_1")}
+                  autoComplete="address-line1"
+                  placeholder="1111 Lincoln Rd"
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="delivery-address_2">
+                  Apartment, suite, hotel{" "}
+                  <span className="font-normal text-neutral-500">(optional)</span>
+                </Label>
+                <Input {...field("address_2")} autoComplete="address-line2" />
+              </div>
+              <div className="grid grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="delivery-city">City</Label>
+                  <Input
+                    {...field("city")}
+                    autoComplete="address-level2"
+                    placeholder="Miami Beach"
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="delivery-postal_code">ZIP code</Label>
+                  <Input
+                    {...field("postal_code")}
+                    autoComplete="postal-code"
+                    inputMode="numeric"
+                    placeholder="33139"
+                  />
+                </div>
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="delivery-notes">
+                  Notes for the driver{" "}
+                  <span className="font-normal text-neutral-500">(optional)</span>
+                </Label>
+                <Input
+                  {...field("notes")}
+                  placeholder="Gate code, valet, where to meet you"
+                />
+              </div>
+            </div>
+          )}
+
+          {deliveryDetail === "description" && (
+            <div className="mt-6 grid gap-2">
+              <Label htmlFor="delivery-description">Where should we bring it?</Label>
+              <Input
+                id="delivery-description"
+                value={description}
+                disabled={disabled}
+                onChange={(event) => onDescription(event.target.value)}
+                placeholder="Hotel X in Brickell, or MIA airport terminal J"
+              />
+              <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
+                We&apos;ll confirm the exact spot with you after you book.
+              </p>
+            </div>
+          )}
+
+          {error && (
+            <p role="alert" className="mt-4 text-body-sm text-red-600 dark:text-red-400">
+              {error}
+            </p>
+          )}
+        </div>
+      )}
+    </div>
+  )
 }
 
 /**

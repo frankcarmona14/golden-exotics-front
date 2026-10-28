@@ -4,6 +4,7 @@ import { format } from "date-fns"
 
 import { getAuthToken } from "@/lib/medusa/customer"
 import { getGuestNotes, getOrderRentals } from "@/lib/medusa/rental"
+import { formatAmountForDisplay } from "@/lib/utils"
 import { GuestNotes } from "@/components/guest-notes"
 import { ReservationStatusBadge } from "@/components/account/reservation-status-badge"
 import { Button } from "@/components/ui/button"
@@ -83,10 +84,26 @@ export default async function ReservationDetailPage({
                 , {r.delivery.address.city} {r.delivery.address.postal_code}
               </span>
             )}
+            {!r.delivery.address && r.delivery.description && (
+              <span className="text-neutral-500"> · {r.delivery.description}</span>
+            )}
           </p>
         ) : (
           <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-300">
             Pickup at our location
+          </p>
+        )}
+        {r.delivery?.fee_status === "pending" && (
+          <p className="mt-1 text-sm text-neutral-500">
+            Delivery fee to be confirmed. We&apos;ll add it to this order.
+          </p>
+        )}
+        {(r.delivery?.fee_status === "awaiting_payment" ||
+          r.delivery?.fee_status === "paid") &&
+          r.delivery.fee_amount != null && (
+          <p className="mt-1 text-sm text-neutral-500">
+            Delivery fee {formatAmountForDisplay(r.delivery.fee_amount, "usd")}{" "}
+            {r.delivery.fee_status === "paid" ? "paid" : "— payment requested"}.
           </p>
         )}
         {r.status && (
