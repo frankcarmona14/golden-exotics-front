@@ -77,11 +77,11 @@ export function PopularDestinations() {
                         priority
                         fill
                         sizes="(max-width: 550px) 50vw, (max-width: 950px) 33.33vw, 20vw"
-                        className="rounded-card object-cover transition-transform duration-500 ease-out group-hover:scale-105 group-hover:will-change-transform"
+                        className="rounded-card object-cover transition-transform duration-300 ease-smooth motion-safe:group-hover:scale-105 motion-safe:group-hover:will-change-transform"
                         placeholder="blur"
                       />
                       {/* Hover overlay */}
-                      <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
+                      <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/20" />
                       {/* Price badge */}
                       <div className="absolute bottom-3 right-3 rounded-full bg-white/90 px-2.5 py-1 text-caption font-bold text-neutral-900 backdrop-blur-sm dark:bg-black/70 dark:text-white dark:shadow-lg">
                         from {formatAmountForDisplay(startingPrice, "usd")}

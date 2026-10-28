@@ -73,13 +73,13 @@ export function BrandCard({
               fill
               priority={priority}
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+              className="object-cover transition-transform duration-300 ease-smooth motion-safe:group-hover:scale-[1.03]"
               style={{
                 objectPosition: `${heroImage.focalX}% ${heroImage.focalY}%`,
               }}
             />
             {/* Oscurece el lado del texto para que se lea sobre cualquier foto. */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/5" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-black/5" />
           </>
         )}
 
@@ -114,7 +114,7 @@ export function BrandCard({
             <span className="inline-flex items-center rounded-pill border border-white/[0.28] bg-black/[0.28] px-3 py-1.5 text-caption font-bold uppercase tracking-[0.2em] text-neutral-50">
               {badge}
             </span>
-            <span className="inline-flex items-center rounded-pill bg-white px-4 py-2 text-caption font-bold uppercase tracking-wider text-neutral-950 transition-transform group-hover:translate-x-0.5">
+            <span className="inline-flex items-center rounded-pill bg-white px-4 py-2 text-caption font-bold uppercase tracking-wider text-neutral-950 transition-transform duration-200 ease-smooth motion-safe:group-hover:translate-x-0.5">
               Explore →
             </span>
           </div>

@@ -194,7 +194,7 @@ function StripePaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-5">
       {/* Card input container */}
-      <div className="relative overflow-hidden rounded-card border border-neutral-200 bg-neutral-50 shadow-sm transition-all focus-within:border-neutral-300 focus-within:shadow-md dark:border-neutral-700 dark:bg-neutral-800/50 dark:shadow-none dark:focus-within:border-neutral-500 dark:focus-within:shadow-none">
+      <div className="relative overflow-hidden rounded-card border border-neutral-200 bg-neutral-50 shadow-sm transition-[border-color,box-shadow] duration-150 ease-out focus-within:border-neutral-300 focus-within:shadow-md dark:border-neutral-700 dark:bg-neutral-800/50 dark:shadow-none dark:focus-within:border-neutral-500 dark:focus-within:shadow-none">
         {/* Header */}
         <div className="flex items-center justify-between border-b border-neutral-200/80 bg-white px-4 py-3 dark:border-neutral-700/50 dark:bg-transparent">
           <div className="flex items-center gap-2">
@@ -294,7 +294,7 @@ function StripePaymentForm({
       <Button
         type="submit"
         size="lg"
-        className="w-full rounded-pill bg-accent py-6 text-body font-semibold text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.2)] transition-all hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.3)] disabled:opacity-50 disabled:shadow-none"
+        className="w-full rounded-pill bg-accent py-6 text-body font-semibold text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.2)] transition-[background-color,box-shadow,opacity] duration-150 ease-out hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.3)] disabled:opacity-50 disabled:shadow-none"
         disabled={
           !stripe || !elements || !ready || loading || !complete || !termsAccepted
         }

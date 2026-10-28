@@ -45,7 +45,7 @@ export function ThemeToggle() {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="size-[18px] shrink-0 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
+        className="size-[18px] shrink-0 rotate-0 scale-100 opacity-100 transition-[transform,opacity] duration-200 ease-smooth dark:-rotate-90 dark:scale-75 dark:opacity-0"
       >
         <circle cx="12" cy="12" r="4" />
         <path d="M12 2v2" />
@@ -66,7 +66,7 @@ export function ThemeToggle() {
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
-        className="absolute size-[18px] shrink-0 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"
+        className="absolute size-[18px] shrink-0 rotate-90 scale-75 opacity-0 transition-[transform,opacity] duration-200 ease-smooth dark:rotate-0 dark:scale-100 dark:opacity-100"
       >
         <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
       </svg>

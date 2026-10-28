@@ -33,6 +33,9 @@ const twMerge = extendTailwindMerge({
         },
       ],
       shadow: [{ shadow: ["lift", "floating"] }],
+      // Without this, `ease-smooth` and `ease-out` both survive a merge and
+      // the winner comes down to CSS source order.
+      ease: [{ ease: ["smooth"] }],
       "max-w": [{ "max-w": ["page"] }],
     },
   },

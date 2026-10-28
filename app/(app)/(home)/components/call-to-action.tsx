@@ -12,8 +12,8 @@ export function CallToAction() {
         <FadeUp>
           <div className="relative overflow-hidden rounded-card border border-border bg-muted px-8 py-14 dark:border-transparent sm:px-14 sm:py-16">
             {/* Background decoration */}
-            <div className="absolute -right-20 -top-20 size-64 rounded-full bg-accent/10 blur-3xl" />
-            <div className="absolute -bottom-20 -left-20 size-48 rounded-full bg-accent/5 blur-3xl" />
+            <div className="pointer-events-none absolute -right-20 -top-20 size-64 rounded-full bg-accent/10 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 -left-20 size-48 rounded-full bg-accent/5 blur-3xl" />
 
             <div className="relative flex flex-col items-start justify-between gap-8 sm:flex-row sm:items-center">
               <div>

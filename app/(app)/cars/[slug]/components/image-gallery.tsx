@@ -144,7 +144,7 @@ export function ShowAllPhotosButton({ images, carName }: ImageGalleryProps) {
           setActiveIndex(0)
           setOpen(true)
         }}
-        className="absolute bottom-4 right-4 z-10 flex items-center gap-1.5 rounded-tight border border-neutral-900 bg-white px-3.5 py-2 text-body-sm font-semibold text-neutral-900 shadow-sm transition-[transform,box-shadow] hover:scale-[1.02] hover:shadow-md active:scale-[0.98]"
+        className="absolute bottom-4 right-4 z-10 flex items-center gap-1.5 rounded-tight border border-neutral-900 bg-white px-3.5 py-2 text-body-sm font-semibold text-neutral-900 shadow-sm transition-[transform,box-shadow] duration-150 ease-smooth hover:shadow-md motion-safe:hover:scale-[1.02] motion-safe:active:scale-[0.98]"
       >
         <GridIcon />
         Show all photos

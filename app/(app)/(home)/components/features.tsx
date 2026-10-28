@@ -58,10 +58,10 @@ export function Features() {
           >
             {features.map(({ icon: Icon, title, description, accent }, index) => (
               <StaggerItem key={index}>
-                <div className="group relative overflow-hidden rounded-card border border-neutral-100 bg-white p-7 transition-[transform,border-color] duration-300 hover:-translate-y-1 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)]">
+                <div className="group relative overflow-hidden rounded-card border border-neutral-100 bg-white p-7 transition-[transform,border-color] duration-300 ease-smooth motion-safe:hover:-translate-y-1 dark:border-neutral-800 dark:bg-neutral-900 dark:hover:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.4)]">
                   {/* Accent glow on hover */}
                   <div
-                    className="absolute -right-6 -top-6 size-24 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-20"
+                    className="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full opacity-0 blur-3xl transition-opacity duration-300 ease-smooth group-hover:opacity-20"
                     style={{ background: accent }}
                   />
 

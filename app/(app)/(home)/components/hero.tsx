@@ -27,9 +27,9 @@ export async function Hero() {
         <HeroVideo />
 
         {/* Multi-layer gradient overlays for cinematic feel */}
-        <div className="absolute inset-0 bg-black/40 dark:bg-black/50" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent dark:to-black/70" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
+        <div className="pointer-events-none absolute inset-0 bg-black/40 dark:bg-black/50" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-transparent dark:to-black/70" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/20" />
 
         {/* Content overlay */}
         <div className="absolute inset-0 flex flex-col items-center justify-center px-5">
@@ -62,8 +62,11 @@ export async function Hero() {
           </div>
         </div>
 
-        {/* Soft join into the page — dark only. In light it reads as a haze. */}
-        <div className="absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-background from-5% via-background/80 to-transparent dark:block sm:h-44" />
+        {/* Soft join into the page — dark only. In light it reads as a haze.
+            `pointer-events-none` is load-bearing: this sits after the content
+            layer, so without it the fade swallows every click on the bottom
+            176px of the hero — which is exactly where the search panel is. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-32 bg-gradient-to-t from-background from-5% via-background/80 to-transparent dark:block sm:h-44" />
       </div>
     </section>
   )

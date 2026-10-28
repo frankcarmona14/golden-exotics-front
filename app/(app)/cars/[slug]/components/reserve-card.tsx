@@ -215,7 +215,7 @@ function TimeGrid({
             onClick={() => !isDisabled && onChange(slot)}
             disabled={isDisabled}
             className={cn(
-              "rounded-tight p-2 text-body-sm font-medium tabular-nums transition-all",
+              "rounded-tight p-2 text-body-sm font-medium tabular-nums transition-[color,background-color,box-shadow] duration-150 ease-out",
               isDisabled
                 ? "cursor-not-allowed text-neutral-300 line-through dark:text-neutral-700"
                 : slot === value
