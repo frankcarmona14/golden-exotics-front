@@ -55,9 +55,11 @@ function PaymentReturnContent() {
 
   if (error) {
     return (
-      <main className="flex min-h-[40vh] items-center justify-center px-5">
+      <main id="main-content" className="flex min-h-[40vh] items-center justify-center px-5">
         <div className="text-center">
-          <p className="text-red-600 dark:text-red-400">{error}</p>
+          <p role="alert" className="text-red-600 dark:text-red-400">
+            {error}
+          </p>
           <button
             type="button"
             className="mt-4 text-sm underline"
@@ -71,7 +73,7 @@ function PaymentReturnContent() {
   }
 
   return (
-    <main className="flex min-h-[40vh] items-center justify-center px-5">
+    <main id="main-content" className="flex min-h-[40vh] items-center justify-center px-5">
       <div className="flex flex-col items-center gap-3">
         <LoadingDots variant="default" />
         <p className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -86,7 +88,7 @@ export default function PaymentReturnPage() {
   return (
     <Suspense
       fallback={
-        <main className="flex min-h-[40vh] items-center justify-center px-5">
+        <main id="main-content" className="flex min-h-[40vh] items-center justify-center px-5">
           <LoadingDots variant="default" />
         </main>
       }

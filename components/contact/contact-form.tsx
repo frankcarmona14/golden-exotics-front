@@ -63,8 +63,15 @@ export function ContactForm({ productId }: { productId?: string }) {
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="contact-phone">Mobile phone</Label>
-        <PhoneInput id="contact-phone" name="phone" value={phone} onChange={setPhone} required />
-        <p className="text-caption text-neutral-500 dark:text-neutral-400">{CONTACT_PHONE_HINT}</p>
+        <PhoneInput
+          id="contact-phone"
+          name="phone"
+          value={phone}
+          onChange={setPhone}
+          required
+          aria-describedby="contact-phone-hint"
+        />
+        <p id="contact-phone-hint" className="text-caption text-neutral-500 dark:text-neutral-400">{CONTACT_PHONE_HINT}</p>
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="contact-message">Message</Label>
@@ -75,7 +82,7 @@ export function ContactForm({ productId }: { productId?: string }) {
           rows={4}
           maxLength={4000}
           placeholder="Which car and dates are you thinking of?"
-          className="flex w-full rounded-tight border border-input bg-background px-3 py-2 text-body-sm shadow-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+          className="flex w-full rounded-tight border border-input bg-background px-4 py-2 text-body shadow-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
       </div>
 

@@ -19,6 +19,15 @@ import { CircleCheckIcon } from "@/components/icons/circle-check"
 
 import { useGuest } from "./guest-context"
 
+/** Input ids of the guest form, in the order they are checked. */
+type GuestField =
+  | "guest-first-name"
+  | "guest-last-name"
+  | "guest-email"
+  | "guest-phone"
+
+const GUEST_ERROR_ID = "guest-form-error"
+
 interface AuthSectionProps {
   isLoggedIn: boolean
   customerName?: string | null
@@ -38,6 +47,7 @@ export function AuthSection({
   const { guest, setGuest } = useGuest()
   const [showGuestForm, setShowGuestForm] = useState(false)
   const [formError, setFormError] = useState<string | null>(null)
+  const [invalidField, setInvalidField] = useState<GuestField | null>(null)
   const [email, setEmail] = useState("")
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
@@ -101,25 +111,42 @@ export function AuthSection({
   const handleGuestSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setFormError(null)
+    setInvalidField(null)
+
+    // Marks the field, says why, and puts the cursor there.
+    const fail = (field: GuestField, message: string) => {
+      setInvalidField(field)
+      setFormError(message)
+      document.getElementById(field)?.focus()
+    }
 
     const trimmedEmail = email.trim()
     const trimmedFirst = firstName.trim()
     const trimmedLast = lastName.trim()
     const trimmedPhone = phone.trim()
 
-    if (!trimmedEmail || !trimmedFirst || !trimmedLast || !trimmedPhone) {
-      setFormError("Email, first name, last name and mobile phone are required.")
+    const missing: GuestField | null = !trimmedFirst
+      ? "guest-first-name"
+      : !trimmedLast
+        ? "guest-last-name"
+        : !trimmedEmail
+          ? "guest-email"
+          : !trimmedPhone
+            ? "guest-phone"
+            : null
+    if (missing) {
+      fail(missing, "Email, first name, last name and mobile phone are required.")
       return
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     if (!emailRegex.test(trimmedEmail)) {
-      setFormError("Please enter a valid email address.")
+      fail("guest-email", "Please enter a valid email address.")
       return
     }
 
     if (!isValidContactPhone(trimmedPhone)) {
-      setFormError(CONTACT_PHONE_ERROR)
+      fail("guest-phone", CONTACT_PHONE_ERROR)
       return
     }
 
@@ -145,6 +172,10 @@ export function AuthSection({
               <Label htmlFor="guest-first-name">First name</Label>
               <Input
                 id="guest-first-name"
+                aria-invalid={invalidField === "guest-first-name" || undefined}
+                aria-describedby={
+                  invalidField === "guest-first-name" ? GUEST_ERROR_ID : undefined
+                }
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 autoComplete="given-name"
@@ -155,6 +186,10 @@ export function AuthSection({
               <Label htmlFor="guest-last-name">Last name</Label>
               <Input
                 id="guest-last-name"
+                aria-invalid={invalidField === "guest-last-name" || undefined}
+                aria-describedby={
+                  invalidField === "guest-last-name" ? GUEST_ERROR_ID : undefined
+                }
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 autoComplete="family-name"
@@ -166,6 +201,10 @@ export function AuthSection({
             <Label htmlFor="guest-email">Email</Label>
             <Input
               id="guest-email"
+              aria-invalid={invalidField === "guest-email" || undefined}
+              aria-describedby={
+                invalidField === "guest-email" ? GUEST_ERROR_ID : undefined
+              }
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -180,14 +219,29 @@ export function AuthSection({
               value={phone}
               onChange={setPhone}
               required
+              aria-invalid={invalidField === "guest-phone" || undefined}
+              aria-describedby={
+                invalidField === "guest-phone"
+                  ? `${GUEST_ERROR_ID} guest-phone-hint`
+                  : "guest-phone-hint"
+              }
             />
-            <p className="text-caption text-neutral-500 dark:text-neutral-400">
+            <p
+              id="guest-phone-hint"
+              className="text-caption text-neutral-500 dark:text-neutral-400"
+            >
               {CONTACT_PHONE_HINT}
             </p>
           </div>
 
           {formError && (
-            <p className="text-sm text-red-600 dark:text-red-400">{formError}</p>
+            <p
+              id={GUEST_ERROR_ID}
+              role="alert"
+              className="text-sm text-red-600 dark:text-red-400"
+            >
+              {formError}
+            </p>
           )}
 
           <div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-2">
@@ -199,6 +253,7 @@ export function AuthSection({
               onClick={() => {
                 setShowGuestForm(false)
                 setFormError(null)
+                setInvalidField(null)
               }}
             >
               Back
@@ -309,13 +364,28 @@ function AddPhoneToAccount({
             value={phone}
             onChange={setPhone}
             required
+            aria-invalid={!!error || undefined}
+            aria-describedby={
+              error
+                ? "account-phone-error account-phone-hint"
+                : "account-phone-hint"
+            }
           />
-          <p className="text-caption text-neutral-500 dark:text-neutral-400">
+          <p
+            id="account-phone-hint"
+            className="text-caption text-neutral-500 dark:text-neutral-400"
+          >
             {CONTACT_PHONE_HINT}
           </p>
         </div>
         {error && (
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+          <p
+            id="account-phone-error"
+            role="alert"
+            className="text-sm text-red-600 dark:text-red-400"
+          >
+            {error}
+          </p>
         )}
         <Button type="submit" size="lg" className="text-body" disabled={pending}>
           {pending ? "Saving…" : "Save and continue"}

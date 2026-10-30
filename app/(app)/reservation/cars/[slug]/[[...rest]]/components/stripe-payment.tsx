@@ -252,11 +252,15 @@ function StripePaymentForm({
 
       {/* Error message */}
       {error && (
-        <div className="flex items-start gap-2 rounded-tight bg-red-50 px-3 py-2.5 dark:bg-red-950/20">
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-tight bg-red-50 px-3 py-2.5 dark:bg-red-950/20"
+        >
           <svg
             viewBox="0 0 16 16"
             fill="currentColor"
             className="mt-0.5 size-3.5 shrink-0 text-red-500"
+            aria-hidden
           >
             <path
               fillRule="evenodd"

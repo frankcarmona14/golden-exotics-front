@@ -140,9 +140,10 @@ export function RegisterForm() {
               value={phone}
               onChange={setPhone}
               required
+              aria-describedby="phone-hint"
               className="h-11"
             />
-            <p className="text-caption text-neutral-500 dark:text-neutral-400">
+            <p id="phone-hint" className="text-caption text-neutral-500 dark:text-neutral-400">
               {CONTACT_PHONE_HINT}
             </p>
           </div>

@@ -59,7 +59,7 @@ export function CarCard({ car, priority = false }: CarCardProps) {
 
   return (
     <Link href={href} className="group block outline-none">
-      <article className="relative flex items-start gap-4 overflow-hidden rounded-card border border-border bg-card p-4 transition-[border-color,transform] duration-200 ease-smooth group-hover:border-neutral-300 motion-safe:group-hover:-translate-y-0.5 group-focus-visible:ring-2 group-focus-visible:ring-ring dark:group-hover:border-neutral-700 dark:group-hover:shadow-[0_16px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-5 sm:p-5">
+      <article className="relative flex items-start gap-4 overflow-hidden rounded-card border border-border bg-card p-4 transition-[border-color,transform] duration-200 ease-smooth group-hover:border-neutral-300 group-focus-visible:ring-2 group-focus-visible:ring-ring motion-safe:group-hover:-translate-y-0.5 dark:group-hover:border-neutral-700 dark:group-hover:shadow-[0_16px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-5 sm:p-5">
         {/* Image */}
         <div className="relative aspect-[4/3] w-32 shrink-0 overflow-hidden rounded-tight bg-muted sm:w-40">
           <CldImage

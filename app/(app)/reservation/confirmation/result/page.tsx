@@ -154,7 +154,7 @@ export default async function ResultPage({
 
   return (
     <div>
-      <main className="flex min-h-[calc(100vh-var(--site-header-height)-200px)] items-center justify-center px-5 py-16">
+      <main id="main-content" className="flex min-h-[calc(100vh-var(--site-header-height)-200px)] items-center justify-center px-5 py-16">
         {isRentalSuccess ? (
           <div className="w-full max-w-lg">
             <div className="relative overflow-hidden rounded-card border border-neutral-200/80 bg-white p-8 shadow-xl dark:border-neutral-800 dark:bg-neutral-900 sm:p-10 lg:p-12">

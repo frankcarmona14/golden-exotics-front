@@ -20,7 +20,7 @@ export function LegalPage({
   children,
 }: LegalPageProps) {
   return (
-    <div className="mx-auto w-full max-w-none px-5 pb-24 pt-10 sm:max-w-[90%] sm:px-0 sm:pt-14 xl:max-w-6xl">
+    <main id="main-content" className="mx-auto w-full max-w-none px-5 pb-24 pt-10 sm:max-w-[90%] sm:px-0 sm:pt-14 xl:max-w-6xl">
       {/* Back link */}
       <div className="mb-8">
         <Link
@@ -94,7 +94,7 @@ export function LegalPage({
           {children}
         </article>
       </div>
-    </div>
+    </main>
   )
 }
 

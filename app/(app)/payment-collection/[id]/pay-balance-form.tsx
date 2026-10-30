@@ -116,7 +116,9 @@ function CardForm({ amountLabel }: { amountLabel: string }) {
       </div>
 
       {error && (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+          {error}
+        </p>
       )}
 
       <Button
@@ -175,7 +177,10 @@ export function PayBalanceForm({
 
   if (error) {
     return (
-      <div className="mt-6 rounded-card border border-red-500/30 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300">
+      <div
+        role="alert"
+        className="mt-6 rounded-card border border-red-500/30 bg-red-50 p-4 text-sm text-red-800 dark:bg-red-950/20 dark:text-red-300"
+      >
         <p className="font-medium">We could not open the payment</p>
         <p className="mt-1">{error}</p>
       </div>

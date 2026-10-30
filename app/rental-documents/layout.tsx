@@ -13,7 +13,9 @@ export default function RentalDocumentsTokenLayout({
   return (
     <div className="flex min-h-screen flex-col [--site-header-height:60px]">
       <AppChromeHeader />
-      {children}
+      <main id="main-content" className="flex flex-1 flex-col">
+        {children}
+      </main>
     </div>
   )
 }

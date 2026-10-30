@@ -69,7 +69,7 @@ export default async function PaymentCollectionPage({
   const heading = HEADINGS[collection.purpose ?? "balance"]
 
   return (
-    <div className="mx-auto w-full max-w-lg px-4 py-12">
+    <main id="main-content" className="mx-auto w-full max-w-lg px-4 py-12">
       <h1 className="text-heading-sm">
         {collection.paid ? heading.paid : heading.due}
       </h1>
@@ -108,6 +108,6 @@ export default async function PaymentCollectionPage({
           amountLabel={amount}
         />
       )}
-    </div>
+    </main>
   )
 }

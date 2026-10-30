@@ -19,5 +19,9 @@ export default async function ReservationDocumentsPage({
     )
   }
 
-  return <RentalDocumentsClient mode="auth" orderId={params.id} />
+  return (
+    <main id="main-content">
+      <RentalDocumentsClient mode="auth" orderId={params.id} />
+    </main>
+  )
 }

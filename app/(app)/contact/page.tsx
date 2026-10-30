@@ -16,7 +16,7 @@ export default function ContactPage() {
   const whatsAppUrl = getWhatsAppUrl(`Hi ${siteConfig.name}!`)
 
   return (
-    <main className="mx-auto grid w-full max-w-5xl gap-10 px-5 py-14 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:py-20">
+    <main id="main-content" className="mx-auto grid w-full max-w-5xl gap-10 px-5 py-14 md:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] md:py-20">
       <div>
         <h1 className="text-heading-lg font-semibold tracking-tight">Contact us</h1>
         <p className="mt-3 text-body leading-relaxed text-neutral-600 dark:text-neutral-300">

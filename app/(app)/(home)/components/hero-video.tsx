@@ -1,6 +1,9 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+
+import { PlayerPauseIcon } from "@/components/icons/player-pause"
+import { PlayerPlayIcon } from "@/components/icons/player-play"
 
 /**
  * Vídeo de fondo del hero, encima del póster (que pinta `Hero` con next/image).
@@ -14,6 +17,9 @@ import { useEffect, useState } from "react"
 export function HeroVideo() {
   const [enabled, setEnabled] = useState(false)
   const [playing, setPlaying] = useState(false)
+  // Pausa del usuario (WCAG 2.2.2): el bucle dura más de 5 s y no se para solo.
+  const [paused, setPaused] = useState(false)
+  const videoRef = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
     const reduceMotion = window.matchMedia(
@@ -35,18 +41,48 @@ export function HeroVideo() {
 
   if (!enabled) return null
 
+  const togglePaused = () => {
+    const video = videoRef.current
+    if (!video) return
+    if (video.paused) {
+      void video.play()
+      setPaused(false)
+    } else {
+      video.pause()
+      setPaused(true)
+    }
+  }
+
   return (
-    <video
-      autoPlay
-      loop
-      muted
-      playsInline
-      onPlaying={() => setPlaying(true)}
-      className={`absolute inset-0 size-full scale-105 object-cover transition-opacity duration-700 ${
-        playing ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      <source src="/assets/videos/header.mp4" type="video/mp4" />
-    </video>
+    <>
+      <video
+        ref={videoRef}
+        autoPlay
+        loop
+        muted
+        playsInline
+        aria-hidden
+        onPlaying={() => setPlaying(true)}
+        className={`absolute inset-0 size-full scale-105 object-cover transition-opacity duration-700 ${
+          playing ? "opacity-100" : "opacity-0"
+        }`}
+      >
+        <source src="/assets/videos/header.mp4" type="video/mp4" />
+      </video>
+      {playing && (
+        <button
+          type="button"
+          onClick={togglePaused}
+          aria-label={paused ? "Play background video" : "Pause background video"}
+          className="absolute right-3 top-3 z-10 flex size-11 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white/80 backdrop-blur-sm transition-colors hover:bg-black/60 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:right-5 sm:top-5"
+        >
+          {paused ? (
+            <PlayerPlayIcon className="size-4" aria-hidden />
+          ) : (
+            <PlayerPauseIcon className="size-4" aria-hidden />
+          )}
+        </button>
+      )}
+    </>
   )
 }

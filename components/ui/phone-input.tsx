@@ -39,6 +39,8 @@ export interface PhoneInputProps {
   autoComplete?: string
   className?: string
   "aria-invalid"?: boolean
+  /** Ids of the hint / error text that describe the number field. */
+  "aria-describedby"?: string
 }
 
 function stripNonDigits(value: string): string {
@@ -66,6 +68,7 @@ export function PhoneInput({
   autoComplete = "tel-national",
   className,
   "aria-invalid": ariaInvalid,
+  "aria-describedby": ariaDescribedBy,
 }: PhoneInputProps) {
   const initialCountry = React.useMemo<Country>(() => {
     return (
@@ -119,7 +122,7 @@ export function PhoneInput({
   return (
     <div
       className={cn(
-        "flex h-10 w-full overflow-hidden rounded-tight border border-neutral-300 bg-white shadow-sm transition-colors focus-within:ring-2 focus-within:ring-neutral-950 focus-within:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:focus-within:ring-neutral-300",
+        "flex h-11 w-full overflow-hidden rounded-tight border border-neutral-300 bg-white shadow-sm transition-colors focus-within:ring-2 focus-within:ring-neutral-950 focus-within:ring-offset-2 dark:border-neutral-700 dark:bg-neutral-900 dark:focus-within:ring-neutral-300",
         ariaInvalid &&
           "border-red-500 focus-within:ring-red-500 dark:border-red-500/70 dark:focus-within:ring-red-500/70",
         disabled && "cursor-not-allowed opacity-50",
@@ -132,7 +135,7 @@ export function PhoneInput({
             type="button"
             disabled={disabled}
             aria-label={`Country code: ${country.name} +${country.dial_code}`}
-            className="flex h-full items-center gap-1.5 border-r border-neutral-200 bg-neutral-50/60 pl-3 pr-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-100 focus:outline-none disabled:pointer-events-none dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-200 dark:hover:bg-neutral-800"
+            className="flex h-full items-center gap-1.5 border-r border-neutral-200 bg-neutral-50/60 pl-3 pr-2 text-sm text-neutral-700 transition-colors hover:bg-neutral-100 focus:outline-none focus-visible:bg-neutral-100 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-neutral-950 disabled:pointer-events-none dark:border-neutral-800 dark:bg-neutral-900/60 dark:text-neutral-200 dark:hover:bg-neutral-800 dark:focus-visible:bg-neutral-800 dark:focus-visible:ring-neutral-300"
           >
             <span className="text-base leading-none" aria-hidden>
               {country.flag}
@@ -199,7 +202,8 @@ export function PhoneInput({
         disabled={disabled}
         autoComplete={autoComplete}
         aria-invalid={ariaInvalid}
-        className="h-full flex-1 bg-transparent px-3 text-sm text-neutral-900 outline-none placeholder:text-neutral-500 dark:text-neutral-100 dark:placeholder:text-neutral-400"
+        aria-describedby={ariaDescribedBy}
+        className="h-full flex-1 bg-transparent px-3 text-base text-neutral-900 outline-none placeholder:text-neutral-500 dark:text-neutral-100 dark:placeholder:text-neutral-400"
       />
 
       {name && (

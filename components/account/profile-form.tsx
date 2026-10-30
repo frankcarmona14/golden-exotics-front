@@ -50,12 +50,12 @@ export function ProfileForm({
   return (
     <form action={formAction} className="space-y-5">
       {state.error && (
-        <div className="rounded-tight border border-red-200 bg-red-50 px-4 py-3 text-body-sm text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400">
+        <div role="alert" className="rounded-tight border border-red-200 bg-red-50 px-4 py-3 text-body-sm text-red-600 dark:border-red-800/50 dark:bg-red-950/30 dark:text-red-400">
           {state.error}
         </div>
       )}
       {showSaved && (
-        <div className="rounded-tight border border-green-200 bg-green-50 px-4 py-3 text-body-sm text-green-700 duration-200 animate-in fade-in dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-400">
+        <div role="status" className="rounded-tight border border-green-200 bg-green-50 px-4 py-3 text-body-sm text-green-700 duration-200 animate-in fade-in dark:border-green-800/50 dark:bg-green-950/30 dark:text-green-400">
           Your profile has been updated.
         </div>
       )}
@@ -100,8 +100,9 @@ export function ProfileForm({
           className="h-11 cursor-not-allowed bg-neutral-50 text-neutral-500 dark:bg-neutral-900 dark:text-neutral-400"
           disabled
           readOnly
+          aria-describedby="email-hint"
         />
-        <p className="text-caption text-neutral-500 dark:text-neutral-400">
+        <p id="email-hint" className="text-caption text-neutral-500 dark:text-neutral-400">
           Contact support to change the email on your account.
         </p>
       </div>
@@ -112,8 +113,14 @@ export function ProfileForm({
         </Label>
         {/* Hidden field carries the value into the server action */}
         <input type="hidden" name="phone" value={phone} />
-        <PhoneInput id="phone" value={phone} onChange={setPhone} required />
-        <p className="text-caption text-neutral-500 dark:text-neutral-400">
+        <PhoneInput
+          id="phone"
+          value={phone}
+          onChange={setPhone}
+          required
+          aria-describedby="phone-hint"
+        />
+        <p id="phone-hint" className="text-caption text-neutral-500 dark:text-neutral-400">
           {CONTACT_PHONE_HINT}
         </p>
       </div>
