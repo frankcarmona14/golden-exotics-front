@@ -117,7 +117,7 @@ export function SearchPanel({ locations }: { locations: SearchLocation[] }) {
 
   return (
     <form onSubmit={submitForm} className="w-full">
-      <div className="whitespace-nowrap rounded-full border border-black/10 bg-white text-black shadow-none dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-50">
+      <div className="whitespace-nowrap rounded-full bg-neutral-100 text-black shadow-none dark:bg-card dark:text-neutral-50">
         <div className="relative grid h-[var(--search-panel-height)] w-full grid-cols-1 items-center">
           <div className="grid h-full grid-cols-[33.333333%_33.333333%_33.333333%] items-center justify-center">
             <div className="relative h-full">

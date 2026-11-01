@@ -1,6 +1,5 @@
 import { Dispatch, SetStateAction } from "react"
 
-import { Separator } from "@/components/ui/separator"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
 
 import { Powertrain, SelectedFilters } from "../types"
@@ -47,7 +46,7 @@ export function PowertrainFilters({
           onValueChange={(value) =>
             handlePowertrainChange(value as Powertrain | undefined)
           }
-          className="grid min-h-12 w-full auto-cols-fr grid-flow-col gap-0 rounded-pill border border-neutral-300 p-1 dark:border-neutral-700"
+          className="grid min-h-12 w-full auto-cols-fr grid-flow-col gap-0 rounded-pill bg-neutral-200/70 p-1 dark:bg-white/[0.06]"
         >
           {powertrains.map(({ slug, name }) => (
             <ToggleGroupItem
@@ -58,10 +57,6 @@ export function PowertrainFilters({
               <span className="flex size-full items-center justify-center rounded-pill border-2 border-transparent text-body-sm font-medium transition-colors">
                 {name}
               </span>
-              <Separator
-                orientation="vertical"
-                className="h-1/2 group-last:hidden"
-              />
             </ToggleGroupItem>
           ))}
         </ToggleGroup>

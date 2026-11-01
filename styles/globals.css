@@ -54,22 +54,23 @@
   }
 
   html.dark {
-    /* Warm near-black rather than #0a0a0a. A dead-neutral canvas reads as a
-       void; a few degrees of warmth give the yellow something to sit in and
-       make the surface stack below feel like depth instead of banding. */
-    --background: 19 17 14;
+    /* Neutral black and greys only: yellow is the one colour. The old warm
+       near-black (19 17 14) turned brown wherever the yellow light fell on it,
+       and the warm card surface read as brown on its own. */
+    --background: 10 10 10;
     --foreground: 250 250 250;
 
-    --card: 31 28 23;
+    /* Surfaces are separated by tone, not by outlines: #171717 on #0a0a0a. */
+    --card: 23 23 23;
     --card-foreground: 250 250 250;
 
-    /* #a3a3a3 on the warm canvas = 7.5:1. */
-    --muted: 31 28 23;
+    /* #a3a3a3 on #0a0a0a = 8.1:1; on the card, 7.3:1. */
+    --muted: 23 23 23;
     --muted-foreground: 163 163 163;
-    /* #8f8f8f on the warm canvas = 6.6:1. */
+    /* #8f8f8f on #0a0a0a = 6.2:1. */
     --subtle-foreground: 143 143 143;
 
-    --border: 42 38 32;
+    --border: 38 38 38;
     /* #737373 on #0a0a0a = 4.4:1. */
     --input: 115 115 115;
     --ring: 248 227 63;
@@ -101,9 +102,28 @@
     color-scheme: dark;
   }
 
+  /* El hueco de la barra de scroll queda siempre reservado. Al abrir un
+     diálogo, Radix bloquea el scroll y compensa la barra con un margin-right
+     en <body>; con el hueco fijo esa compensación sobra y solo desplazaba la
+     página. El selector gana al estilo que inyecta (mismo !important, más
+     específico). */
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  html body[data-scroll-locked] {
+    margin-right: 0 !important;
+  }
+
+  /* The page colour lives on <html> only. The body stays transparent: as an
+     ordinary block it paints its background above negatively stacked layers,
+     which would hide .ambient-canvas completely. */
+  html {
+    background-color: rgb(var(--background));
+  }
+
   html,
   body {
-    background-color: rgb(var(--background));
     color: rgb(var(--foreground));
     font-family: var(--font-sans), var(--font-sans-fallback);
     font-synthesis-weight: none;
@@ -166,24 +186,41 @@
 
   /* Ambient backdrop for the dark canvas. Rendered by a fixed, negatively
      stacked element so it paints above the page background but under all
-     content, and stays put while the page scrolls.
-     Kept under 6% alpha: it should register as atmosphere, not as a tint. */
+     content, and stays put while the page scrolls: the light belongs to the
+     room, not to a section, so every page gets it.
+     Brand yellow, kept low: dimmed yellow on black turns olive, so the light
+     stays a hint at the edges rather than a wash. Soft and large: a bloom on each side, staggered so they
+     sit below the sticky headers, and a faint wash along the top. Strong enough to read as light (the page is no
+     longer flat black) and still far below anything that could compete with
+     text: muted copy keeps well over 4.5:1 on the brightest spot. */
   .ambient-canvas {
     background-image:
       radial-gradient(
-        900px 540px at 6% -10%,
-        rgb(248 227 63 / 0.055),
+        900px 700px at -6% 30%,
+        rgb(248 227 63 / 0.12),
+        transparent 65%
+      ),
+      radial-gradient(
+        800px 700px at 106% 78%,
+        rgb(248 227 63 / 0.08),
         transparent 62%
       ),
       radial-gradient(
-        780px 560px at 100% -4%,
-        rgb(248 227 63 / 0.032),
-        transparent 58%
-      ),
-      radial-gradient(
-        1100px 680px at 52% 108%,
-        rgb(255 236 150 / 0.026),
+        1200px 500px at 60% -12%,
+        rgb(255 236 150 / 0.05),
         transparent 60%
+      );
+  }
+
+  /* The footer closes every page with a horizon: light rising from the bottom
+     edge. Its own layer so it scrolls with the footer instead of the window. */
+  .footer-horizon {
+    background-image:
+      radial-gradient(
+        60% 100% at 50% 100%,
+        rgb(248 227 63 / 0.16),
+        rgb(248 227 63 / 0.05) 45%,
+        transparent 75%
       );
   }
 

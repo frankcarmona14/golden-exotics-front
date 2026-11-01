@@ -54,6 +54,34 @@ const DialogContent = React.forwardRef<
 ))
 DialogContent.displayName = DialogPrimitive.Content.displayName
 
+/**
+ * Panel a toda altura pegado al borde izquierdo, que entra deslizándose. El
+ * fondo apenas se oscurece: lo de detrás tiene que seguir leyéndose.
+ */
+const DialogSheetContent = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <DialogPortal>
+    <DialogOverlay className="bg-black/25" />
+    <DialogPrimitive.Content
+      ref={ref}
+      className={cn(
+        "fixed inset-y-0 left-0 z-50 flex w-full max-w-[420px] flex-col overflow-hidden rounded-r-card bg-white shadow-[8px_0_40px_-12px_rgba(0,0,0,0.35)] ease-smooth data-[state=closed]:duration-200 data-[state=open]:duration-300 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-left data-[state=open]:slide-in-from-left motion-reduce:animate-none dark:bg-neutral-900",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <DialogPrimitive.Close className="absolute right-3 top-3 flex size-10 items-center justify-center rounded-full text-neutral-500 transition-colors hover:bg-neutral-100 hover:text-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-neutral-50 dark:focus-visible:ring-accent">
+        <XIcon className="size-5 shrink-0" />
+        <span className="sr-only">Close</span>
+      </DialogPrimitive.Close>
+    </DialogPrimitive.Content>
+  </DialogPortal>
+))
+DialogSheetContent.displayName = "DialogSheetContent"
+
 const DialogHeader = ({
   className,
   ...props
@@ -116,6 +144,7 @@ export {
   DialogClose,
   DialogTrigger,
   DialogContent,
+  DialogSheetContent,
   DialogHeader,
   DialogFooter,
   DialogTitle,

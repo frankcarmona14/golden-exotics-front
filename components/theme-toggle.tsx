@@ -31,7 +31,8 @@ export function ThemeToggle() {
       size="icon"
       className={cn(
         "size-11 rounded-full",
-        "dark:hover:bg-neutral-800"
+        "dark:hover:bg-neutral-800",
+        "group-data-[transparent]/header:text-white group-data-[transparent]/header:hover:bg-white/15 group-data-[transparent]/header:hover:text-white"
       )}
       onClick={() => setTheme(isDark ? "light" : "dark")}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}

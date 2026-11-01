@@ -14,10 +14,10 @@ export default async function AppLayout({
   const brands = await getBrands()
 
   return (
-    <div className="flex min-h-screen flex-col [--site-header-height:60px]">
+    <div className="flex min-h-screen flex-col [--site-header-height:60px] md:[--site-header-height:76px]">
       <AppChromeHeader />
       {children}
-      <section className="border-t border-border bg-muted py-10">
+      <section className="bg-muted py-10">
         <div className="relative mx-auto h-10 min-h-10 w-full max-w-none overflow-x-hidden px-5 sm:max-w-[90%] sm:px-0 2xl:max-w-8xl">
           <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-1/5 bg-gradient-to-r from-muted from-40% to-transparent" />
           <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-1/5 bg-gradient-to-l from-muted from-40% to-transparent" />

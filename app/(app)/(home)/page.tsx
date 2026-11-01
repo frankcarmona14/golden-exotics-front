@@ -12,6 +12,7 @@ import { JsonLd } from "@/components/json-ld"
 import { BrowseCarTypes } from "./components/browse-car-types"
 import { CallToAction } from "./components/call-to-action"
 import { Hero } from "./components/hero"
+import { HomeSearch } from "./components/home-search"
 import { Testimonials } from "./components/testimonials"
 
 export const metadata: Metadata = buildPageMetadata({
@@ -42,7 +43,11 @@ export default async function HomePage() {
       <main id="main-content">
         <Hero />
         {/* One rhythm for the whole page: 56px between sections on mobile,
-            80px from lg, and a wider 100px approach into the closing CTA. */}
+            80px from lg, and a wider 100px approach into the closing CTA. The
+            search sits closer to the hero: it's the hero's next step. */}
+        <div className="pt-12 lg:pt-16">
+          <HomeSearch />
+        </div>
         <div className="pt-14 lg:pt-section">
           <BrowseCarTypes brands={brands} carCounts={carCounts} />
         </div>

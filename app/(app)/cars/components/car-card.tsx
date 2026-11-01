@@ -5,40 +5,50 @@ import { useSearchParams } from "next/navigation"
 import type { SelectCar } from "@/lib/schema-types"
 
 import { SearchParams } from "@/lib/types"
-import { cn, constructUrlWithParams, formatAmountForDisplay } from "@/lib/utils"
+import { constructUrlWithParams, formatAmountForDisplay } from "@/lib/utils"
 import CldImage from "@/components/cld-image"
+import { AutomaticGearboxIcon } from "@/components/icons/automatic-gearbox"
+import { BatteryAutomotiveIcon } from "@/components/icons/battery-automotive"
+import { CheckIcon } from "@/components/icons/check"
 import { FilledStarIcon } from "@/components/icons/filled-star"
+import { ManualGearboxIcon } from "@/components/icons/manual-gearbox"
 
 interface CarCardProps {
   car: SelectCar
   priority?: boolean
+  /** Lo que cuestan las fechas buscadas según el motor. Sin fechas, nada. */
+  trip?: { total: number; days: number }
+  topPick?: boolean
 }
 
-function CheckIcon({ className }: { className?: string }) {
+function SeatIcon(props: React.HTMLAttributes<SVGElement>) {
   return (
-    <svg viewBox="0 0 16 16" fill="currentColor" className={className}>
-      <path
-        fillRule="evenodd"
-        d="M13.78 4.22a.75.75 0 0 1 0 1.06l-6.5 6.5a.75.75 0 0 1-1.06 0l-3-3a.75.75 0 1 1 1.06-1.06l2.47 2.47 5.97-5.97a.75.75 0 0 1 1.06 0Z"
-        clipRule="evenodd"
-      />
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      {...props}
+    >
+      <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+      <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
     </svg>
   )
 }
 
-function ArrowIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 16 16" fill="currentColor" className={className}>
-      <path
-        fillRule="evenodd"
-        d="M2 8a.75.75 0 0 1 .75-.75h8.69L8.22 4.03a.75.75 0 0 1 1.06-1.06l4.5 4.5a.75.75 0 0 1 0 1.06l-4.5 4.5a.75.75 0 0 1-1.06-1.06l3.22-3.22H2.75A.75.75 0 0 1 2 8Z"
-        clipRule="evenodd"
-      />
-    </svg>
-  )
+function humanize(value: string): string {
+  const text = value.replace(/-/g, " ")
+  return text.charAt(0).toUpperCase() + text.slice(1)
 }
 
-export function CarCard({ car, priority = false }: CarCardProps) {
+export function CarCard({
+  car,
+  priority = false,
+  trip,
+  topPick = false,
+}: CarCardProps) {
   const searchParams = useSearchParams()
 
   if (!car) return null
@@ -52,82 +62,95 @@ export function CarCard({ car, priority = false }: CarCardProps) {
   if (checkout) params.set(SearchParams.CHECKOUT, checkout)
   const href = constructUrlWithParams(`/cars/${car.slug}`, params)
 
-  const isRentable = car.rentalConfiguration?.status === "active"
   const hasRating = Number(car.rating) > 0
-
-  const specs = [car.bodyStyle, car.transmission, `${car.seats} seats`, car.powertrain]
+  const isManual = car.transmission.toLowerCase() === "manual"
+  const isElectrified = ["electric", "hybrid"].includes(
+    car.powertrain.toLowerCase()
+  )
+  const GearboxIcon = isManual ? ManualGearboxIcon : AutomaticGearboxIcon
 
   return (
-    <Link href={href} className="group block outline-none">
-      <article className="relative flex items-start gap-4 overflow-hidden rounded-card border border-border bg-card p-4 transition-[border-color,transform] duration-200 ease-smooth group-hover:border-neutral-300 group-focus-visible:ring-2 group-focus-visible:ring-ring motion-safe:group-hover:-translate-y-0.5 dark:group-hover:border-neutral-700 dark:group-hover:shadow-[0_16px_40px_-18px_rgba(0,0,0,0.5)] sm:gap-5 sm:p-5">
-        {/* Image */}
-        <div className="relative aspect-[4/3] w-32 shrink-0 overflow-hidden rounded-tight bg-muted sm:w-40">
+    <Link
+      href={href}
+      className="group block rounded-card outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-4 focus-visible:ring-offset-background"
+    >
+      <article>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-muted">
           <CldImage
             src={car.imageUrl}
             alt={car.name}
             fill
-            className="object-cover transition-transform duration-300 ease-smooth motion-safe:group-hover:scale-105 motion-safe:group-hover:will-change-transform"
-            sizes="(max-width: 640px) 128px, 160px"
+            className="object-cover transition-transform duration-500 ease-smooth motion-safe:group-hover:scale-[1.03]"
+            sizes="(max-width: 550px) 100vw, (max-width: 1128px) 50vw, 400px"
             priority={priority}
           />
-          {isRentable && (
-            /* Neutral, not accent: in a full grid every card is available, so
-               tinting this turns the accent into background noise. */
-            <span className="absolute left-2 top-2 rounded-pill bg-black/55 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-sm">
-              Available
+          {topPick && (
+            <span className="absolute left-3 top-3 rounded-pill bg-accent px-3 py-1.5 text-caption font-semibold text-accent-foreground shadow-[0_4px_12px_-2px_rgba(0,0,0,0.25)]">
+              Top pick
             </span>
           )}
         </div>
 
-        {/* Content */}
-        <div className="flex min-w-0 flex-1 flex-col">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="truncate text-body font-semibold sm:text-subheading">
+        <div className="mt-4 flex items-start justify-between gap-4">
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate font-display text-subheading font-semibold">
               {car.name}
             </h3>
-            {hasRating && (
-              <div className="flex shrink-0 items-center gap-1 text-body-sm tabular-nums">
-                <FilledStarIcon className="size-3.5 shrink-0 text-accent" />
-                <span className="font-semibold">{car.rating}</span>
-                {Number(car.reviewCount) > 0 && (
-                  <span className="text-neutral-400 dark:text-neutral-500">
-                    ({car.reviewCount})
-                  </span>
-                )}
-              </div>
+            <ul className="mt-2 flex flex-wrap items-center gap-x-3.5 gap-y-1 text-body-sm text-muted-foreground">
+              {hasRating && (
+                <li className="flex items-center gap-1 text-foreground">
+                  <FilledStarIcon
+                    aria-hidden
+                    className="size-3.5 shrink-0 text-accent-text"
+                  />
+                  <span className="tabular-nums">{car.rating}</span>
+                </li>
+              )}
+              <li className="flex items-center gap-1.5">
+                <SeatIcon aria-hidden className="size-4 shrink-0" />
+                <span className="tabular-nums">{car.seats}</span>
+                <span className="sr-only">seats</span>
+              </li>
+              <li className="flex items-center gap-1.5">
+                <GearboxIcon aria-hidden className="size-4 shrink-0" />
+                {isManual ? "Manual" : "Automatic"}
+              </li>
+              {isElectrified && (
+                <li className="flex items-center gap-1.5">
+                  <BatteryAutomotiveIcon
+                    aria-hidden
+                    className="size-4 shrink-0"
+                  />
+                  {humanize(car.powertrain)}
+                </li>
+              )}
+            </ul>
+            {car.unlimitedMileage && (
+              <p className="mt-1.5 flex items-center gap-1.5 text-body-sm text-muted-foreground">
+                <CheckIcon
+                  aria-hidden
+                  className="size-4 shrink-0 text-green-600 dark:text-green-500"
+                />
+                Unlimited mileage
+              </p>
             )}
           </div>
 
-          <p className="mt-1.5 text-body-sm capitalize text-muted-foreground">
-            {specs.join(" · ")}
-          </p>
-
-          {car.unlimitedMileage && (
-            <p className="mt-2 flex items-center gap-1 text-caption font-medium text-neutral-600 dark:text-neutral-300">
-              <CheckIcon className="size-3.5 shrink-0 text-green-600 dark:text-green-500" />
-              Unlimited mileage
-            </p>
-          )}
-
-          {/* Footer: price + CTA */}
-          <div className="mt-3 flex items-end justify-between gap-3">
-            <div className="flex items-baseline gap-1">
-              <span className="text-heading-sm font-semibold tabular-nums">
+          <div className="shrink-0 text-right tabular-nums">
+            <p className="font-display">
+              <span className="text-subheading font-semibold">
                 {formatAmountForDisplay(Number(car.pricePerDay), car.currency)}
               </span>
-              <span className="text-caption font-medium text-neutral-500 dark:text-neutral-400">
+              <span className="ml-0.5 text-body-sm text-muted-foreground">
                 /day
               </span>
-            </div>
-
-            <span
-              className={cn(
-                "hidden items-center gap-1.5 rounded-pill border border-neutral-200 px-4 py-2 text-caption font-semibold transition-colors duration-150 ease-out group-hover:border-accent group-hover:bg-accent group-hover:text-accent-foreground dark:border-neutral-700 sm:inline-flex"
-              )}
-            >
-              View details
-              <ArrowIcon className="size-3 transition-transform duration-200 ease-smooth motion-safe:group-hover:translate-x-0.5" />
-            </span>
+            </p>
+            {trip && (
+              <p className="mt-2 text-body-sm text-muted-foreground">
+                {formatAmountForDisplay(trip.total, car.currency)} for{" "}
+                {trip.days} {trip.days === 1 ? "day" : "days"}
+              </p>
+            )}
           </div>
         </div>
       </article>

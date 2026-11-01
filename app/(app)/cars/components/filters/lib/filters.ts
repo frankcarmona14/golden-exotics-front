@@ -79,3 +79,15 @@ export function countActiveFilters(
 
   return totalCount
 }
+
+/**
+ * Same query, ignoring order: applyFiltersToParams re-appends body styles and
+ * transmissions at the end, so a plain toString() comparison would see a
+ * change where there is none.
+ */
+export function paramsKey(params: URLSearchParams): string {
+  return Array.from(params.entries())
+    .map(([key, value]) => `${key}=${value}`)
+    .sort()
+    .join("&")
+}

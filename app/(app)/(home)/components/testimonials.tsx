@@ -29,12 +29,15 @@ export function Testimonials() {
         </FadeUp>
         <FadeUp delay={0.08} className="pt-8 lg:pt-10">
           <div className="relative">
-            {/* Fixed width, and offset so it ends at the card's 24px padding
-                edge — never over the text. As a percentage it grew with the
-                container and washed out a third of the first card. */}
-            <div className="pointer-events-none absolute inset-y-0 -left-6 z-10 w-12 bg-gradient-to-r from-background to-transparent lg:-left-10 lg:w-16" />
             <Carousel>
-              <CarouselContent className="m-0 flex items-stretch space-x-5 lg:space-x-6">
+              {/* The edges fade by masking the viewport, not by painting the
+                  page colour over it: the background carries light now, and a
+                  flat overlay showed up as a dark bar. 24px is the card's
+                  padding, so the fade never reaches the text. */}
+              <CarouselContent
+                viewportClassName="[mask-image:linear-gradient(to_right,transparent,black_24px,black_calc(100%-24px),transparent)]"
+                className="m-0 flex items-stretch space-x-5 lg:space-x-6"
+              >
                 {testimonials.map(({ id, name, comment, imageUrl, rating }) => {
                   return (
                     <CarouselItem
@@ -95,7 +98,6 @@ export function Testimonials() {
               <CarouselPrevious className="-left-4 z-20 lg:-left-12" />
               <CarouselNext className="-right-4 z-20 lg:-right-12" />
             </Carousel>
-            <div className="pointer-events-none absolute inset-y-0 -right-6 z-10 w-12 bg-gradient-to-l from-background to-transparent lg:-right-10 lg:w-16" />
           </div>
         </FadeUp>
       </div>
