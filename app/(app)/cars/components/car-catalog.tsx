@@ -126,7 +126,12 @@ export default async function CarCatalog({ searchParams }: CarCatalogProps) {
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <h1 className="text-heading-sm sm:text-heading">Available cars</h1>
-          <p className="mt-1.5 text-body-sm text-muted-foreground">
+          {/* Los filtros se aplican al momento: esto le dice al lector de
+              pantalla qué ha cambiado sin que tenga que buscarlo. */}
+          <p
+            aria-live="polite"
+            className="mt-1.5 text-body-sm text-muted-foreground"
+          >
             {countLabel}
           </p>
         </div>

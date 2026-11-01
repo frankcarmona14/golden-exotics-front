@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { SearchParams } from "@/lib/types"
 import { constructUrlWithParams } from "@/lib/utils"
 
+import { useCatalogTransition } from "./catalog-transition"
+
 const OPTIONS = [
   { value: "featured", label: "Featured" },
   { value: "price-asc", label: "Price: low to high" },
@@ -15,6 +17,7 @@ const OPTIONS = [
 export function CatalogSort() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { startTransition } = useCatalogTransition()
   const sort = searchParams.get(SearchParams.SORT) ?? "featured"
 
   return (
@@ -29,7 +32,11 @@ export function CatalogSort() {
           } else {
             params.set(SearchParams.SORT, event.target.value)
           }
-          router.push(constructUrlWithParams("/cars", params))
+          startTransition(() => {
+            router.push(constructUrlWithParams("/cars", params), {
+              scroll: false,
+            })
+          })
         }}
         className="h-11 rounded-pill border border-input bg-background px-4 text-body-sm font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >

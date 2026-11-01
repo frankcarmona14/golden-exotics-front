@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button"
 import { FiltersIcon } from "@/components/icons/filters"
 import { ResponsiveModal } from "@/components/responsive-modal"
 
+import { useCatalogTransition } from "../catalog-transition"
 import { FiltersContent } from "./filters-content"
 import {
   applyFiltersToParams,
@@ -38,6 +39,7 @@ export function FiltersButton({
   const searchParams = useSearchParams()
   const router = useRouter()
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const { startTransition } = useCatalogTransition()
 
   const initialFilters = useMemo(
     () =>
@@ -55,6 +57,17 @@ export function FiltersButton({
   const totalSelectedFilters = useMemo(
     () => countActiveFilters(searchParams, initialMinPrice, initialMaxPrice),
     [searchParams, initialMinPrice, initialMaxPrice]
+  )
+
+  // The draft starts from the URL each time the modal opens: a draft left
+  // unapplied, or a change made elsewhere (the desktop rail on a resized
+  // window), must not reappear as if it were the active filters.
+  const handleOpenChange = useCallback(
+    (open: boolean) => {
+      if (open) setSelectedFilters(initialFilters)
+      setIsModalOpen(open)
+    },
+    [initialFilters]
   )
 
   const handleFiltersReset = useCallback(() => {
@@ -76,9 +89,18 @@ export function FiltersButton({
       initialMinPrice,
       initialMaxPrice
     )
-    router.push(constructUrlWithParams("/cars", newParams))
+    startTransition(() => {
+      router.push(constructUrlWithParams("/cars", newParams), { scroll: false })
+    })
     setIsModalOpen(false)
-  }, [searchParams, selectedFilters, initialMinPrice, initialMaxPrice, router])
+  }, [
+    searchParams,
+    selectedFilters,
+    initialMinPrice,
+    initialMaxPrice,
+    router,
+    startTransition,
+  ])
 
   const triggerWithBadge = useMemo(() => {
     const badge = totalSelectedFilters > 0 && (
@@ -123,7 +145,7 @@ export function FiltersButton({
   return (
     <ResponsiveModal
       open={isModalOpen}
-      onOpenChange={setIsModalOpen}
+      onOpenChange={handleOpenChange}
       title="Filters"
       description="Refine your search by adjusting the filters below to find your perfect match."
       trigger={triggerWithBadge}
