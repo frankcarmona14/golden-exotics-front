@@ -33,7 +33,7 @@ export function CallToAction() {
               <div className="shrink-0">
                 <Button
                   size="lg"
-                  className="bg-accent text-body-sm font-semibold text-accent-foreground shadow-none transition-colors duration-300 hover:bg-accent-hover dark:shadow-[0_0_30px_rgba(248,227,63,0.3)] dark:hover:shadow-[0_0_40px_rgba(248,227,63,0.4)]"
+                  className="bg-accent text-body-sm text-accent-foreground shadow-none transition-colors duration-300 hover:bg-accent-hover dark:shadow-[0_0_30px_rgba(248,227,63,0.3)] dark:hover:shadow-[0_0_40px_rgba(248,227,63,0.4)]"
                   asChild
                 >
                   <Link href="/cars">Explore Our Cars</Link>

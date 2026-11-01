@@ -26,10 +26,10 @@ export function SiteNav({ className }: { className?: string }) {
             href={link.href}
             aria-current={active ? "page" : undefined}
             className={cn(
-              "inline-flex h-11 items-center rounded-full px-3.5 text-body-sm font-medium transition-colors",
+              "inline-flex h-11 items-center rounded-full px-4 text-body font-medium transition-colors",
               active
-                ? "text-foreground"
-                : "text-muted-foreground hover:text-foreground"
+                ? "text-foreground group-data-[transparent]/header:text-white"
+                : "text-muted-foreground hover:text-foreground group-data-[transparent]/header:text-white/75 group-data-[transparent]/header:hover:text-white"
             )}
           >
             {link.label}

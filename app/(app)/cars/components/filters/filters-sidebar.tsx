@@ -92,9 +92,9 @@ export function FiltersSidebar({
   }, [initialMinPrice, initialMaxPrice])
 
   return (
-    <div className="flex max-h-[calc(100dvh-var(--site-header-height)-var(--cars-toolbar-h)-3rem)] flex-col overflow-hidden rounded-card border border-neutral-200 bg-white dark:border-neutral-800 dark:bg-neutral-900/60">
+    <div className="flex max-h-[calc(100dvh-var(--site-header-height)-var(--cars-toolbar-h)-3rem)] flex-col overflow-hidden rounded-card bg-neutral-50 dark:bg-card">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-4 dark:border-neutral-800">
+      <div className="flex items-center justify-between px-6 pb-1 pt-5">
         <div className="flex items-center gap-2">
           <h2 className="text-base font-semibold tracking-tight">Filters</h2>
           {totalSelectedFilters > 0 && (

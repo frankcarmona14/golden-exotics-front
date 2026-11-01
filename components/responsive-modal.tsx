@@ -8,6 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogSheetContent,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
@@ -29,6 +30,8 @@ interface ResponsiveModalProps {
   description: string
   children: ReactNode
   footer?: ReactNode
+  /** En escritorio: diálogo centrado, o panel pegado a la izquierda. */
+  desktopVariant?: "dialog" | "sheet"
 }
 
 export function ResponsiveModal({
@@ -39,8 +42,33 @@ export function ResponsiveModal({
   description,
   children,
   footer,
+  desktopVariant = "dialog",
 }: ResponsiveModalProps) {
   const isDesktop = useMediaQuery(DESKTOP_MEDIA_QUERY)
+
+  if (isDesktop && desktopVariant === "sheet") {
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogTrigger asChild>{trigger}</DialogTrigger>
+        <DialogSheetContent>
+          <DialogHeader className="shrink-0 space-y-0 px-6 pb-2 pt-6">
+            <DialogTitle className="text-heading-sm">{title}</DialogTitle>
+            <DialogDescription className="sr-only">
+              {description}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+            {children}
+          </div>
+          {footer && (
+            <DialogFooter className="shrink-0 border-t border-black/10 py-4 dark:border-neutral-800">
+              {footer}
+            </DialogFooter>
+          )}
+        </DialogSheetContent>
+      </Dialog>
+    )
+  }
 
   if (isDesktop) {
     return (

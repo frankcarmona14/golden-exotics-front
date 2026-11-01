@@ -54,7 +54,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#13110e" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
   ],
 }
 
@@ -76,7 +76,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <style>{`[data-motion]{opacity:1!important;transform:none!important}`}</style>
         </noscript>
       </head>
-      <body className="flex min-h-screen flex-col bg-background text-foreground">
+      <body className="flex min-h-screen flex-col text-foreground">
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

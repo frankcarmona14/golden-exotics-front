@@ -193,7 +193,7 @@ export default async function ResultPage({
                     </p>
                     <Button
                       asChild
-                      className="mt-3 w-full rounded-card bg-accent py-6 text-body font-semibold text-accent-foreground shadow-[0_0_24px_rgba(248,227,63,0.25)] transition-[background-color,box-shadow] duration-150 ease-out hover:bg-accent-hover hover:shadow-[0_0_32px_rgba(248,227,63,0.35)]"
+                      className="mt-3 w-full rounded-card bg-accent py-6 text-body text-accent-foreground shadow-[0_0_24px_rgba(248,227,63,0.25)] transition-[background-color,box-shadow] duration-150 ease-out hover:bg-accent-hover hover:shadow-[0_0_32px_rgba(248,227,63,0.35)]"
                     >
                       <Link
                         href={
@@ -219,7 +219,7 @@ export default async function ResultPage({
                     </p>
                     <Button
                       asChild
-                      className="mt-3 w-full rounded-card bg-[#25D366] py-6 text-body font-semibold text-white shadow-[0_0_24px_rgba(37,211,102,0.25)] transition-[background-color,box-shadow] duration-150 ease-out hover:bg-[#20BA5A] hover:shadow-[0_0_32px_rgba(37,211,102,0.35)]"
+                      className="mt-3 w-full rounded-card bg-[#25D366] py-6 text-body text-white shadow-[0_0_24px_rgba(37,211,102,0.25)] transition-[background-color,box-shadow] duration-150 ease-out hover:bg-[#20BA5A] hover:shadow-[0_0_32px_rgba(37,211,102,0.35)]"
                     >
                       <a href={documentsWhatsAppUrl} target="_blank" rel="noopener noreferrer">
                         <span className="inline-flex items-center gap-2">
@@ -526,7 +526,7 @@ export default async function ResultPage({
                 )}
 
                 <div className="mt-8 flex w-full flex-col gap-3 sm:flex-row">
-                  <Button asChild className="flex-1 rounded-card py-5 text-body-sm font-semibold">
+                  <Button asChild className="flex-1 rounded-card py-5 text-body-sm">
                     <Link href="/cars">Try again</Link>
                   </Button>
                   <Button asChild variant="outline" className="flex-1 rounded-card border-neutral-200 py-5 text-body-sm dark:border-neutral-700">

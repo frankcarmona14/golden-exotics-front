@@ -77,7 +77,12 @@ const footerLinks: FooterSection[] = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-neutral-100 py-14 dark:border-neutral-800/60">
+    <footer className="relative isolate overflow-hidden py-14">
+      {/* Dark only: in light mode the same light reads as a stain. */}
+      <div
+        aria-hidden
+        className="footer-horizon pointer-events-none absolute inset-x-0 bottom-0 -z-10 hidden h-[420px] dark:block"
+      />
       <div className="mx-auto w-full max-w-none px-5 text-sm sm:max-w-[90%] sm:px-0 xl:max-w-6xl">
         <div className="grid grid-cols-12 items-start justify-center gap-y-12">
           <div className="col-span-full md:col-span-3">
@@ -124,7 +129,7 @@ export function SiteFooter() {
               </ul>
             ))}
           </nav>
-          <div className="col-span-full border-t border-neutral-100 pt-8 dark:border-neutral-800/60">
+          <div className="col-span-full pt-8">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
               <p className="text-body-sm text-neutral-500 dark:text-neutral-400">
                 &copy; {new Date().getFullYear()} {siteConfig.name}. All rights

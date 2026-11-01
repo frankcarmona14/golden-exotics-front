@@ -1,7 +1,5 @@
 import { Dispatch, ReactNode, SetStateAction } from "react"
 
-import { Separator } from "@/components/ui/separator"
-
 import { BodyStyleFilters } from "./sections/body-style"
 import { PowertrainFilters } from "./sections/powertrain"
 import { PriceRangeFilters } from "./sections/price-range"
@@ -30,7 +28,6 @@ export function FiltersContent({
           setSelectedFilters={setSelectedFilters}
         />
       </FilterSection>
-      <FilterSeparator />
       <FilterSection>
         <PriceRangeFilters
           minPrice={initialMinPrice}
@@ -39,21 +36,18 @@ export function FiltersContent({
           setSelectedFilters={setSelectedFilters}
         />
       </FilterSection>
-      <FilterSeparator />
       <FilterSection>
         <BodyStyleFilters
           selectedFilters={selectedFilters}
           setSelectedFilters={setSelectedFilters}
         />
       </FilterSection>
-      <FilterSeparator />
       <FilterSection>
         <SeatingCapacityFilters
           selectedFilters={selectedFilters}
           setSelectedFilters={setSelectedFilters}
         />
       </FilterSection>
-      <FilterSeparator />
       <FilterSection>
         <TransmissionTypeFilters
           selectedFilters={selectedFilters}
@@ -64,10 +58,8 @@ export function FiltersContent({
   )
 }
 
+// Sections are told apart by their headings and the space between them; a
+// rule between each one was one more line in a panel that already had many.
 function FilterSection({ children }: { children: ReactNode }) {
-  return <div className="py-6">{children}</div>
-}
-
-function FilterSeparator() {
-  return <Separator className="bg-black/[0.08] dark:bg-white/[0.08]" />
+  return <div className="py-5">{children}</div>
 }

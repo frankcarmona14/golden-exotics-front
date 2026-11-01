@@ -23,8 +23,8 @@ export function CarDetailsButton({ carSlug }: { carSlug: string }) {
 
   return (
     <Button
-      variant={"outline"}
-      className="h-9 w-full hover:border-transparent hover:bg-neutral-900 hover:text-white"
+      variant={"secondary"}
+      className="h-9 w-full hover:bg-neutral-900 hover:text-white dark:bg-white/[0.08] dark:hover:bg-white dark:hover:text-neutral-950"
       asChild
     >
       <Link href={href}>View Details</Link>

@@ -294,7 +294,7 @@ function StripePaymentForm({
       <Button
         type="submit"
         size="lg"
-        className="w-full rounded-pill bg-accent py-6 text-body font-semibold text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.2)] transition-[background-color,box-shadow,opacity] duration-150 ease-out hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.3)] disabled:opacity-50 disabled:shadow-none"
+        className="w-full rounded-pill bg-accent py-6 text-body text-accent-foreground shadow-[0_0_20px_rgba(248,227,63,0.2)] transition-[background-color,box-shadow,opacity] duration-150 ease-out hover:bg-accent-hover hover:shadow-[0_0_30px_rgba(248,227,63,0.3)] disabled:opacity-50 disabled:shadow-none"
         disabled={
           !stripe || !elements || !ready || loading || !complete || !termsAccepted
         }

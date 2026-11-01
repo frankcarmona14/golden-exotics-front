@@ -11,6 +11,8 @@ import { SearchPanelWrapper } from "@/components/search-panel-wrapper"
 import { SearchPanelSkeleton } from "@/components/skeletons/search-panel"
 
 import CarCatalog from "./components/car-catalog"
+import { CatalogToolbar } from "./components/catalog-toolbar"
+import { pillClassName } from "./components/pill"
 import {
   CatalogResults,
   CatalogTransitionProvider,
@@ -34,8 +36,10 @@ export default async function CarsPage({
 }) {
   return (
     <CatalogTransitionProvider>
+      {/* No rule under the toolbar: it fades out instead, so it doesn't cut a
+          straight edge through the background light. */}
       <div className="[--cars-toolbar-h:100px] md:[--cars-toolbar-h:125px]">
-        <header className="sticky top-[var(--site-header-height)] z-40 h-[var(--cars-toolbar-h)] border-b border-black/10 bg-white backdrop-blur-md dark:border-border dark:bg-background/80">
+        <header className="sticky top-[var(--site-header-height)] z-40 h-[var(--cars-toolbar-h)] bg-white backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_calc(100%-28px),transparent)] dark:bg-background/80">
           {/* Phone and Tablets */}
           <div className="h-full md:hidden">
             <div className="h-full px-5 sm:px-6">
@@ -86,22 +90,23 @@ export default async function CarsPage({
             (logos y pie) quedaba a la vista y saltaba al cambiar el esqueleto
             por el catálogo (CLS 0.26 en móvil). */}
         <main id="main-content" className="min-h-svh">
-          <div className="mx-auto flex max-w-7xl gap-6 px-5 pb-12 pt-8 sm:px-6 lg:gap-8">
-            {/* Filters rail — desktop only (≥ md). Mobile uses the modal above. */}
-            <aside className="hidden w-[300px] shrink-0 md:block">
-              <div className="sticky top-[calc(var(--site-header-height)+var(--cars-toolbar-h)+1.5rem)]">
-                <Suspense
-                  fallback={
-                    <Skeleton className="h-[640px] w-full rounded-card" />
-                  }
-                >
-                  <Filters variant="sidebar" />
-                </Suspense>
-              </div>
-            </aside>
+          <div className="mx-auto max-w-7xl px-5 pb-12 pt-4 sm:px-6">
+            <Suspense fallback={<Skeleton className="my-2 h-10 w-full rounded-pill" />}>
+              <CatalogToolbar
+                filters={
+                  <Filters
+                    trigger={
+                      <button type="button" className={pillClassName}>
+                        <FiltersIcon className="size-4 shrink-0" />
+                        Filters
+                      </button>
+                    }
+                  />
+                }
+              />
+            </Suspense>
 
-            {/* Results */}
-            <div className="min-w-0 flex-1">
+            <div className="mt-4">
               <CatalogResults>
                 <Suspense fallback={<CarCatalogSkeleton />}>
                   <CarCatalog searchParams={searchParams} />
