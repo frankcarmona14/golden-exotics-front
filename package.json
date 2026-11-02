@@ -43,7 +43,6 @@
     "react-leaflet": "^4.2.1",
     "server-only": "^0.0.1",
     "sharp": "^0.32.6",
-    "stripe": "^16.9.0",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
     "typescript": "5.2.2",
