@@ -6,7 +6,9 @@ import type { SelectCar } from "@/lib/schema-types"
 
 import { SearchParams } from "@/lib/types"
 import { constructUrlWithParams, formatAmountForDisplay } from "@/lib/utils"
+import { framingFor } from "@/lib/image-framing"
 import CldImage from "@/components/cld-image"
+import { FramedImage } from "@/components/framed-image"
 import { AutomaticGearboxIcon } from "@/components/icons/automatic-gearbox"
 import { BatteryAutomotiveIcon } from "@/components/icons/battery-automotive"
 import { CheckIcon } from "@/components/icons/check"
@@ -76,14 +78,19 @@ export function CarCard({
     >
       <article>
         <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-muted">
-          <CldImage
-            src={car.imageUrl}
-            alt={car.name}
-            fill
-            className="object-cover transition-transform duration-500 ease-smooth motion-safe:group-hover:scale-[1.03]"
-            sizes="(max-width: 550px) 100vw, (max-width: 1128px) 50vw, 400px"
-            priority={priority}
-          />
+          <FramedImage framing={framingFor(car.metadata, car.imageUrl)}>
+            {(style) => (
+              <CldImage
+                src={car.imageUrl}
+                alt={car.name}
+                fill
+                className="object-cover transition-transform duration-500 ease-smooth motion-safe:group-hover:scale-[1.03]"
+                style={style}
+                sizes="(max-width: 550px) 100vw, (max-width: 1128px) 50vw, 400px"
+                priority={priority}
+              />
+            )}
+          </FramedImage>
           {topPick && (
             <span className="absolute left-3 top-3 rounded-pill bg-accent px-3 py-1.5 text-caption font-semibold text-accent-foreground shadow-[0_4px_12px_-2px_rgba(0,0,0,0.25)]">
               Top pick

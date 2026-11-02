@@ -1,7 +1,9 @@
+import { framingFor } from "@/lib/image-framing"
 import type { SelectCar } from "@/lib/schema-types"
 import { formatTimeForDisplay } from "@/lib/utils"
 
 import CldImage from "@/components/cld-image"
+import { FramedImage } from "@/components/framed-image"
 import { FilledStarIcon } from "@/components/icons/filled-star"
 
 export function CarDetails({
@@ -22,15 +24,20 @@ export function CarDetails({
 
   return (
     <div className="grid grid-cols-1 gap-5 min-[360px]:flex">
-      <div className="relative aspect-square w-[100px] shrink-0">
-        <CldImage
-          src={car.imageUrl}
-          alt={car.name}
-          className="rounded-card object-cover"
-          fill
-          sizes="200px"
-          priority
-        />
+      <div className="relative aspect-square w-[100px] shrink-0 overflow-hidden rounded-card">
+        <FramedImage framing={framingFor(car.metadata, car.imageUrl)}>
+          {(style) => (
+            <CldImage
+              src={car.imageUrl}
+              alt={car.name}
+              className="object-cover"
+              style={style}
+              fill
+              sizes="200px"
+              priority
+            />
+          )}
+        </FramedImage>
       </div>
       <div className="flex flex-col gap-1 text-balance capitalize">
         <strong className="font-medium leading-5">{car.name}</strong>

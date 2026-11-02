@@ -336,6 +336,8 @@ export interface OrderRentalDetails {
       id: string
       title: string
       thumbnail: string | null
+      /** Admin framing of `thumbnail` (see lib/image-framing). */
+      thumbnail_framing?: unknown
     }
   }
 }

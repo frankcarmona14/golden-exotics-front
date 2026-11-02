@@ -14,8 +14,10 @@ import {
 } from "@/lib/quotes"
 import { NOINDEX_METADATA } from "@/lib/seo/metadata"
 import type { RentalQuote, RentalQuoteItem } from "@/lib/types/rental"
+import { framingFor, type ImageFraming } from "@/lib/image-framing"
 import { formatAmountForDisplay } from "@/lib/utils"
 import CldImage from "@/components/cld-image"
+import { FramedImage } from "@/components/framed-image"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -141,6 +143,7 @@ export default async function QuotePage({
                 item={item}
                 currency={currency}
                 imageUrl={cars[index]?.imageUrl ?? null}
+                imageFraming={framingFor(cars[index]?.metadata, cars[index]?.imageUrl)}
               />
             </li>
           ))}
@@ -196,11 +199,13 @@ function QuoteItemCard({
   item,
   currency,
   imageUrl,
+  imageFraming,
 }: {
   quote: RentalQuote
   item: RentalQuoteItem
   currency: string
   imageUrl: string | null
+  imageFraming: ImageFraming | null
 }) {
   const blocker = quoteItemBlocker(quote, item)
   const days = item.rental_days
@@ -210,14 +215,19 @@ function QuoteItemCard({
       <div>
         <div className="flex items-start gap-5">
           {imageUrl && (
-            <div className="relative aspect-square w-[88px] shrink-0">
-              <CldImage
-                src={imageUrl}
-                alt={item.vehicle}
-                className="rounded-card object-cover"
-                fill
-                sizes="176px"
-              />
+            <div className="relative aspect-square w-[88px] shrink-0 overflow-hidden rounded-card">
+              <FramedImage framing={imageFraming}>
+                {(style) => (
+                  <CldImage
+                    src={imageUrl}
+                    alt={item.vehicle}
+                    className="object-cover"
+                    style={style}
+                    fill
+                    sizes="176px"
+                  />
+                )}
+              </FramedImage>
             </div>
           )}
           <div className="min-w-0">

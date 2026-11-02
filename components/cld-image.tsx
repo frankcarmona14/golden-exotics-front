@@ -14,7 +14,7 @@ const useCloudinary = Boolean(
  */
 const CldImage = (props: CldImageProps) => {
   if (!useCloudinary) {
-    const { src, alt, fill, className, sizes, priority } = props
+    const { src, alt, fill, className, sizes, priority, style } = props
     const srcStr = typeof src === "string" ? src : undefined
     if (!srcStr) return null
     return (
@@ -25,6 +25,7 @@ const CldImage = (props: CldImageProps) => {
         className={className}
         sizes={sizes}
         priority={priority}
+        style={style}
       />
     )
   }

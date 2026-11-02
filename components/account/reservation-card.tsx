@@ -3,6 +3,7 @@ import Link from "next/link"
 import type { Reservation } from "@/lib/medusa/reservations"
 import { cn, formatAmountForDisplay } from "@/lib/utils"
 import { formatDateRangeForDisplay } from "@/lib/dates"
+import { FramedImage } from "@/components/framed-image"
 
 import { ReservationStatusBadge } from "./reservation-status-badge"
 
@@ -38,6 +39,7 @@ export function ReservationCard({
     carName,
     variantTitle,
     thumbnail,
+    thumbnailFraming,
     startDate,
     endDate,
     days,
@@ -58,13 +60,18 @@ export function ReservationCard({
         {/* Thumbnail */}
         <div className="relative aspect-square size-20 shrink-0 overflow-hidden rounded-card bg-neutral-100 dark:bg-neutral-800 sm:size-24">
           {thumbnail ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={thumbnail}
-              alt={carName}
-              className="size-full object-cover"
-              loading="lazy"
-            />
+            <FramedImage framing={thumbnailFraming}>
+              {(style) => (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={thumbnail}
+                  alt={carName}
+                  className="size-full object-cover"
+                  style={style}
+                  loading="lazy"
+                />
+              )}
+            </FramedImage>
           ) : (
             <div className="flex size-full items-center justify-center text-neutral-300 dark:text-neutral-600">
               <CarGlyph className="size-8" />

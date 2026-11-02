@@ -1,5 +1,7 @@
 "use server"
 
+import { normalizeFraming, type ImageFraming } from "@/lib/image-framing"
+
 import { getAuthToken } from "./customer"
 import { getOrderRentals } from "./rental"
 import { sdk } from "./sdk"
@@ -18,6 +20,8 @@ export interface Reservation {
   carName: string
   variantTitle: string | null
   thumbnail: string | null
+  /** Framing set for that photo in the admin; `null` = centred. */
+  thumbnailFraming: ImageFraming | null
   startDate: string | null
   endDate: string | null
   days: number | null
@@ -76,6 +80,9 @@ export async function getMyReservations(): Promise<Reservation[]> {
           "Your rental",
         variantTitle: rental.product_variant?.title ?? null,
         thumbnail: rental.product_variant?.product?.thumbnail ?? null,
+        thumbnailFraming: normalizeFraming(
+          rental.product_variant?.product?.thumbnail_framing
+        ),
         startDate: rental.rental_start_date ?? null,
         endDate: rental.rental_end_date ?? null,
         days: rental.rental_days ?? null,
