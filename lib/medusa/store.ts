@@ -18,7 +18,9 @@ export function isMedusaConfigured(): boolean {
 
 /** Campos de producto que necesita `medusaProductToCar`. */
 const PRODUCT_FIELDS =
-  "*variants,*variants.calculated_price,+variants.inventory_quantity,+images,*rental_configuration,*categories"
+  // `+metadata` hace falta: con `fields` la API de tienda no lo devuelve, y de
+  // ahí salen el encuadre de las fotos y los datos del coche (plazas, motor…).
+  "*variants,*variants.calculated_price,+variants.inventory_quantity,+images,+metadata,*rental_configuration,*categories"
 
 // ---------------------------------------------------------------------------
 // Medusa Product → SelectCar mapping
