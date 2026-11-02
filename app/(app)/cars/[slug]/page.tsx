@@ -3,6 +3,7 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import { getCarBySlug, getCars } from "@/db/queries/car-repository"
 
+import { framingFor } from "@/lib/image-framing"
 import { buildCarMetadata } from "@/lib/seo/metadata"
 import {
   buildCarBreadcrumbJsonLd,
@@ -16,6 +17,7 @@ import { HeadsetIcon } from "@/components/icons/headset"
 import { KidIcon } from "@/components/icons/kid"
 import { NavigationIcon } from "@/components/icons/navigation"
 import { WifiIcon } from "@/components/icons/wifi"
+import { FramedImage } from "@/components/framed-image"
 import { JsonLd } from "@/components/json-ld"
 
 import { ShowAllPhotosButton } from "./components/image-gallery"
@@ -52,6 +54,7 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
   const mainImage = images[0]
   const secondImage = images[1]
   const thirdImage = images[2]
+  const frame = (url: string | undefined) => framingFor(car.metadata, url)
 
   return (
     <main
@@ -80,14 +83,19 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                 que en xl se fija en max-w-6xl) para no servir el doble de píxeles. */}
             <div className="relative overflow-hidden md:col-span-3 md:row-span-2 md:rounded-l-card">
               {mainImage ? (
-                <Image
-                  src={mainImage}
-                  alt={car.name}
-                  priority
-                  fill
-                  sizes="(max-width: 767px) 100vw, (max-width: 1279px) 68vw, 864px"
-                  className="object-cover"
-                />
+                <FramedImage framing={frame(mainImage)}>
+                  {(style) => (
+                    <Image
+                      src={mainImage}
+                      alt={car.name}
+                      priority
+                      fill
+                      sizes="(max-width: 767px) 100vw, (max-width: 1279px) 68vw, 864px"
+                      className="object-cover"
+                      style={style}
+                    />
+                  )}
+                </FramedImage>
               ) : (
                 <div className="flex size-full items-center justify-center bg-neutral-100 dark:bg-neutral-800">
                   <span className="text-neutral-400">Sin imagen</span>
@@ -98,13 +106,18 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
                 móvil y precargarla competiría con la principal, que es el LCP. */}
             <div className="relative col-span-1 row-span-1 hidden overflow-hidden rounded-tr-card md:block">
               {secondImage ? (
-                <Image
-                  src={secondImage}
-                  alt={`${car.name} - 2`}
-                  fill
-                  sizes="(max-width: 1279px) 23vw, 288px"
-                  className="object-cover"
-                />
+                <FramedImage framing={frame(secondImage)}>
+                  {(style) => (
+                    <Image
+                      src={secondImage}
+                      alt={`${car.name} - 2`}
+                      fill
+                      sizes="(max-width: 1279px) 23vw, 288px"
+                      className="object-cover"
+                      style={style}
+                    />
+                  )}
+                </FramedImage>
               ) : mainImage ? (
                 <Image
                   src={mainImage}
@@ -120,13 +133,18 @@ export default async function CarDetailsPage({ params }: CarDetailsPageProps) {
             {/* Tercera imagen (abajo-derecha) */}
             <div className="relative col-span-1 row-span-1 hidden overflow-hidden rounded-br-card md:block">
               {thirdImage ? (
-                <Image
-                  src={thirdImage}
-                  alt={`${car.name} - 3`}
-                  fill
-                  sizes="(max-width: 1279px) 23vw, 288px"
-                  className="object-cover"
-                />
+                <FramedImage framing={frame(thirdImage)}>
+                  {(style) => (
+                    <Image
+                      src={thirdImage}
+                      alt={`${car.name} - 3`}
+                      fill
+                      sizes="(max-width: 1279px) 23vw, 288px"
+                      className="object-cover"
+                      style={style}
+                    />
+                  )}
+                </FramedImage>
               ) : mainImage ? (
                 <Image
                   src={mainImage}
