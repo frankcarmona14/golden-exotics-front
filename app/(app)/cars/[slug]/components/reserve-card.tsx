@@ -7,11 +7,20 @@ import type { DateRange } from "react-day-picker"
 
 import { getWhatsAppUrl, siteConfig } from "@/config/site"
 import { DESKTOP_MEDIA_QUERY } from "@/lib/constants"
-import { getRentalAvailability, getRentalBookedDates } from "@/lib/medusa/rental"
+import {
+  getRentalAvailability,
+  getRentalBookedDates,
+  getRentalMinimums,
+} from "@/lib/medusa/rental"
+import { isDateRuleMinimum } from "@/lib/medusa/rental-errors"
 import type { BookedRange } from "@/lib/medusa/rental"
 import { PICKUP_LOCATION, type SelectCar } from "@/lib/schema-types"
 import { SearchParams } from "@/lib/types"
-import type { RentalAvailabilityResponse } from "@/lib/types/rental"
+import type {
+  RentalAvailabilityResponse,
+  RentalMinimumRule,
+} from "@/lib/types/rental"
+import { describeRuleMinimums } from "@/lib/rental-minimums"
 import { cn, formatAmountForDisplay } from "@/lib/utils"
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Button } from "@/components/ui/button"
@@ -381,6 +390,7 @@ export function ReserveCard({ car }: ReserveCardProps) {
   const [bookedDates, setBookedDates] = useState<Set<string>>(new Set())
   const [bookedRanges, setBookedRanges] = useState<BookedRange[]>([])
   const fetchedMonths = useRef<Set<string>>(new Set())
+  const [minimumRules, setMinimumRules] = useState<RentalMinimumRule[]>([])
 
   const rentalConfig = car.rentalConfiguration
   const isRentable = rentalConfig?.status === "active"
@@ -426,6 +436,18 @@ export function ReserveCard({ car }: ReserveCardProps) {
   useEffect(() => {
     fetchBookedDates()
   }, [fetchBookedDates])
+
+  // Reglas que suben el mínimo (P0-5): se anuncian junto al "Min N days".
+  useEffect(() => {
+    if (!car.medusaProductId || !isRentable) return
+    let cancelled = false
+    getRentalMinimums(car.medusaProductId).then((rules) => {
+      if (!cancelled) setMinimumRules(rules)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [car.medusaProductId, isRentable])
 
   useEffect(() => {
     const checkinParam = searchParams.get(SearchParams.CHECKIN)
@@ -658,6 +680,37 @@ export function ReserveCard({ car }: ReserveCardProps) {
       return { type: "success" as const, text: "Available for your dates" }
     return null
   }, [isCheckingAvailability, validationError, availability])
+
+  // Bloqueado por una regla de mínimo (P0-5): la excepción se pide por
+  // WhatsApp y el operador la concede con un presupuesto, que no lleva reglas.
+  // Sin WhatsApp configurado, por email, como `NotBookableOnlineCard`.
+  const shortStay = (() => {
+    if (
+      statusMessage?.type !== "error" ||
+      !isDateRuleMinimum(validationError) ||
+      !checkinDate ||
+      !checkoutDate ||
+      days <= 0
+    )
+      return null
+    const dayLabel = `${days} day${days === 1 ? "" : "s"}`
+    const message =
+      `Hi ${siteConfig.name}! I'd like to rent the ${car.name} for ${dayLabel}: ` +
+      `pick-up ${format(checkinDate, "EEE, MMM d")} at ${checkinTime}, ` +
+      `return ${format(checkoutDate, "EEE, MMM d")} at ${checkoutTime}. Is that possible?`
+    const whatsAppUrl = getWhatsAppUrl(message)
+    if (whatsAppUrl) {
+      return { href: whatsAppUrl, label: `Need just ${dayLabel}? Message us on WhatsApp`, external: true }
+    }
+    const email = siteConfig.contact.email
+    if (!email) return null
+    const subject = encodeURIComponent(`${dayLabel} with the ${car.name}`)
+    return {
+      href: `mailto:${email}?subject=${subject}&body=${encodeURIComponent(message)}`,
+      label: `Need just ${dayLabel}? Email us`,
+      external: false,
+    }
+  })()
 
   /* ---- style helpers ---- */
 
@@ -936,6 +989,9 @@ export function ReserveCard({ car }: ReserveCardProps) {
           <p className="mt-3 text-caption text-neutral-400 dark:text-neutral-500">
             Min {rentalConfig.min_rental_days} day
             {rentalConfig.min_rental_days > 1 ? "s" : ""}
+            {describeRuleMinimums(minimumRules, rentalConfig.min_rental_days).map(
+              (part) => ` · ${part}`
+            )}
             {rentalConfig.max_rental_days
               ? ` · Max ${rentalConfig.max_rental_days} days`
               : ""}
@@ -956,6 +1012,16 @@ export function ReserveCard({ car }: ReserveCardProps) {
             )}
           >
             {statusMessage.text}
+            {shortStay && (
+              <a
+                href={shortStay.href}
+                target={shortStay.external ? "_blank" : undefined}
+                rel={shortStay.external ? "noopener noreferrer" : undefined}
+                className="mt-1.5 block font-semibold underline underline-offset-2"
+              >
+                {shortStay.label}
+              </a>
+            )}
           </div>
         )}
 

@@ -25,6 +25,20 @@ export interface RentalAddon {
   charge_type: RentalAddonChargeType
 }
 
+/**
+ * Regla de mínimo de días por fecha (P0-5), tal y como la expone la tienda.
+ * Solo se anuncia; quien la hace cumplir es el backend.
+ */
+export interface RentalMinimumRule {
+  name: string
+  min_days: number
+  /** 0 = domingo … 6 = sábado. `null` = todos. */
+  weekdays: number[] | null
+  start_date: string | null
+  end_date: string | null
+  repeats_annually: boolean
+}
+
 /** Lo único que el cliente elige. El precio lo pone el servidor. */
 export interface RentalAddonSelection {
   code: string

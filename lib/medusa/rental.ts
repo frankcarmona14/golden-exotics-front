@@ -22,6 +22,7 @@ import type {
   RentalAvailabilityResponse,
   RentalDeliveryZone,
   RentalLocations,
+  RentalMinimumRule,
   RentalQuote,
   RentalQuoteItem,
 } from "@/lib/types/rental"
@@ -148,6 +149,27 @@ export async function getRentalAddons(
   }
 
   return data.rental_addons ?? []
+}
+
+/**
+ * Reglas que suben el mínimo de días de este coche (P0-5), para anunciarlas.
+ *
+ * Lista vacía si falla: sin ellas la ficha enseña solo el mínimo del coche, y
+ * la disponibilidad sigue exigiendo el de la regla.
+ */
+export async function getRentalMinimums(
+  productId: string
+): Promise<RentalMinimumRule[]> {
+  const { ok, data } = await medusaFetch<{
+    rental_minimums: RentalMinimumRule[]
+  }>(`/store/products/${productId}/rental-minimums`)
+
+  if (!ok) {
+    console.warn("[Rental] Could not load rental minimums for", productId)
+    return []
+  }
+
+  return data.rental_minimums ?? []
 }
 
 /**
