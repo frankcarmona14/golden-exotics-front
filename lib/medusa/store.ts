@@ -16,11 +16,29 @@ export function isMedusaConfigured(): boolean {
   )
 }
 
+/**
+ * Campos de `RentalConfiguration`, uno a uno: desde Medusa 2.21 la tienda no
+ * acepta `*rental_configuration` y solo deja pasar los que el backend permite
+ * (`STORE_RENTAL_CONFIGURATION_FIELDS` en sus middlewares).
+ */
+const RENTAL_CONFIGURATION_FIELDS = [
+  "id",
+  "product_id",
+  "min_rental_days",
+  "max_rental_days",
+  "deposit_amount",
+  "deposit_type",
+  "status",
+]
+  .map((field) => `+rental_configuration.${field}`)
+  .join(",")
+
 /** Campos de producto que necesita `medusaProductToCar`. */
 const PRODUCT_FIELDS =
   // `+metadata` hace falta: con `fields` la API de tienda no lo devuelve, y de
   // ahí salen el encuadre de las fotos y los datos del coche (plazas, motor…).
-  "*variants,*variants.calculated_price,+variants.inventory_quantity,+images,+metadata,*rental_configuration,*categories"
+  "*variants,*variants.calculated_price,+variants.inventory_quantity,+images,+metadata,*categories," +
+  RENTAL_CONFIGURATION_FIELDS
 
 // ---------------------------------------------------------------------------
 // Medusa Product → SelectCar mapping
