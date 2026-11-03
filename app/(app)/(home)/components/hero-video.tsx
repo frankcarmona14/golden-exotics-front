@@ -74,9 +74,10 @@ export function HeroVideo() {
           type="button"
           onClick={togglePaused}
           aria-label={paused ? "Play background video" : "Pause background video"}
-          // En móvil tapaba el hero: ahí solo aparece al llegar con teclado o
-          // lector de pantalla, que es quien de verdad lo necesita (WCAG 2.2.2).
-          className="absolute right-3 top-3 z-10 flex size-11 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white/80 pointer-events-none opacity-0 backdrop-blur-sm transition-colors hover:bg-black/60 hover:text-white focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:pointer-events-auto sm:right-5 sm:top-5 sm:opacity-100"
+          // Tapaba el hero: solo aparece al llegar con teclado o lector de
+          // pantalla, que es quien de verdad lo necesita (WCAG 2.2.2), como el
+          // enlace "saltar al contenido".
+          className="absolute right-3 top-3 z-10 flex size-11 cursor-pointer items-center justify-center rounded-full bg-black/40 text-white/80 pointer-events-none opacity-0 backdrop-blur-sm transition-colors hover:bg-black/60 hover:text-white focus-visible:pointer-events-auto focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white sm:right-5 sm:top-5"
         >
           {paused ? (
             <PlayerPlayIcon className="size-4" aria-hidden />
